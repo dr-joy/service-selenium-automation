@@ -5,32 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5165171-9e87-40a0-a94d-4b6050806792" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Example/CheckingLog.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Example/DownloadTemplate.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Example/Preset.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Example/Request.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Example/Setting.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Example/WorkSchedule.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/Example/WorkingTimeType.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/config/Configuration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/config/DriverFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/exception/ConfigLoadException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/ExportTemplateFilterSetting.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/Setting.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/repository/ExcelReaderRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/ExcelUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebElementUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/CheckingLog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/Request.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/DateUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/at/Screen.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/common/XpathCommon.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/log4j.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/drivers/caches/resolution.properties" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/caches/resolution.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/repository/ExcelReaderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/repository/ExcelReaderRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/ExcelUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/ExcelUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebElementUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +29,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -61,7 +51,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.Main.executor": "Debug",
+    "Application.Main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
@@ -111,17 +101,6 @@
       <updated>1745394166331</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/repository/ExcelReaderRepository.java</url>
-          <line>20</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/DRJ_Automation$Main.ic" NAME="Main Coverage Results" MODIFIED="1745482016373" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">

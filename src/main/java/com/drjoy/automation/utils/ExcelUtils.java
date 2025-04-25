@@ -19,15 +19,21 @@ public class ExcelUtils {
     static final Logger logger = LogManager.getLogger(ExcelUtils.class);
 
     public static List<String[]> readDataFromFilePath(String path) {
-        return readDataFromFile(new File(path));
+        return readDataFromFile(new File(path), null);
     }
 
-    public static List<String[]> readDataFromFile(File file) {
+    public static List<String[]> readDataFromFilePath(String path, String sheetName) {
+        return readDataFromFile(new File(path), sheetName);
+    }
+
+    public static List<String[]> readDataFromFile(File file, String sheetName) {
         List<String[]> data = new ArrayList<>();
 
         try (FileInputStream fis = new FileInputStream(file);
             Workbook workbook = new XSSFWorkbook(fis)) {
-            Sheet sheet = workbook.getSheetAt(0);
+            Sheet sheet = sheetName == null
+                ? workbook.getSheetAt(0)
+                : workbook.getSheet(sheetName);
 
             DataFormatter formatter = new DataFormatter();
             int totalColumn = sheet.getRow(0).getLastCellNum();

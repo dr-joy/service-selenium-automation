@@ -1,24 +1,12 @@
 package com.drjoy.automation;
 
-import com.drjoy.automation.config.DriverFactory;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
-import com.drjoy.automation.repository.ExcelReaderRepository;
-
-
-import java.util.List;
+import com.drjoy.automation.service.AttendanceService;
+import com.drjoy.automation.utils.AttendanceUtils;
 
 public class Main {
     public static void main(String[] args) {
-
-        try {
-
-            List<ExportTemplateFilterSetting> settings = ExcelReaderRepository.findAllExportFilterSetting();
-
-            settings.forEach(s -> {
-                System.out.println(s.toString());
-            });
-        }finally {
-            DriverFactory.stopDriver();
-        }
+        AttendanceUtils.processPhases(1, 1, setting -> {
+            AttendanceService.addAllCheckingLogs(setting);
+        });
     }
 }

@@ -1,0 +1,131 @@
+package com.drjoy.automation.utils;
+
+import com.drjoy.automation.config.DriverFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+public class WebUI {
+
+    private static final Logger logger = LogManager.getLogger(WebUI.class);
+    public static final int LARGE_TIMEOUT = 60;
+    public static final int NORMAL_TIMEOUT = 30;
+    public static final int SMALL_TIMEOUT = 10;
+
+    public static void clickWithScrollTo(WebElement element) {
+        JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver();
+        js.executeScript("arguments[0].scrollIntoView(true);", element);
+        element.click();
+    }
+
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public static void mouseOver(WebElement target) {
+        WebDriver driver = DriverFactory.getDriver();
+
+        Actions actions = new Actions(driver);
+        actions.moveToElement(target).perform();
+    }
+
+    /**
+     * Tạo mới 1 WebElement bởi xpath
+     * @param xpath {@link String}
+     */
+    public static WebElement findWebElement(String xpath) {
+        WebDriver driver = DriverFactory.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, NORMAL_TIMEOUT);
+
+        return wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(xpath)));
+    }
+
+    public static List<WebElement>  findWebElements(String xpath) {
+        WebDriver driver = DriverFactory.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, NORMAL_TIMEOUT);
+
+        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(xpath)));
+    }
+
+    /**
+     * Chờ phần tử hiển thị rồi click
+     * Timeout = 60s
+     * @param by {@link By}
+     */
+    public static void click(By by) {
+        WebElement element = waitForElementPresent(by, LARGE_TIMEOUT);
+        if (element != null) element.click();
+    }
+
+    public static void scrollToElementCenter(WebElement e) {
+        JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver();
+        js.executeScript(
+            "arguments[0].scrollIntoView({block: 'center', inline: 'center', behavior: 'instant'});",
+            e
+        );
+    }
+
+
+        /**
+         * Đợi đến khi một phần tử có thể nhấn được trong khoảng thời gian chỉ định.
+         *
+         * @param by      Định danh phần tử (By.xpath, By.id,...)
+         * @param timeout thời gian timeout (seconds)
+         * @return WebElement nếu có thể nhấn được, ngược lại null
+         */
+    public static WebElement waitForElementClickable(By by, int timeout) {
+        try {
+            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), timeout);
+            return wait.until(ExpectedConditions.elementToBeClickable(by));
+        } catch (Exception e) {
+            logger.error("Element {} not clickable within {}s: {}", by, timeout, e);
+            return null;
+        }
+    }
+
+    public static WebElement waitForElementClickable(By by) {
+        return waitForElementClickable(by, LARGE_TIMEOUT);
+    }
+
+    /**
+     * Đợi đến khi một phần tử xuất hiện trong DOM (present), không nhất thiết là visible.
+     *
+     * @param by      Định danh phần tử (By.xpath, By.id,...)
+     * @param timeout thời gian timeout (seconds)
+     * @return WebElement nếu có mặt, ngược lại null
+     */
+    public static WebElement waitForElementPresent(By by, int timeout) {
+        try {
+            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), timeout);
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            logger.error("Element {} not present within {}s: {}", by, timeout, e);
+            return null;
+        }
+    }
+
+    public static boolean waitForElementNotPresent(By by, int timeout) {
+        try {
+            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), timeout);
+            return wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
+        } catch (Exception e) {
+            logger.error("Element {} not present within {}s: {}", by, timeout, e);
+            return false;
+        }
+    }
+}

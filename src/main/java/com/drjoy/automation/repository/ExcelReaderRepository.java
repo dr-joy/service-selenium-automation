@@ -1,10 +1,13 @@
 package com.drjoy.automation.repository;
 
 import com.drjoy.automation.config.Configuration;
+import com.drjoy.automation.model.CheckingLog;
 import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.Request;
 import com.drjoy.automation.utils.ExcelUtils;
 import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExcelReaderRepository {
@@ -39,4 +42,45 @@ public class ExcelReaderRepository {
         return result;
     }
 
+    public static List<CheckingLog> findAllCheckingLog() {
+        List<String[]> data = ExcelUtils.readDataFromFilePath(String.format("%s/CheckingLog.xlsx", Configuration.getDataBasePath()));
+        List<CheckingLog> result = Lists.newArrayList();
+
+        for (String[] row : data) {
+            CheckingLog setting = new CheckingLog();
+            setting.setPhase(row[0]);
+            setting.setDateIndex(row[1]);
+            setting.setLogTime(row[2]);
+            setting.setReason(row[3]);
+
+            result.add(setting);
+        }
+
+        return result;
+    }
+
+    public static List<Request> findAllRequest(String sheet) {
+        List<String[]> data = ExcelUtils.readDataFromFilePath(String.format("%s/Request.xlsx", Configuration.getDataBasePath()), sheet);
+        List<Request> result = new ArrayList<>();
+
+        for (String[] row : data) {
+            Request setting = new Request();
+            setting.setPhase(row[0]);
+            setting.setDateIndex(row[1]);
+            setting.setStartTime(row[2]);
+            setting.setEndTime(row[3]);
+            setting.setTargetDate(row[4]);
+            setting.setReasonCategory(row[5]);
+            setting.setReasonType(row[6]);
+            setting.setReasonName(row[7]);
+            setting.setRequestTimeUnit(row[8]);
+            setting.setPeriodType(row[9]);
+            setting.setHolidayWorkDate(row[10]);
+            setting.setVacationTakenDate(row[11]);
+
+            result.add(setting);
+        }
+
+        return result;
+    }
 }
