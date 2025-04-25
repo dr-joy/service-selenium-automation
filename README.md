@@ -6,3 +6,8 @@ Các bước migrate
 3. Các hàm cần migrate code:
    Tất cả hàm có trong AttendancePayrollKeywords
    *Note: Có thể sử dụng chat GPT để tăng tốc độ code
+
+Environment variable
+env=jackfruit;
+browser=chrome;
+headless=false;
