@@ -4,6 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class DateUtils {
     public static String[] splitMonthYear(String monthYear) {
         if (monthYear != null && monthYear.length() == 6) {
@@ -34,4 +37,14 @@ public class DateUtils {
         btnDate.click();
     }
 
+    public static String convertToYYYYMM(String input) {
+        Pattern pattern = Pattern.compile("(\\d{4})年(\\d{1,2})月");
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            String year = matcher.group(1);
+            String month = String.format("%02d", Integer.parseInt(matcher.group(2)));
+            return year + month;
+        }
+        return "";
+    }
 }
