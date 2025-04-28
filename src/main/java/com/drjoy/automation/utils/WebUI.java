@@ -80,6 +80,11 @@ public class WebUI {
         actions.moveByOffset(-x, -y).perform();
     }
 
+    public static void clickByJS(WebElement element) {
+        JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver();
+        js.executeScript("arguments[0].click();", element);
+    }
+
     /**
      * Cuộn đến phần tử và click vào phần tử đó.
      *
@@ -98,6 +103,11 @@ public class WebUI {
             "arguments[0].scrollIntoView({block: 'center', inline: 'center', behavior: 'instant'});",
             e
         );
+    }
+
+    public static void scrollToTop() {
+        JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver();
+        js.executeScript("window.scrollTo(0, 0);");
     }
 
     public static void mouseOver(WebElement target) {

@@ -62,15 +62,13 @@ public class AttendanceUtils {
         logger.info("Start navigate to page {}", pageName);
 
         WebUI.sleep(2000);
+        waitForLoadingElement();
         WebDriver driver = DriverFactory.getDriver();
         String curURL = driver.getCurrentUrl();
         String targetURL = String.format("%sat/%s", Configuration.getBaseUrl(), pageName);
 
         if (!targetURL.equals(curURL)) {
-            if (!curURL.contains("/at/")) {
-                driver.navigate().to(targetURL);
-                WebUI.sleep(1000);
-            } else {
+            if (curURL.contains("/at/")) {
                 WebUI.sleep(1000);
                 String accessBtnXpath = String.format(
                     "//app-at0001//ul[@role='tablist']/li[%d]", Screen.valueOf(pageName.toUpperCase()).indexInNavBar
@@ -81,6 +79,19 @@ public class AttendanceUtils {
 
                 WebElement targetPage = WebUI.findWebElementIfVisible(By.xpath(Screen.valueOf(pageName.toUpperCase()).xpathToScreen));
                 targetPage.click();
+            } else if (curURL.contains("/me/me0090")) {
+                String accessAtFuncSideMenu = "//app-side-menu-drjoy//i[@class='fa fa-clock-o']/following-sibling::strong[text()='勤務管理']";
+                By byAccessByXpath = By.xpath(accessAtFuncSideMenu);
+
+                WebElement atFuncSideMenu = WebUI.findWebElementIfVisible(byAccessByXpath);
+                atFuncSideMenu.click();
+
+                String accessAT0001BtnXpath = accessAtFuncSideMenu + "/ancestor::a[@class='nav-link nav-table']/following-sibling::ul/li[1]";
+                By byAccessAt0001Btn = By.xpath(accessAT0001BtnXpath);
+                WebUI.click(byAccessAt0001Btn);
+            } else {
+                driver.navigate().to(targetURL);
+                WebUI.sleep(1000);
             }
         }
 
@@ -101,7 +112,8 @@ public class AttendanceUtils {
 
         if (monthYear != null && !monthYear.equals(currMonthYearText)) {
             // Click nút chọn tháng
-            WebUI.sleep(2000);
+//            WebUI.sleep(2000);
+            waitForLoadingOverlayElement();
             WebElement chooseMonthBtn = WebUI.findWebElementIfVisible(By.xpath("//app-at0001-date-picker//span[text()='月選択']/ancestor::button"));
             WebUI.clickAtCoordinates(800, 400);
             chooseMonthBtn.click();
@@ -125,6 +137,7 @@ public class AttendanceUtils {
         }
 
         // Chọn phòng ban "すべて"
+        waitForLoadingOverlayElement();
         String baseDeptSelectionXpath = "//app-history-department-select";
         WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath)).click();
         WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'search-dept')]/input")).sendKeys("すべて");
@@ -164,6 +177,10 @@ public class AttendanceUtils {
         return "";
     }
 
+    public static void waitForLoadingOverlayElement() {
+        By loadingCircle = By.cssSelector(".loader-overlay");
+        WebUI.waitForElementNotPresent(loadingCircle, WebUI.LARGE_TIMEOUT);
+    }
 
     public static void waitForLoadingElement() {
         By loadingCircle = By.xpath(XpathCommon.APP_LOAD_CIRCLE.value);

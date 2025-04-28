@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
+import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingOverlayElement;
 
 public class AttendanceService {
 
@@ -47,6 +48,8 @@ public class AttendanceService {
 
             // AT0023: Remove checking logs
             removeAllCheckingLogInPage();
+
+            waitForLoadingOverlayElement();
 
             // Quay lại AT0001
             WebElement backButton = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.PAGE_BACK_BTN.value));
@@ -141,19 +144,19 @@ public class AttendanceService {
 
                 if (i >= 1 && i < logsInDay.size()) {
                     WebElement btnAddLog = WebUI.findWebElementIfVisible(By.cssSelector("#checking-log div div button.add-link"));
-                    if (btnAddLog != null) btnAddLog.click();
+                    if (WebUI.waitForElementClickable(By.cssSelector("#checking-log div div button.add-link")) != null) WebUI.clickWithScrollTo(btnAddLog);
                 }
             }
 
             // Submit checking log
-            WebUI.findWebElementIfVisible(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button")).click();
+            WebUI.findWebElementIfPresent(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button")).click();
 
             // Gửi request
             addRequestByDateIndex(dateIndex, setting.getSheetName(), setting.getPhase());
 
             // Quay lại AT0001
             WebElement backBtn = WebUI.findWebElementIfVisible(By.xpath("//a[@class='page-head-backlink']"));
-            if (backBtn != null) backBtn.click();
+            if (backBtn != null) WebUI.clickByJS(backBtn);
 
             // Xử lý confirm popup nếu có
             int retry = 0;
@@ -196,22 +199,20 @@ public class AttendanceService {
             String requestRowXpath = "//app-at0023//div[@class='ot-table-container']/table/tbody/tr";
 
             // Xoá hết các request cũ
-            List<WebElement> allElements = WebUI.findWebElementsIfVisible(By.xpath(requestRowXpath));
+            List<WebElement> allElements = WebUI.findWebElementsIfPresent(By.xpath(requestRowXpath));
             for (int i = 0; i < allElements.size(); i++) {
-                try {
-                    WebElement validBtn = WebUI.findWebElementIfVisible(By.xpath(requestRowXpath + "[1]//button[normalize-space(text())='有効']"));
-                    if (validBtn != null) validBtn.click();
-                } catch (Exception ignored) {}
+                WebElement validBtn = WebUI.waitForElementPresent(By.xpath(requestRowXpath + "[1]//button[normalize-space(text())='有効']"), 1);
+                if (validBtn != null) validBtn.click();
 
-                WebElement deleteBtn = WebUI.findWebElementIfVisible(By.xpath(requestRowXpath + "[1]/td[last()]/button"));
-                deleteBtn.click();
+                WebElement deleteBtn = WebUI.findWebElementIfPresent(By.xpath(requestRowXpath + "[1]/td[last()]/button"));
+                WebUI.clickWithScrollTo(deleteBtn);
                 waitForLoadingElement();
             }
 
             // Tạo mới các request OT/research
             for (int i = 0; i < otRequestInTargetDate.size(); i++) {
                 Request request = otRequestInTargetDate.get(i);
-                String curRowXpath = String.format(requestRowXpath + "[%d]", i + 1);
+                String curRowXpath = String.format("%s[%d]", requestRowXpath, i + 1);
 
                 WebElement btnAddRequest = WebUI.findWebElementIfVisible(By.xpath("//app-at0023//div[@class='ot-table-container']/button"));
                 btnAddRequest.click();
@@ -231,13 +232,13 @@ public class AttendanceService {
                 }
             }
 
-            WebElement btnSubmit = WebUI.findWebElementIfVisible(By.xpath("//*[@id='btn-submit-ot']"));
-            btnSubmit.click();
+            WebElement btnSubmit = WebUI.findWebElementIfPresent(By.xpath("//*[@id='btn-submit-ot']"));
+            WebUI.clickWithScrollTo(btnSubmit);
 
-            WebElement btnConfirm = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value));
+            WebElement btnConfirm = WebUI.findWebElementIfPresent(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value));
             while (btnConfirm != null && btnConfirm.isDisplayed()) {
                 btnConfirm.click();
-                btnConfirm = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value));
+                btnConfirm = WebUI.waitForElementPresent(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value), 1);
             }
         }
     }
@@ -285,6 +286,7 @@ public class AttendanceService {
 
     public static void handleDayoffRequest(Request dayoffRequest) {
         // 申請種類
+        waitForLoadingOverlayElement();
         String applycationTypeXpath = "//app-at0024//div[text()='申請種類']/following-sibling::div//span[normalize-space()='休暇']";
         WebElement appTypeBtn = WebUI.findWebElementIfVisible(By.xpath(applycationTypeXpath));
         appTypeBtn.click();
@@ -359,24 +361,26 @@ public class AttendanceService {
                 break;
         }
 
-        WebElement btnApply = WebUI.findWebElementIfVisible(By.xpath("//app-at0024//button[@id='btn_apply']"));
-        btnApply.click();
+        WebElement btnApply = WebUI.findWebElementIfVisible(By.xpath("//app-at0024//button[text()[normalize-space() = '申請']]"));
+        WebUI.clickWithScrollTo(btnApply);
         waitForLoadingElement();
 
         int counter = 0;
         WebElement btnConfirm = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value));
-        while (btnConfirm.isDisplayed()) {
+        while (btnConfirm != null && btnConfirm.isDisplayed()) {
             if (counter == 5) break;
-
             btnConfirm.click();
+            btnConfirm = WebUI.waitForElementPresent(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value), 2);
             counter++;
         }
     }
 
     public static void handleDayoffWorkingRequest(Request dayoffRequest) {
+        WebUI.scrollToTop();
+
         // 申請種類 - Loại đơn: 休日出勤
         WebElement appTypeBtn = WebUI.findWebElementIfVisible(By.xpath("//app-at0024//div[text()='申請種類']/following-sibling::div//span[normalize-space()='休日出勤']"));
-        appTypeBtn.click();
+        WebUI.clickByJS(appTypeBtn);
 
         waitForLoadingElement();
 

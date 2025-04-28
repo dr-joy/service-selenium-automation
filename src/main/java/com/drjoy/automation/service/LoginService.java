@@ -32,10 +32,10 @@ public class LoginService {
         driver.manage().window().maximize();
 
         if (username != null && password != null) {
-            driver.findElement(By.xpath("//input[@name='login-id']")).sendKeys(username);
-            driver.findElement(By.xpath("//input[@name='password']")).sendKeys(password);
+            WebUI.findWebElementIfVisible(By.xpath("//input[@name='login-id']")).sendKeys(username);
+            WebUI.findWebElementIfPresent(By.xpath("//input[@name='password']")).sendKeys(password);
 
-            driver.findElement(By.xpath("//button[@type='submit']")).click(); // Thay bằng ID thực tế nếu khác
+            WebUI.findWebElementIfPresent(By.xpath("//button[@type='submit']")).click(); // Thay bằng ID thực tế nếu khác
 
             try {
                 WebUI.sleep(5000);
