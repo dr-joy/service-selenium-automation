@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -185,5 +187,21 @@ public class AttendanceUtils {
     public static void waitForLoadingElement() {
         By loadingCircle = By.xpath(XpathCommon.APP_LOAD_CIRCLE.value);
         WebUI.waitForElementNotPresent(loadingCircle, WebUI.LARGE_TIMEOUT);
+    }
+
+    public static void clickAndConfirm(By targetButton, int timeoutSeconds) {
+        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), timeoutSeconds);
+
+        // Wait và click target button
+        wait.until(ExpectedConditions.elementToBeClickable(targetButton));
+        DriverFactory.getDriver().findElement(targetButton).click();
+
+        // Wait và click confirm button
+        By confirmButton = By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value); // cần chỉnh lại xpath cho đúng với 'button_confirm' thực tế
+        wait.until(ExpectedConditions.elementToBeClickable(confirmButton));
+        DriverFactory.getDriver().findElement(confirmButton).click();
+
+        // Wait for loading element disappear (hoặc attribute = false)
+        waitForLoadingElement();
     }
 }

@@ -4,6 +4,7 @@ import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.model.CheckingLog;
 import com.drjoy.automation.model.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.Request;
+import com.drjoy.automation.model.WorkSchedule;
 import com.drjoy.automation.utils.ExcelUtils;
 import com.google.common.collect.Lists;
 
@@ -77,6 +78,28 @@ public class ExcelReaderRepository {
             setting.setPeriodType(row[9]);
             setting.setHolidayWorkDate(row[10]);
             setting.setVacationTakenDate(row[11]);
+
+            result.add(setting);
+        }
+
+        return result;
+    }
+
+    public static List<WorkSchedule> findAllWorkSchedule(String sheet) {
+        List<String[]> data = ExcelUtils.readDataFromFilePath(String.format("%s/WorkSchedule.xlsx", Configuration.getDataBasePath()), sheet);
+        List<WorkSchedule> result = new ArrayList<>();
+
+        for (String[] row : data) {
+            WorkSchedule setting = new WorkSchedule();
+            setting.setPhase(row[0]);
+            setting.setDayIndex(row[1]);
+            setting.setPresetName(row[2]);
+            setting.setDayType(row[3]);
+            setting.setWorkingTimeType(row[4]);
+            setting.setStartTime(row[5]);
+            setting.setEndTime(row[6]);
+            setting.setStartBreakTime(row[7]);
+            setting.setEndBreakTime(row[8]);
 
             result.add(setting);
         }
