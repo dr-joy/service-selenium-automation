@@ -52,8 +52,8 @@ public class LoginService {
     }
 
     public static void logout() {
-        WebUI.findWebElement("//a[@id='header-btn-settings-panel' and @title='設定']").click();
+        WebUI.findWebElementIfVisible(By.xpath("//a[@id='header-btn-settings-panel' and @title='設定']")).click();
 
-        WebUI.findWebElement("//a[@class='nav-link fs13 cursor-pointer' and text()='ログアウト']").click();
+        WebUI.findWebElementIfVisible(By.xpath("//a[@class='nav-link fs13 cursor-pointer' and text()='ログアウト']")).click();
     }
 }

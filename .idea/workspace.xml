@@ -5,21 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5165171-9e87-40a0-a94d-4b6050806792" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/CheckingLog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/Request.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/DateUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/at/Screen.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/common/XpathCommon.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/log4j.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/caches/resolution.properties" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/caches/resolution.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/repository/ExcelReaderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/repository/ExcelReaderRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/ExcelUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/ExcelUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebElementUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/DateUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/DateUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/common/XpathCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/common/XpathCommon.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

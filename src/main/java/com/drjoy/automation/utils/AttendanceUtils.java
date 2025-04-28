@@ -75,11 +75,11 @@ public class AttendanceUtils {
                 String accessBtnXpath = String.format(
                     "//app-at0001//ul[@role='tablist']/li[%d]", Screen.valueOf(pageName.toUpperCase()).indexInNavBar
                 );
-                WebElement accessBtn = WebUI.findWebElement(accessBtnXpath);
+                WebElement accessBtn = WebUI.findWebElementIfVisible(By.xpath(accessBtnXpath));
                 WebUI.clickWithScrollTo(accessBtn);
                 WebUI.mouseOver(accessBtn);
 
-                WebElement targetPage = WebUI.findWebElement(Screen.valueOf(pageName.toUpperCase()).xpathToScreen);
+                WebElement targetPage = WebUI.findWebElementIfVisible(By.xpath(Screen.valueOf(pageName.toUpperCase()).xpathToScreen));
                 targetPage.click();
             }
         }
@@ -96,54 +96,55 @@ public class AttendanceUtils {
 
         // Kiểm tra current month-year
         WebUI.sleep(1000);
-        WebElement monthYearElement = WebUI.findWebElement("//*[@id='tab-content1']/app-at0001-summary//div[contains(@class, 'header-block-option')]//h2");
+        WebElement monthYearElement = WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content1']/app-at0001-summary//div[contains(@class, 'header-block-option')]//h2"));
         String currMonthYearText = convertMonthYearToAT0001TitleFormat(monthYearElement.getText());
 
         if (monthYear != null && !monthYear.equals(currMonthYearText)) {
             // Click nút chọn tháng
-            WebUI.sleep(20000);
-            WebElement chooseMonthBtn = WebUI.findWebElement("//app-at0001-date-picker//span[text()='月選択']/ancestor::button");
+            WebUI.sleep(2000);
+            WebElement chooseMonthBtn = WebUI.findWebElementIfVisible(By.xpath("//app-at0001-date-picker//span[text()='月選択']/ancestor::button"));
+            WebUI.clickAtCoordinates(800, 400);
             chooseMonthBtn.click();
 
             String baseDatePickerXpath = "//app-at0001-date-picker//div[contains(@class, 'date-picker')]";
             String textYearCenterXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-center')]//span";
 
-            WebElement yearElement = WebUI.findWebElement(textYearCenterXpath);
+            WebElement yearElement = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath));
             String currYear = yearElement.getText();
 
             // Di chuyển đến năm mục tiêu
             while (Integer.parseInt(targetYear) < Integer.parseInt(currYear)) {
                 String backYearBtnXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-left')]//i";
-                WebUI.findWebElement(backYearBtnXpath).click();
-                currYear = WebUI.findWebElement(textYearCenterXpath).getText();
+                WebUI.findWebElementIfVisible(By.xpath(backYearBtnXpath)).click();
+                currYear = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath)).getText();
             }
 
             // Chọn tháng
             String targetMonthXpath = baseDatePickerXpath + "//div[contains(@class, 'month text-center')]//button[" + targetMonth + "]";
-            WebUI.findWebElement(targetMonthXpath).click();
+            WebUI.findWebElementIfVisible(By.xpath(targetMonthXpath)).click();
         }
 
         // Chọn phòng ban "すべて"
         String baseDeptSelectionXpath = "//app-history-department-select";
-        WebUI.findWebElement(baseDeptSelectionXpath).click();
-        WebUI.findWebElement(baseDeptSelectionXpath + "//div[contains(@class, 'search-dept')]/input").sendKeys("すべて");
-        WebUI.findWebElement(baseDeptSelectionXpath + "//div[contains(@class, 'department-content')]//span[text()='すべて']").click();
+        WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath)).click();
+        WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'search-dept')]/input")).sendKeys("すべて");
+        WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'department-content')]//span[text()='すべて']")).click();
         waitForLoadingElement();
 
         // Chọn user mục tiêu
         String baseUserSelectionXpath = "//app-at0001-summary//div[contains(@class, 'hoz-user pl-2')]";
-        WebUI.findWebElement(baseUserSelectionXpath).click();
+        WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath)).click();
 
-        WebUI.findWebElement(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//input")
+        WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//input"))
             .sendKeys(targetUser);
 
-        WebUI.findWebElement(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//button")
+        WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//button"))
             .click();
 
         String targetUserBtnXpath = baseUserSelectionXpath +
             "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'popup-content fs14')]//span[normalize-space(text())='" + targetUser + "']";
 
-        List<WebElement> userBtns = WebUI.findWebElements(targetUserBtnXpath);
+        List<WebElement> userBtns = WebUI.findWebElementsIfVisible(By.xpath(targetUserBtnXpath));
         if (!userBtns.isEmpty()) {
             userBtns.get(0).click();
         }
