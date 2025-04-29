@@ -8,7 +8,7 @@ public enum Screen {
     AT0029("//app-at0001//ul[@role='tablist']/li[4]//div/div[normalize-space(text())='データダウンロード']", 4),
     AT0030("at0030", 5),
     AT0031("at0031", 5),
-    AT0033("at0033", 5),
+    AT0033("//app-at0001//ul[@role='tablist']/li[last()]//div//i[contains(@class, 'fa-calendar-plus-o')]/ancestor::div[contains(@class, 'dropdown-item')]", 5),
     AT0045("at0045", 5),
     AT0046("at0046", 5),
     AT0055("at0055", 1),

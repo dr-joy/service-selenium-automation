@@ -18,7 +18,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -452,7 +451,8 @@ public class AttendanceService {
 
         waitForLoadingElement();
         for (Map.Entry<String, List<WorkSchedule>> entry : mapGroupingByPhase.entrySet()) {
-            WebElement inputElementAT0033SearchName = DriverFactory.getDriver().findElement(By.xpath("//app-at0033//input[@placeholder=\"ユーザー名を検索\"]"));
+            WebUI.clickAtCoordinates(0,0);
+            WebElement inputElementAT0033SearchName = WebUI.findWebElementIfVisible(By.xpath("//app-at0033//input[@placeholder=\"ユーザー名を検索\"]"));
             inputElementAT0033SearchName.clear();
             inputElementAT0033SearchName.sendKeys(setting.getTargetUser());
 
@@ -510,7 +510,7 @@ public class AttendanceService {
                 WebUI.findWebElementIfVisible(By.xpath("//button[normalize-space(text())='保存' and not(@disabled)]")).click();
                 WebUI.findWebElementIfVisible(By.xpath("//button[@id=\"positiveButton\" and normalize-space(text())='はい']")).click();
 
-                while (WebUI.findWebElementIfVisible(By.xpath("//button[@id='positiveButton']")) != null) {
+                while (WebUI.waitForElementPresent(By.xpath("//button[@id='positiveButton']"), 1) != null) {
                     WebUI.findWebElementIfVisible(By.xpath("//button[@id='positiveButton']")).click();
                     waitForLoadingElement();
                 }
@@ -527,14 +527,18 @@ public class AttendanceService {
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='残業・研鑽申請一覧']")).click();
 
         String btnMemberFilterXpath = "//*[@id='tab-content4']//app-at0022//app-destination-member-filter";
-        WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
-
         WebElement inputElementMemberFilter = DriverFactory.getDriver().findElement(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
-        inputElementMemberFilter.clear();
-        inputElementMemberFilter.sendKeys(setting.getTargetUser());
 
-        WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
-        WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+        String filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
+        if (!filterUserNameText.contains(setting.getTargetUser())) {
+            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
+
+            inputElementMemberFilter.clear();
+            inputElementMemberFilter.sendKeys(setting.getTargetUser());
+
+            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
+            WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+        }
 
         String xpathSearchApplicationType = "//*[@id='tab-content4']//app-at0022//p[normalize-space(text())='申請種類を選択']/following-sibling::select";
         WebElement dropdownElementSearchApplicationType = DriverFactory.getDriver().findElement(By.xpath(xpathSearchApplicationType));
@@ -565,15 +569,24 @@ public class AttendanceService {
         // Check DayOff Request
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='各種申請一覧']")).click();
 
-        WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
+         filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
+        if (filterUserNameText.contains(setting.getTargetUser())) {
+            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
 
-        inputElementMemberFilter.clear();
-        inputElementMemberFilter.sendKeys(setting.getTargetUser());
+            inputElementMemberFilter = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
+            inputElementMemberFilter.clear();
+            inputElementMemberFilter.sendKeys(setting.getTargetUser());
 
-        WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
-        WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
+            WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+        }
 
+        dropdownElementSearchApplicationType = DriverFactory.getDriver().findElement(By.xpath(xpathSearchApplicationType));
+        dropdownSearchApplicationType = new Select(dropdownElementSearchApplicationType);
         dropdownSearchApplicationType.selectByVisibleText("すべて");
+
+        dropdownElementSearchStatusButton = DriverFactory.getDriver().findElement(By.xpath(xpathSearchStatusButton));
+        dropdownSearchStatusButton  = new Select(dropdownElementSearchStatusButton );
         dropdownSearchStatusButton.selectByValue("RS_NEW");
 
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 3) != null) {
@@ -599,14 +612,17 @@ public class AttendanceService {
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='残業・研鑽申請一覧']")).click();
 
         String btnMemberFilterXpath = "//*[@id='tab-content4']//app-at0022//app-destination-member-filter";
-        WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
+        WebElement inputElementMemberFilter = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
 
-        WebElement inputElementMemberFilter = DriverFactory.getDriver().findElement(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
-        inputElementMemberFilter.clear();
-        inputElementMemberFilter.sendKeys(setting.getTargetUser());
+        String filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
+        if (!filterUserNameText.contains(setting.getTargetUser())) {
+            inputElementMemberFilter.clear();
+            inputElementMemberFilter.sendKeys(setting.getTargetUser());
 
-        WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
-        WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
+            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
+            WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+        }
 
         String xpathSearchApplicationType = "//*[@id='tab-content4']//app-at0022//p[normalize-space(text())='申請種類を選択']/following-sibling::select";
         WebElement dropdownElementSearchApplicationType = DriverFactory.getDriver().findElement(By.xpath(xpathSearchApplicationType));
@@ -643,13 +659,19 @@ public class AttendanceService {
         // Handle DayOff request
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='各種申請一覧']")).click();
 
+        dropdownElementSearchApplicationType = DriverFactory.getDriver().findElement(By.xpath(xpathSearchApplicationType));
+        dropdownSearchApplicationType = new Select(dropdownElementSearchApplicationType);
         dropdownSearchApplicationType.selectByVisibleText("すべて");
         dropdownSearchStatusButton.selectByValue("RS_ACCEPTED");
 
-        WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
+        filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
+        if (filterUserNameText.contains(setting.getTargetUser())) {
+            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
 
-        inputElementMemberFilter.clear();
-        inputElementMemberFilter.sendKeys(setting.getTargetUser());
+            inputElementMemberFilter = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
+            inputElementMemberFilter.clear();
+            inputElementMemberFilter.sendKeys(setting.getTargetUser());
+        }
 
         WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
         WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
@@ -857,25 +879,36 @@ public class AttendanceService {
                     String st = startTimesArr[i];
                     String et = endTimesArr[i];
 
-                    if (i > 0) {
-                        String ancestorPath = dayType.equals("WORKING")
+                    By deleteButtonLocator = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//i[contains(@class, 'fa fa-times')]/ancestor::button");
+                    List<WebElement> deleteButtons = DriverFactory.getDriver().findElements(deleteButtonLocator);
+                    if (!deleteButtons.isEmpty()) {
+                        WebElement firstDeleteBtn = deleteButtons.get(0);
+
+                        WebUI.scrollToElementCenter(firstDeleteBtn);
+                        firstDeleteBtn.click();
+                    }
+
+                    if (i > 0 || deleteButtons.size() == 1) {
+                        String ancestorPath = "WORKING".equals(dayType)
                                 ? "/ancestor::td/div/div[1]//div[contains(@class, 'tbl-select-time')]/button"
                                 : "/ancestor::td/div/div[contains(@class, 'working-time-controls-not-working')]/button";
 
                         By addButtonLocator = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//i[contains(@class, 'fa-plus-square')]" + ancestorPath);
-                        DriverFactory.getDriver().findElement(addButtonLocator).click();
+                        WebUI.findWebElementIfPresent(addButtonLocator).click();
                     }
 
-                    WebElement startTimeInput = DriverFactory.getDriver().findElement(By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//div[@ng-reflect-name='" + i + "']//input[1]"));
+                    WebElement startTimeInput = WebUI.findWebElementIfPresent(By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//div[@ng-reflect-name='" + i + "']//input[1]"));
+                    WebUI.scrollToElementCenter(startTimeInput);
                     startTimeInput.click();
+
                     String formattedSTime = st.substring(0, 2) + ":" + st.substring(2);
-                    WebElement stTimeOption = DriverFactory.getDriver().findElement(By.xpath("//app-at0035b-time-picker//ul//li[@data-value='" + formattedSTime + "']"));
+                    WebElement stTimeOption = WebUI.findWebElementIfPresent(By.xpath("//app-at0035b-time-picker//ul//li[@data-value='" + formattedSTime + "']"));
                     stTimeOption.click();
 
-                    WebElement endTimeInput = DriverFactory.getDriver().findElement(By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//div[@ng-reflect-name='" + i + "']//input[2]"));
+                    WebElement endTimeInput = WebUI.findWebElementIfPresent(By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//div[@ng-reflect-name='" + i + "']//input[2]"));
                     endTimeInput.click();
                     String formattedETime = et.substring(0, 2) + ":" + et.substring(2);
-                    WebElement etTimeOption = DriverFactory.getDriver().findElement(By.xpath("//app-at0035b-time-picker//ul//li[@data-value='" + formattedETime + "']"));
+                    WebElement etTimeOption = WebUI.findWebElementIfPresent(By.xpath("//app-at0035b-time-picker//ul//li[@data-value='" + formattedETime + "']"));
                     etTimeOption.click();
                 }
             } else {
@@ -923,7 +956,7 @@ public class AttendanceService {
                         }
 
                         By addBreakLocator = By.xpath(baseXpath + "[" + dateIndex + "]/td[6]//i[contains(@class, 'fa-plus-square')]" + ancestorPath);
-                        DriverFactory.getDriver().findElement(addBreakLocator).click();
+                        WebUI.findWebElementIfPresent(addBreakLocator).click();
                     }
 
                     WebElement startBreakInput = DriverFactory.getDriver().findElement(startBreakInputLocator);

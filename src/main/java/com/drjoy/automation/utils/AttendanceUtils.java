@@ -16,48 +16,12 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AttendanceUtils {
     private static final Logger logger = LogManager.getLogger(AttendanceUtils.class);
     private AttendanceUtils() {}
-
-    public static void processPhases(int start, int total, Consumer<ExportTemplateFilterSetting> testLogic) {
-        List<ExportTemplateFilterSetting> settings = ExcelReaderRepository.findAllExportFilterSetting();
-        String previousUsername = "";
-
-        for (int phaseNumber = start; phaseNumber <= total; phaseNumber++) {
-            if (phaseNumber - 1 < settings.size()) {
-                ExportTemplateFilterSetting rowData = settings.get(phaseNumber - 1);
-
-                String username = rowData.getUserName();
-                String password = rowData.getPassword();
-
-                // In ra thông tin đăng nhập cho phase
-                System.out.println("Processing phase: " + rowData);
-
-                // Thực hiện đăng nhập nếu user khác với phase trước
-                if (!username.equals(previousUsername) && !username.isEmpty() && !password.isEmpty()) {
-                    LoginService.login(username, password);
-                    previousUsername = username;
-                }
-
-                // Gọi logic kiểm thử
-                testLogic.accept(rowData);
-
-                // Thực hiện đăng xuất nếu user của phase tiếp theo khác
-                if (phaseNumber < total) {
-                    ExportTemplateFilterSetting nextPhase = settings.get(phaseNumber);
-                    if (!username.equals(nextPhase.getUserName())) {
-                        LoginService.logout();
-                        previousUsername = "";
-                    }
-                }
-            }
-        }
-    }
 
     public static void navigateToATPage(String pageName) {
         AttendanceUtils.waitForLoadingElement();
@@ -76,8 +40,8 @@ public class AttendanceUtils {
                     "//app-at0001//ul[@role='tablist']/li[%d]", Screen.valueOf(pageName.toUpperCase()).indexInNavBar
                 );
                 WebElement accessBtn = WebUI.findWebElementIfVisible(By.xpath(accessBtnXpath));
-                WebUI.clickWithScrollTo(accessBtn);
                 WebUI.mouseOver(accessBtn);
+                WebUI.sleep(500);
 
                 WebElement targetPage = WebUI.findWebElementIfVisible(By.xpath(Screen.valueOf(pageName.toUpperCase()).xpathToScreen));
                 targetPage.click();
@@ -91,6 +55,19 @@ public class AttendanceUtils {
                 String accessAT0001BtnXpath = accessAtFuncSideMenu + "/ancestor::a[@class='nav-link nav-table']/following-sibling::ul/li[1]";
                 By byAccessAt0001Btn = By.xpath(accessAT0001BtnXpath);
                 WebUI.click(byAccessAt0001Btn);
+                waitForLoadingElement();
+
+                if (!pageName.equals("at0001")) {
+                    WebUI.sleep(500);
+                    String accessBtnXpath = String.format(
+                        "//app-at0001//ul[@role='tablist']/li[%d]", Screen.valueOf(pageName.toUpperCase()).indexInNavBar
+                    );
+                    WebElement accessBtn = WebUI.findWebElementIfVisible(By.xpath(accessBtnXpath));
+                    WebUI.mouseOver(accessBtn, 2000);
+
+                    WebElement targetPage = WebUI.findWebElementIfVisible(By.xpath(Screen.valueOf(pageName.toUpperCase()).xpathToScreen));
+                    WebUI.clickByJS(targetPage);
+                }
             } else {
                 driver.navigate().to(targetURL);
                 WebUI.sleep(1000);

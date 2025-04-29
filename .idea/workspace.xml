@@ -5,15 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5165171-9e87-40a0-a94d-4b6050806792" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/SeleniumAutomationApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/constants/Action.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/SeleniumAutomationController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/request/SeleniumAutomationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/Execution.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/Step.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/phase/PhaseProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/phase/PhaseSetting.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/steps/AddCheckingLogs.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/SeleniumAutomationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Example/Setting.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/data/Example/Setting.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/caches/resolution.properties" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/caches/resolution.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/config/DriverFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/config/DriverFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/SeleniumAutomationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/SeleniumAutomationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/request/SeleniumAutomationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/request/SeleniumAutomationRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/ExportTemplateFilterSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/ExportTemplateFilterSetting.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/Setting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/Setting.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/at/Screen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/at/Screen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/log4j.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/log4j.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +34,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -42,7 +54,6 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
-    <option name="flattenPackages" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
@@ -50,7 +61,7 @@
   "keyToString": {
     "Application.DemoApplication.executor": "Run",
     "Application.Main.executor": "Run",
-    "Application.SeleniumAutomationApplication.executor": "Run",
+    "Application.SeleniumAutomationApplication.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -58,7 +69,7 @@
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/chung.nguyen/Downloads/demo/demo",
-    "project.structure.last.edited": "Problems",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2"
   }
@@ -95,7 +106,7 @@
         <env name="headless" value="false" />
       </envs>
       <option name="MAIN_CLASS_NAME" value="com.drjoy.automation.SeleniumAutomationApplication" />
-      <module name="drjoy-automation" />
+      <module name="drjoy.automation" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.drjoy.automation.constants.*" />
@@ -132,19 +143,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/SeleniumAutomationController.java</url>
-          <line>16</line>
-          <option name="timeStamp" value="4" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java</url>
+          <line>526</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java</url>
-          <line>42</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java</url>
-          <line>29</line>
-          <option name="timeStamp" value="6" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java</url>
+          <line>613</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

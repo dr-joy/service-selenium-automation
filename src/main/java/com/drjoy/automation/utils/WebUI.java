@@ -11,6 +11,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class WebUI {
@@ -111,10 +112,14 @@ public class WebUI {
     }
 
     public static void mouseOver(WebElement target) {
+        mouseOver(target, 500);
+    }
+
+    public static void mouseOver(WebElement target, int delay) {
         WebDriver driver = DriverFactory.getDriver();
 
         Actions actions = new Actions(driver);
-        actions.moveToElement(target).perform();
+        actions.moveToElement(target).pause(Duration.ofMillis(delay)).perform();
     }
 
     /**

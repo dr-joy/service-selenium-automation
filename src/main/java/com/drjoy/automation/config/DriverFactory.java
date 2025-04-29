@@ -9,13 +9,30 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class DriverFactory {
     private static final String CACHE_PATH = "drivers/caches";
 
-    @Getter
     private static WebDriver driver;
-    static {
+
+    private DriverFactory() {}
+
+    public static synchronized WebDriver getDriver() {
+        if (driver == null || isDriverInvalid(driver)) {
+            createNewDriver();
+        }
+        return driver;
+    }
+
+    public static void stopDriver() {
+        if (driver != null) {
+            driver.quit();
+            driver = null; // rất quan trọng
+        }
+    }
+
+    private static void createNewDriver() {
         String browser = Configuration.getBrowser();
         boolean headless = Configuration.isHeadless();
 
@@ -45,9 +62,11 @@ public class DriverFactory {
         driver.manage().window().maximize();
     }
 
-    private DriverFactory() {}
-
-    public static void stopDriver() {
-        driver.quit();
+    private static boolean isDriverInvalid(WebDriver driver) {
+        try {
+            return ((RemoteWebDriver) driver).getSessionId() == null;
+        } catch (Exception e) {
+            return true;
+        }
     }
 }

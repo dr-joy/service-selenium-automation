@@ -1,11 +1,15 @@
 package com.drjoy.automation.model;
 
+import com.drjoy.automation.execution.phase.PhaseSetting;
 import lombok.Data;
-
-import java.util.Date;
 
 @Data
 public class ExportTemplateFilterSetting extends Setting {
+    private String targetUserDepartment;
+    private String targetUserJobType;
+    private String targetUserWorkForm;
+    private String targetUserWorkPattern;
+
     // Use for export template DAY
     private String startDate;
     private String endDate;

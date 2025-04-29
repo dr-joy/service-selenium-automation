@@ -55,5 +55,7 @@ public class LoginService {
         WebUI.findWebElementIfVisible(By.xpath("//a[@id='header-btn-settings-panel' and @title='設定']")).click();
 
         WebUI.findWebElementIfVisible(By.xpath("//a[@class='nav-link fs13 cursor-pointer' and text()='ログアウト']")).click();
+
+        DriverFactory.stopDriver();
     }
 }

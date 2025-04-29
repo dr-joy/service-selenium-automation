@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class SeleniumAutomationRequest {
+    private int phaseStart;
+    private int phaseEnd;
+
     private boolean removeAllCheckingLog;
     private boolean addAllWorkingTimeType;
     private boolean addAllPreset;
