@@ -5,15 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5165171-9e87-40a0-a94d-4b6050806792" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/SeleniumAutomationApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/constants/Action.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/SeleniumAutomationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/request/SeleniumAutomationRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/caches/resolution.properties" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/caches/resolution.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/DateUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/DateUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/common/XpathCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/xpath/common/XpathCommon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +23,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -38,21 +38,28 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2w7Yd6eF22VxctBfIHYnTszaZMl" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
+    <option name="flattenPackages" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.DemoApplication.executor": "Run",
     "Application.Main.executor": "Run",
+    "Application.SeleniumAutomationApplication.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "com.google.cloudcode.ide_session_index": "20250429_0002",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/JavaProjects/incubator",
-    "project.structure.last.edited": "Global Libraries",
-    "project.structure.proportion": "0.0",
+    "last_opened_file_path": "C:/Users/chung.nguyen/Downloads/demo/demo",
+    "project.structure.last.edited": "Problems",
+    "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2"
   }
 }]]></component>
@@ -60,18 +67,21 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Project\DRJ Automation\data" />
     </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.drjoy.automation" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.SeleniumAutomationApplication">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <envs>
         <env name="env" value="jackfruit" />
         <env name="headless" value="false" />
       </envs>
       <option name="MAIN_CLASS_NAME" value="com.drjoy.automation.Main" />
-      <module name="drjoy.automation" />
+      <module name="drjoy-automation" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.drjoy.automation.*" />
+          <option name="PATTERN" value="com.drjoy.automation.constants.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -79,8 +89,30 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SeleniumAutomationApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <envs>
+        <env name="env" value="jackfruit" />
+        <env name="headless" value="false" />
+      </envs>
+      <option name="MAIN_CLASS_NAME" value="com.drjoy.automation.SeleniumAutomationApplication" />
+      <module name="drjoy-automation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.drjoy.automation.constants.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Main" />
+      <item itemvalue="Application.SeleniumAutomationApplication" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.SeleniumAutomationApplication" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
@@ -95,6 +127,27 @@
       <updated>1745394166331</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/SeleniumAutomationController.java</url>
+          <line>16</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/LoginService.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/DRJ_Automation$Main.ic" NAME="Main Coverage Results" MODIFIED="1745482016373" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
