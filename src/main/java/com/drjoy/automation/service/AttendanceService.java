@@ -19,7 +19,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
 import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingOverlayElement;
 
+@Service
 public class AttendanceService {
 
     @ExecutionStep(value = "removeCheckingLog")
@@ -658,7 +661,7 @@ public class AttendanceService {
 
                 WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value)).click();
 
-                WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), 5);
+                WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5));
                 WebElement loader = DriverFactory.getDriver().findElement(By.xpath("//app-loader-empty")); // cần đúng xpath tương ứng với 'app-loader-empty'
                 wait.until(ExpectedConditions.attributeToBe(loader, "ng-reflect-is-show-loading", "false"));
             }
@@ -699,7 +702,7 @@ public class AttendanceService {
                 
                 WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value)).click();
 
-                WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), 5);
+                WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5));
                 WebElement loader = DriverFactory.getDriver().findElement(By.xpath("//app-loader-empty")); // cần đúng xpath tương ứng với 'app-loader-empty'
                 wait.until(ExpectedConditions.attributeToBe(loader, "ng-reflect-is-show-loading", "false"));
             }
@@ -712,7 +715,7 @@ public class AttendanceService {
     }
 
     public static void handleDiscretionarySchedule(List<WorkSchedule> workScheduleList, List<WebElement> dateElements, String baseXpath) {
-        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), 5);
+        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5));
 
         for (int j = 0; j < workScheduleList.size(); j++) {
             String dateIndexStr = workScheduleList.get(j).getDayIndex();
@@ -823,7 +826,7 @@ public class AttendanceService {
             List<WebElement> dateElements,
             String baseXpath
     ) {
-        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), 5);
+        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5));
 
         for (int j = 0; j < workScheduleList.size(); j++) {
             String dateIndex = workScheduleList.get(j).getDayIndex();

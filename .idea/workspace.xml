@@ -5,25 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5165171-9e87-40a0-a94d-4b6050806792" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/config/AsyncConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/response/ATTaskResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/ExecutionContext.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/ExecutionStep.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/StaticExecutionRunner.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/logging/TaskLoggerManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/caches/resolution.properties" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/caches/resolution.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/SeleniumAutomationApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/SeleniumAutomationApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/SeleniumAutomationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/SeleniumAutomationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/request/SeleniumAutomationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/controller/request/ATTaskRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/Step.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/phase/PhaseProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/phase/PhaseProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/steps/AddCheckingLogs.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/ExportTemplateFilterSetting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/model/ExportTemplateFilterSetting.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/SeleniumAutomationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/SeleniumAutomationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/AttendanceUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/WebUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +61,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
   </component>
   <component name="RecentsManager">
@@ -154,7 +145,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/drjoy/automation/service/AttendanceService.java</url>
-          <line>626</line>
+          <line>629</line>
           <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>

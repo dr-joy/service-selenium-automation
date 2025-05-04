@@ -7,6 +7,8 @@ import com.drjoy.automation.logging.TaskLoggerManager;
 import com.drjoy.automation.model.ExportTemplateFilterSetting;
 import com.drjoy.automation.repository.ExcelReaderRepository;
 import com.google.common.collect.Lists;
+
+import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 

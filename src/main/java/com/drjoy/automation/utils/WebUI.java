@@ -31,28 +31,28 @@ public class WebUI {
 
     public static WebElement findWebElementIfVisible(By by) {
         WebDriver driver = DriverFactory.getDriver();
-        WebDriverWait wait = new WebDriverWait(driver, NORMAL_TIMEOUT);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(NORMAL_TIMEOUT));
 
         return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
     }
 
     public static WebElement findWebElementIfPresent(By by) {
         WebDriver driver = DriverFactory.getDriver();
-        WebDriverWait wait = new WebDriverWait(driver, SMALL_TIMEOUT);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(SMALL_TIMEOUT));
 
         return wait.until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
     public static List<WebElement> findWebElementsIfVisible(By by) {
         WebDriver driver = DriverFactory.getDriver();
-        WebDriverWait wait = new WebDriverWait(driver, NORMAL_TIMEOUT);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(NORMAL_TIMEOUT));
 
         return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
     }
 
     public static List<WebElement> findWebElementsIfPresent(By by) {
         WebDriver driver = DriverFactory.getDriver();
-        WebDriverWait wait = new WebDriverWait(driver, SMALL_TIMEOUT);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(SMALL_TIMEOUT));
 
         return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
     }
@@ -131,7 +131,7 @@ public class WebUI {
      */
     public static WebElement waitForElementClickable(By by, int timeout) {
         try {
-            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), timeout);
+            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(timeout));
             return wait.until(ExpectedConditions.elementToBeClickable(by));
         } catch (Exception e) {
             logger.error("Element {} not clickable within {}s: {}", by, timeout, e);
@@ -152,7 +152,7 @@ public class WebUI {
      */
     public static WebElement waitForElementPresent(By by, int timeoutSeconds) {
         try {
-            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), timeoutSeconds);
+            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(timeoutSeconds));
             return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
             logger.error("Element {} not present within {}s: {}", by, timeoutSeconds, e);
@@ -162,7 +162,7 @@ public class WebUI {
 
     public static boolean waitForElementNotPresent(By by, int timeoutSeconds) {
         try {
-            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), timeoutSeconds);
+            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(timeoutSeconds));
             return wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
         } catch (Exception e) {
             logger.error("Element {} not present within {}s: {}", by, timeoutSeconds, e);

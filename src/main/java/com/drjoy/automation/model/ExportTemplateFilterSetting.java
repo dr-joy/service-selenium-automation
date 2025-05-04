@@ -1,6 +1,5 @@
 package com.drjoy.automation.model;
 
-import com.drjoy.automation.execution.phase.PhaseSetting;
 import lombok.Data;
 
 @Data

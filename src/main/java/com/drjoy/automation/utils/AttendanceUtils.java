@@ -2,9 +2,6 @@ package com.drjoy.automation.utils;
 
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
-import com.drjoy.automation.repository.ExcelReaderRepository;
-import com.drjoy.automation.service.LoginService;
 import com.drjoy.automation.utils.xpath.at.Screen;
 import com.drjoy.automation.utils.xpath.common.XpathCommon;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +12,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -167,7 +165,7 @@ public class AttendanceUtils {
     }
 
     public static void clickAndConfirm(By targetButton, int timeoutSeconds) {
-        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), timeoutSeconds);
+        WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(timeoutSeconds));
 
         // Wait và click target button
         wait.until(ExpectedConditions.elementToBeClickable(targetButton));
