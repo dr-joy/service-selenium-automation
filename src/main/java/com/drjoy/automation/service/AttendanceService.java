@@ -1,6 +1,8 @@
 package com.drjoy.automation.service;
 
 import com.drjoy.automation.config.DriverFactory;
+import com.drjoy.automation.execution.ExecutionHelper;
+import com.drjoy.automation.execution.ExecutionStep;
 import com.drjoy.automation.model.CheckingLog;
 import com.drjoy.automation.model.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.Request;
@@ -30,11 +32,16 @@ import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingOverlayEl
 
 public class AttendanceService {
 
+    @ExecutionStep(value = "removeCheckingLog")
     public static void removeAllCheckingLogInTimeSheetPage(ExportTemplateFilterSetting setting) {
-        AttendanceUtils.navigateToATPage("at0001");
+        ExecutionHelper.runStepWithLogging("Navigate to AT0001",
+            () -> AttendanceUtils.navigateToATPage("at0001")
+        );
         waitForLoadingElement();
 
-        AttendanceUtils.selectUserAndMonthOnTimesheetPage(setting.getTargetUser(), setting.getTargetMonth());
+        ExecutionHelper.runStepWithLogging("Select user and Month in AT0001",
+            () -> AttendanceUtils.selectUserAndMonthOnTimesheetPage(setting.getTargetUser(), setting.getTargetMonth())
+        );
 
         String xpathRowAt0001 = "//app-at0001//div[@id='tbl-sheet']/table/tbody//tr";
         List<WebElement> dayElements = WebUI.findWebElementsIfPresent(By.xpath(xpathRowAt0001));
@@ -54,7 +61,9 @@ public class AttendanceService {
             waitForLoadingElement();
 
             // AT0023: Remove checking logs
-            removeAllCheckingLogInPage();
+            ExecutionHelper.runStepWithLogging("Remove all checking logs in AT0023",
+                AttendanceService::removeAllCheckingLogInPage
+            );
 
             waitForLoadingOverlayElement();
 
@@ -112,6 +121,7 @@ public class AttendanceService {
         }
     }
 
+    @ExecutionStep(value = "addCheckingLogs")
     public static void addAllCheckingLogs(ExportTemplateFilterSetting setting) {
         AttendanceUtils.navigateToATPage("at0001");
         waitForLoadingElement();
@@ -432,6 +442,7 @@ public class AttendanceService {
         }
     }
 
+    @ExecutionStep(value = "addWorkSchedule")
     public static void addWorkSchedule(ExportTemplateFilterSetting setting) {
         AttendanceUtils.navigateToATPage("at0033");
 
@@ -520,6 +531,7 @@ public class AttendanceService {
         }
     }
 
+    @ExecutionStep(value = "approveRequests")
     public static void approveAllRequest(ExportTemplateFilterSetting setting) {
         AttendanceUtils.navigateToATPage("at0022");
 
@@ -605,6 +617,7 @@ public class AttendanceService {
         }
     }
 
+    @ExecutionStep(value = "rejectRequests")
     public static void rejectAllRequest(ExportTemplateFilterSetting setting) {
         AttendanceUtils.navigateToATPage("at0022");
 

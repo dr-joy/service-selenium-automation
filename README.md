@@ -11,3 +11,20 @@ Environment variable
 env=jackfruit;
 browser=chrome;
 headless=false;
+
+default: localhost:8080
+POST: /api/selenium/process_attendance_steps
+{
+"phaseStart": 1,
+"phaseEnd":1,
+"removeAllCheckingLog" : false,
+"addAllWorkingTimeType" : false,
+"addAllPreset" : false,
+"addWorkSchedule" : true,
+"addAllCheckingLogs" : false,
+"approveAllRequest" : false,
+"rejectAllRequest" : false,
+"removeAllDownloadTemplate" : false,
+"createNewDownloadTemplate" : false,
+"downloadTemplate" : false
+}

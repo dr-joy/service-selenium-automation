@@ -1,0 +1,9 @@
+<configuration>
+    <appender name="TASK_ROUTING" class="com.drjoy.automation.logging.TaskIdRoutingAppender">
+        <logDir>logs</logDir> <!-- hoặc để mặc định trong appender -->
+    </appender>
+
+    <logger name="taskLogger" level="DEBUG" additivity="false">
+        <appender-ref ref="TASK_ROUTING"/>
+    </logger>
+</configuration>

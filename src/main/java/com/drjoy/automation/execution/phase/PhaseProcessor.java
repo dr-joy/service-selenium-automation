@@ -1,7 +1,7 @@
 package com.drjoy.automation.execution.phase;
 
-import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.Execution;
+import com.drjoy.automation.logging.TaskLoggerManager;
 import com.drjoy.automation.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +18,7 @@ public class PhaseProcessor {
             String username = current.getUserName();
             String password = current.getPassword();
 
-            log.info("Processing phase {}: {}", i + 1, username);
+            TaskLoggerManager.info("Processing phase {}: {}", i + 1, username);
 
             // Attempt login and execute with retries
             if (loginIfNeeded(username, password, previousUsername)) {
@@ -34,10 +34,10 @@ public class PhaseProcessor {
         if (!username.equals(previousUsername)) {
             try {
                 LoginService.login(username, password);
-                log.info("Logged in as {}", username);
+                TaskLoggerManager.info("Logged in as {}", username);
                 return true; // Login successful
             } catch (Exception e) {
-                log.error("Login failed for user {}: {}", username, e.getMessage());
+                TaskLoggerManager.error("Login failed for user {}: {}", username, e.getMessage());
                 return false; // Login failed
             }
         }
@@ -49,14 +49,14 @@ public class PhaseProcessor {
         for (int attempt = 1; attempt <= 2; attempt++) {
             try {
                 execution.run(current);
-                log.info("Phase {} completed successfully", phaseIndex + 1);
+                TaskLoggerManager.info("Phase {} completed successfully", phaseIndex + 1);
                 break; // Exit after successful execution
             } catch (Exception e) {
-                log.error("Phase {} attempt {}/2 failed: {}", phaseIndex + 1, attempt, e.getMessage(), e);
+                TaskLoggerManager.error("Phase {} attempt {}/2 failed: {}", phaseIndex + 1, attempt, e.getMessage(), e);
                 if (attempt == 2) {
-                    log.error("Phase {} failed after 2 attempts", phaseIndex + 1);
+                    TaskLoggerManager.error("Phase {} failed after 2 attempts", phaseIndex + 1);
                 } else {
-                    log.info("Retrying phase {}...", phaseIndex + 1);
+                    TaskLoggerManager.info("Retrying phase {}...", phaseIndex + 1);
                 }
             }
         }
