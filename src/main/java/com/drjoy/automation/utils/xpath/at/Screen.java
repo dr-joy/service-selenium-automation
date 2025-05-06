@@ -12,7 +12,7 @@ public enum Screen {
     AT0045("at0045", 5),
     AT0046("at0046", 5),
     AT0055("at0055", 1),
-    AT0059("at0059", 4),
+    AT0059("//app-at0001//ul[@role='tablist']/li[4]//div/div[normalize-space(text())='テンプレート一覧']", 4),
     AT0068("at0068", 4);
 
     // Index of AT menu

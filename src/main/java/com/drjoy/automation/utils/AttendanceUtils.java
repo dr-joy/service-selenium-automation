@@ -56,13 +56,14 @@ public class AttendanceUtils {
                 waitForLoadingElement();
 
                 if (!pageName.equals("at0001")) {
-                    WebUI.sleep(500);
+                    WebUI.sleep(1000);
                     String accessBtnXpath = String.format(
                         "//app-at0001//ul[@role='tablist']/li[%d]", Screen.valueOf(pageName.toUpperCase()).indexInNavBar
                     );
                     WebElement accessBtn = WebUI.findWebElementIfVisible(By.xpath(accessBtnXpath));
                     WebUI.mouseOver(accessBtn, 2000);
 
+                    waitForLoadingElement();
                     WebElement targetPage = WebUI.findWebElementIfVisible(By.xpath(Screen.valueOf(pageName.toUpperCase()).xpathToScreen));
                     WebUI.clickByJS(targetPage);
                 }

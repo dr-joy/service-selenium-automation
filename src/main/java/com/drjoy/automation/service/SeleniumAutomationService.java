@@ -40,6 +40,8 @@ public class SeleniumAutomationService {
         if (request.isAddAllCheckingLogs())   orderedSteps.add("addCheckingLogs");
         if (request.isApproveAllRequest())    orderedSteps.add("approveRequests");
         if (request.isRejectAllRequest())     orderedSteps.add("rejectRequests");
+        if (request.isRemoveAllDownloadTemplate())     orderedSteps.add("removeAllDownloadTemplate");
+        if (request.isCreateNewDownloadTemplate())     orderedSteps.add("createNewDownloadTemplate");
 
         PhaseProcessor.process(selectedSettings, setting ->
             StaticExecutionRunner.runSteps(AttendanceService.class, setting, orderedSteps)

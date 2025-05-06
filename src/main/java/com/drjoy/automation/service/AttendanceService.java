@@ -1,9 +1,11 @@
 package com.drjoy.automation.service;
 
 import com.drjoy.automation.config.DriverFactory;
+import com.drjoy.automation.constants.AttendanceConstants;
 import com.drjoy.automation.execution.ExecutionHelper;
 import com.drjoy.automation.execution.ExecutionStep;
 import com.drjoy.automation.model.CheckingLog;
+import com.drjoy.automation.model.DownloadTemplate;
 import com.drjoy.automation.model.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.Request;
 import com.drjoy.automation.model.WorkSchedule;
@@ -712,6 +714,116 @@ public class AttendanceService {
             Select dropdownAT0022HeaderSelectStatus  = new Select(dropdownElementAT0022HeaderSelectStatus );
             dropdownAT0022HeaderSelectStatus.selectByValue("RS_REJECTED");
         }
+    }
+
+    @ExecutionStep(value = "removeAllDownloadTemplate")
+    public static void removeAllDownloadTemplate(ExportTemplateFilterSetting setting) {
+        AttendanceUtils.navigateToATPage("at0059");
+
+        String xpathRow = "//app-at0059//div[@id='tbl-sheet']/table//tr";
+        try {
+            List<WebElement> templateRecord = WebUI.findWebElementsIfPresent(By.xpath(xpathRow));
+
+            for (int i = 1; i <= templateRecord.size(); i++) {
+                String xpathRemoveBtn = xpathRow + "[1]/td[7]/button";
+                WebUI.findWebElementIfVisible(By.xpath(xpathRemoveBtn)).click();
+                WebUI.sleep(500);
+                WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value)).click();
+                WebUI.sleep(500);
+            }
+        } catch (TimeoutException timeoutException) {
+            System.out.println("Không tìm thấy element download template màn AT0059 để xóa, tiếp tục chạy...");
+        }
+    }
+
+    @ExecutionStep(value = "createNewDownloadTemplate")
+    public static void createNewDownloadTemplate(ExportTemplateFilterSetting setting) {
+        AttendanceUtils.navigateToATPage("at0059");
+        waitForLoadingElement();
+
+        // Xóa toàn bộ template hiện có
+        removeAllDownloadTemplate(setting);
+
+        List<DownloadTemplate> downloadTemplate = ExcelReaderRepository.findAllDownloadTemplate(setting.getSheetName());
+
+        // Lọc và nhóm dữ liệu theo mode
+        Map<String, List<DownloadTemplate>> mapGroupingByTemplateMode = downloadTemplate.stream()
+                .collect(Collectors.groupingBy(DownloadTemplate::getMode));
+
+        // Duyệt từng group để tạo template
+        for (Map.Entry<String, List<DownloadTemplate>> entry : mapGroupingByTemplateMode.entrySet()) {
+
+            // Vào màn AT0060 tạo mới template
+            WebUI.findWebElementIfVisible(By.xpath("//button[@class='btn btn-success' and text()='新規作成']")).click();
+
+            waitForLoadingElement();
+
+            String mode = entry.getKey();
+            WebUI.findWebElementIfVisible(By.xpath("//input[@placeholder=\"テンプレート名称\"]"))
+                    .sendKeys(String.format(AttendanceConstants.TEMPLATE_NAME, mode.toUpperCase()));
+
+            switch (mode.toLowerCase()) {
+                case "day":
+                    WebUI.findWebElementIfVisible(By.xpath("//button[normalize-space(text())='日単位']")).click();
+                    break;
+                case "month":
+                    WebUI.findWebElementIfVisible(By.xpath("//button[normalize-space(text())='月単位']")).click();
+                    break;
+                default:
+                    return;
+            }
+            boolean option1 = "TRUE".equals(setting.getTemplateOp1());
+            boolean option2 = "TRUE".equals(setting.getTemplateOp2());
+            boolean option3 = "TRUE".equals(setting.getTemplateOp3());
+
+            if (option1 || option2 || option3) {
+                String openSettingBtnXpath = "//span[text()='出力時の詳細条件']/ancestor::div[contains(@class, 'cal-setting')]";
+                By openSettingBtn = By.xpath(openSettingBtnXpath);
+                WebUI.waitForElementClickable(openSettingBtn, 1);
+                WebUI.click(openSettingBtn);
+            }
+
+            if (option1) {
+                System.out.println("option1: " + option1 + " -> Turn on 所定時間に満たない残業（勤務）申請時間を割増に含める");
+                String op1Xpath = "//span[text()='所定時間に満たない残業（勤務）申請時間を割増に含める']/ancestor::label";
+                WebUI.findWebElementIfVisible(By.xpath(op1Xpath)).click();
+            }
+
+            if (option2) {
+                System.out.println("option2: " + option2 + " -> Turn on 日をまたいだ労働時間を翌日分に計上する");
+                String op2Xpath = "//span[text()='日をまたいだ労働時間を翌日分に計上する']/ancestor::label";
+                WebUI.findWebElementIfVisible(By.xpath(op2Xpath)).click();
+            }
+
+            if (option3) {
+                System.out.println("option3: " + option3 + " -> Turn on 週残業を割増に含める");
+                String op3Xpath = "//span[text()='週残業を割増に含める']/ancestor::label";
+                WebUI.findWebElementIfVisible(By.xpath(op3Xpath)).click();
+            }
+
+            String queryXpathByTitle = "//app-at0060//div[@class='select-col1']//ul//div[@class='text-title' and text()='%s']";
+
+            List<DownloadTemplate> templateItemList = entry.getValue();
+            for (DownloadTemplate item : templateItemList) {
+                String optionLabel = item.getOption();
+                WebElement optionElement = WebUI.findWebElementIfVisible(
+                        By.xpath("//app-at0060//div[@class='select-col1']//select"));
+                Select optionSelect = new Select(optionElement);
+                optionSelect.selectByVisibleText(optionLabel);
+
+                String itemTitle = org.apache.commons.lang3.StringUtils.trimToNull(item.getTitle());
+                if (itemTitle != null) {
+                    WebElement targetItem = WebUI.findWebElementIfVisible(
+                            By.xpath(String.format(queryXpathByTitle, itemTitle)));
+                    targetItem.click();
+                }
+            }
+
+            WebUI.findWebElementIfVisible(By.xpath("//button[@type=\"button\" and @class=\"btn btn-primary\" and text()='作成']")).click();
+            WebUI.findWebElementIfVisible(By.xpath("//app-modal//button[@id='positiveButton']")).click();
+            waitForLoadingElement();
+        }
+        WebUI.sleep(1000);
     }
 
     public static void handleDiscretionarySchedule(List<WorkSchedule> workScheduleList, List<WebElement> dateElements, String baseXpath) {

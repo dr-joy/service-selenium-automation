@@ -2,6 +2,7 @@ package com.drjoy.automation.repository;
 
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.model.CheckingLog;
+import com.drjoy.automation.model.DownloadTemplate;
 import com.drjoy.automation.model.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.Request;
 import com.drjoy.automation.model.WorkSchedule;
@@ -100,6 +101,23 @@ public class ExcelReaderRepository {
             setting.setEndTime(row[6]);
             setting.setStartBreakTime(row[7]);
             setting.setEndBreakTime(row[8]);
+
+            result.add(setting);
+        }
+
+        return result;
+    }
+
+    public static List<DownloadTemplate> findAllDownloadTemplate(String sheet) {
+        List<String[]> data = ExcelUtils.readDataFromFilePath(String.format("%s/DownloadTemplate.xlsx", Configuration.getDataBasePath()), sheet);
+        List<DownloadTemplate> result = new ArrayList<>();
+
+        for (String[] row : data) {
+            DownloadTemplate setting = new DownloadTemplate();
+            setting.setPhase(row[0]);
+            setting.setMode(row[1]);
+            setting.setOption(row[2]);
+            setting.setTitle(row[3]);
 
             result.add(setting);
         }
