@@ -8,7 +8,6 @@ import com.drjoy.automation.model.ExportTemplateFilterSetting;
 import com.drjoy.automation.repository.ExcelReaderRepository;
 import com.google.common.collect.Lists;
 
-import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +41,7 @@ public class SeleniumAutomationService {
         if (request.isRejectAllRequest())     orderedSteps.add("rejectRequests");
         if (request.isRemoveAllDownloadTemplate())     orderedSteps.add("removeAllDownloadTemplate");
         if (request.isCreateNewDownloadTemplate())     orderedSteps.add("createNewDownloadTemplate");
-
+        if (request.isDownloadTemplate())     orderedSteps.add("downloadTemplate");
         PhaseProcessor.process(selectedSettings, setting ->
             StaticExecutionRunner.runSteps(AttendanceService.class, setting, orderedSteps)
         );

@@ -4,6 +4,7 @@ import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.model.CheckingLog;
 import com.drjoy.automation.model.DownloadTemplate;
 import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.JobType;
 import com.drjoy.automation.model.Request;
 import com.drjoy.automation.model.WorkSchedule;
 import com.drjoy.automation.utils.ExcelUtils;
@@ -118,6 +119,22 @@ public class ExcelReaderRepository {
             setting.setMode(row[1]);
             setting.setOption(row[2]);
             setting.setTitle(row[3]);
+
+            result.add(setting);
+        }
+
+        return result;
+    }
+
+    public static List<JobType> findAllJobTypes(String sheet) {
+        List<String[]> data = ExcelUtils.readDataFromFilePath(String.format("%s/JobTypes.xlsx",
+                Configuration.getDataBasePath()), sheet);
+        List<JobType> result = new ArrayList<>();
+
+        for (String[] row : data) {
+            JobType setting = new JobType();
+            setting.setJobType(row[0]);
+            setting.setJobName(row[1]);
 
             result.add(setting);
         }

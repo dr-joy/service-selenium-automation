@@ -47,4 +47,25 @@ public class DateUtils {
         }
         return "";
     }
+
+    public static String convertToYearMonthAT0029(String yearMonth) {
+        String[] splitedMonthYear = splitMonthYear(yearMonth);
+        String yearMonthOut = "%s, %s度";
+        String monthEn = switch (splitedMonthYear[1]) {
+            case "01" -> "Jan";
+            case "02" -> "Feb";
+            case "03" -> "Mar";
+            case "04" -> "Apr";
+            case "05" -> "May";
+            case "06" -> "Jun";
+            case "07" -> "Jul";
+            case "08" -> "Aug";
+            case "09" -> "Sep";
+            case "10" -> "Oct";
+            case "11" -> "Nov";
+            case "12" -> "Dec";
+            default -> "";
+        };
+        return String.format(yearMonthOut, monthEn, splitedMonthYear[0]);
+    }
 }

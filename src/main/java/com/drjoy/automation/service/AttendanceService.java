@@ -24,6 +24,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -722,7 +723,7 @@ public class AttendanceService {
 
         String xpathRow = "//app-at0059//div[@id='tbl-sheet']/table//tr";
         try {
-            List<WebElement> templateRecord = WebUI.findWebElementsIfPresent(By.xpath(xpathRow));
+            List<WebElement> templateRecord = WebUI.findWebElementsIfVisible(By.xpath(xpathRow), 3);
 
             for (int i = 1; i <= templateRecord.size(); i++) {
                 String xpathRemoveBtn = xpathRow + "[1]/td[7]/button";
@@ -824,6 +825,145 @@ public class AttendanceService {
             waitForLoadingElement();
         }
         WebUI.sleep(1000);
+    }
+
+    @ExecutionStep(value = "downloadTemplate")
+    public static void downloadTemplate(ExportTemplateFilterSetting setting) {
+        AttendanceUtils.navigateToATPage("at0029");
+
+        waitForLoadingElement();
+        WebElement selectBoxDownloadType = WebUI.findWebElementIfVisible(
+                By.xpath("//app-at0029//div[@class=\"type-export-csv\"]//div[@class='col-12 row']//select"));
+        Select optionSelect = new Select(selectBoxDownloadType);
+        optionSelect.selectByVisibleText("テンプレート");
+
+        List<DownloadTemplate> downloadTemplate = ExcelReaderRepository.findAllDownloadTemplate(setting.getSheetName());
+
+        Map<String, List<DownloadTemplate>> mapGroupingByTemplateMode = downloadTemplate.stream()
+                .collect(Collectors.groupingBy(DownloadTemplate::getMode));
+
+        boolean isSelectedDepartment = false;
+        for (Map.Entry<String, List<DownloadTemplate>> entry : mapGroupingByTemplateMode.entrySet()) {
+            String mode = entry.getKey();
+            String templateName = String.format(AttendanceConstants.TEMPLATE_NAME, mode.toUpperCase());
+
+            waitForLoadingElement();
+            WebElement templateSelectBox = WebUI.findWebElementIfPresent(
+                    By.xpath("//app-at0029//div[@class='type-export-csv']//div[@class='row']/div[3]/select"));
+            Select selectTemplate = new Select(templateSelectBox);
+            selectTemplate.selectByVisibleText(templateName);
+
+            String[] splitedMonthYear = DateUtils.splitMonthYear(setting.getTargetMonth());
+            String targetSYear = splitedMonthYear[0];
+            String targetEYear = targetSYear;
+
+            String targetSMonth = String.valueOf(Integer.parseInt(splitedMonthYear[1]));
+            String targetEMonth = targetSMonth;
+
+            switch (mode.toLowerCase()) {
+                case "day":
+                    LocalDate firstDay = LocalDate.of(Integer.parseInt(targetSYear), Integer.parseInt(targetSMonth), 1);
+                    LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+                    String minDay = String.valueOf(firstDay.getDayOfMonth());
+                    String maxDay = String.valueOf(lastDay.getDayOfMonth());
+                    String startDate = setting.getStartDate();
+                    String endDate = setting.getEndDate();
+
+                    if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
+                        targetSYear = startDate.substring(0, 4);
+                        targetEYear = endDate.substring(0, 4);
+
+                        targetSMonth = String.valueOf(Integer.parseInt(startDate.substring(4, 6)));
+                        targetEMonth = String.valueOf(Integer.parseInt(endDate.substring(4, 6)));
+
+                        minDay = String.valueOf(Integer.parseInt(startDate.substring(6, 8)));
+                        maxDay = String.valueOf(Integer.parseInt(endDate.substring(6, 8)));
+                    }
+
+                    WebElement inputStartTime = WebUI.findWebElementIfVisible(
+                            By.xpath("//div[@class='time-request']/div[@class='time'][1]/app-date-input-at"));
+                    DateUtils.chooseDatePicker(inputStartTime, targetSYear, targetSMonth, minDay);
+
+                    WebElement inputEndTime = WebUI.findWebElementIfVisible(
+                            By.xpath("//div[@class='time-request']/div[@class='time'][2]/app-date-input-at"));
+                    DateUtils.chooseDatePicker(inputEndTime, targetEYear, targetEMonth, maxDay);
+                    break;
+                case "month":
+                    WebElement selectMonth = WebUI.findWebElementIfVisible(
+                            By.xpath("//app-at0029//form//select[@formcontrolname='month' and @ng-reflect-name='month']"));
+                    WebUI.sleep(2000);
+                    Select selectMonthBox = new Select(selectMonth);
+                    selectMonthBox.selectByVisibleText(DateUtils.convertToYearMonthAT0029(setting.getTargetMonth()));
+                    break;
+                default:
+                    return;
+            }
+
+            String department = setting.getTargetUserDepartment();
+            if (StringUtils.isNotBlank(department) && !isSelectedDepartment) {
+                WebElement deptSelectBox = WebUI.findWebElementIfVisible(
+                        By.xpath("//app-multi-select-department//div[contains(@class, 'dept-name')]"));
+                deptSelectBox.click();
+                WebUI.sleep(500);
+
+                String deptItemXpath = "//app-multi-select-department//div[contains(@class, 'popup-list-department')]//span[contains(text(), '%s')]/ancestor::div/label";
+                WebElement allDeptItem = WebUI.findWebElementIfVisible(
+                        By.xpath(String.format(deptItemXpath + "/input[@type='checkbox' and @ng-reflect-model='true']/ancestor::label", "すべて")));
+                allDeptItem.click();
+                WebUI.sleep(500);
+
+                WebElement targetDeptItem = WebUI.findWebElementIfVisible(
+                        By.xpath(String.format(deptItemXpath + "/input[@type='checkbox' and " +
+                                "@ng-reflect-model='false']/ancestor::label", department)));
+                targetDeptItem.click();
+                WebUI.sleep(500);
+
+                deptSelectBox.click();
+                isSelectedDepartment = true;
+            }
+
+            String jobType = setting.getTargetUserJobType();
+            if (StringUtils.isNotBlank(jobType)) {
+                WebElement jobTypeSelectBox = WebUI.findWebElementIfVisible(
+                        By.xpath("//app-at0029//select[@ng-reflect-name='jobTypeId']"));
+                Select jobtypeSelect = new Select(jobTypeSelectBox);
+                jobtypeSelect.selectByVisibleText(AttendanceUtils.getJobTypeName(jobType.toUpperCase()));
+            }
+
+            String workForm = setting.getTargetUserWorkForm();
+            if (StringUtils.isNotBlank(workForm)) {
+                WebElement workFormSelect = WebUI.findWebElementIfVisible(
+                        By.xpath("//app-at0029//select[@ng-reflect-name='contractType']"));
+                Select workFormSelectBox = new Select(workFormSelect);
+                workFormSelectBox.selectByVisibleText(AttendanceUtils.getWorkFormName(workForm.toUpperCase()));
+            }
+
+            String workPattern = setting.getTargetUserWorkPattern();
+            if (StringUtils.isNotBlank(workPattern)) {
+                WebElement workPatternSelect = WebUI.findWebElementIfVisible(
+                        By.xpath("//app-at0029//select[@ng-reflect-name='workingPattern']"));
+                Select workPatternSelectBox = new Select(workPatternSelect);
+                workPatternSelectBox.selectByVisibleText(AttendanceUtils.getWorkPatternName(workPattern.toUpperCase()));
+            }
+
+            WebUI.click(By.xpath("//button[@class=\"btn btn-primary btn-create-csv\" and normalize-space(text())='作成']"));
+            WebUI.sleep(2000);
+            WebUI.click(By.xpath("//button[@class=\"btn btn-secondary btn-repeat\" and @data-original-title='更新']"));
+
+            int count = 0;
+            By downloadButton = By.xpath("//div[@id='tbl-sheet']//table//tr[1]/td[1]/button[@type='button' and normalize-space(text())='ダウンロード']");
+            while (!WebUI.isElementPresent(downloadButton, 200)) {
+                if (count >= 5) break;
+                WebElement btnReload = WebUI.findWebElementIfVisible(
+                        By.xpath("//button[@class=\"btn btn-secondary btn-repeat\" and @data-original-title='更新']"));
+                btnReload.click();
+                WebUI.sleep(1000);
+                count++;
+            }
+
+            WebUI.waitForElementClickable(downloadButton, 2);
+            WebUI.click(downloadButton);
+        }
     }
 
     public static void handleDiscretionarySchedule(List<WorkSchedule> workScheduleList, List<WebElement> dateElements, String baseXpath) {

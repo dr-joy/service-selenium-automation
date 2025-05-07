@@ -2,6 +2,8 @@ package com.drjoy.automation.utils;
 
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
+import com.drjoy.automation.model.JobType;
+import com.drjoy.automation.repository.ExcelReaderRepository;
 import com.drjoy.automation.utils.xpath.at.Screen;
 import com.drjoy.automation.utils.xpath.common.XpathCommon;
 import org.apache.logging.log4j.LogManager;
@@ -14,8 +16,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class AttendanceUtils {
     private static final Logger logger = LogManager.getLogger(AttendanceUtils.class);
@@ -179,5 +183,35 @@ public class AttendanceUtils {
 
         // Wait for loading element disappear (hoặc attribute = false)
         waitForLoadingElement();
+    }
+
+    public static String getJobTypeName(String jobType) {
+        List<JobType> jobTypeList = ExcelReaderRepository.findAllJobTypes("Example");
+        Map<String, String> jobTypeMapping = jobTypeList.stream()
+                .collect(Collectors.toMap(JobType::getJobType, JobType::getJobName));
+        return jobTypeMapping.getOrDefault(jobType, "");
+    }
+
+    public static String getWorkFormName(String workForm) {
+        return switch (workForm) {
+            case "WF_FULL_TIME" -> "常勤";
+            case "WF_FULL_TIME_DISPATCH" -> "常勤（派遣）";
+            case "WF_PART_TIME" -> "非常勤（パート）";
+            case "WF_PART_TIME_JOB" -> "非常勤（アルバイト）";
+            case "WF_OTHER" -> "その他";
+            case "NONE" -> "未選択";
+            case "WF_PART_TIME_GENERAL" -> "非常勤";
+            default -> "すべて";
+        };
+    }
+
+    public static String getWorkPatternName(String workPattern) {
+        return switch (workPattern) {
+            case "OFFICE" -> "病院の設定と同じ勤務時間";
+            case "INDIVIDUAL" -> "個別に設定した勤務時間";
+            case "DISCRETIONARY" -> "裁量労働制";
+            case "VARIABLE" -> "変形労働制";
+            default -> "すべて";
+        };
     }
 }

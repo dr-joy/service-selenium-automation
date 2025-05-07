@@ -50,6 +50,13 @@ public class WebUI {
         return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
     }
 
+    public static List<WebElement> findWebElementsIfVisible(By by, int timeoutSeconds) {
+        WebDriver driver = DriverFactory.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
+
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+    }
+
     public static List<WebElement> findWebElementsIfPresent(By by) {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(SMALL_TIMEOUT));
@@ -168,5 +175,16 @@ public class WebUI {
             logger.error("Element {} not present within {}s: {}", by, timeoutSeconds, e);
             return false;
         }
+    }
+
+    public static boolean isElementPresent(By by, int timeoutSeconds) {
+        try {
+            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(timeoutSeconds));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            logger.error("Element {} not present within {}s: {}", by, timeoutSeconds, e);
+            return false;
+        }
+        return true;
     }
 }
