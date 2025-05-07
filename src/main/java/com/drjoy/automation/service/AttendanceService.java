@@ -946,23 +946,28 @@ public class AttendanceService {
                 workPatternSelectBox.selectByVisibleText(AttendanceUtils.getWorkPatternName(workPattern.toUpperCase()));
             }
 
-            WebUI.click(By.xpath("//button[@class=\"btn btn-primary btn-create-csv\" and normalize-space(text())='作成']"));
+            WebElement btnCreate = WebUI.findWebElementIfVisible(
+                    By.xpath("//button[@class=\"btn btn-primary btn-create-csv\" and normalize-space(text())='作成']"));
+            btnCreate.click();
             WebUI.sleep(2000);
-            WebUI.click(By.xpath("//button[@class=\"btn btn-secondary btn-repeat\" and @data-original-title='更新']"));
+            WebElement btnReload = WebUI.findWebElementIfVisible(
+                    By.xpath("//button[@class=\"btn btn-secondary btn-repeat\" and @data-original-title='更新']"));
+            btnReload.click();
 
             int count = 0;
             By downloadButton = By.xpath("//div[@id='tbl-sheet']//table//tr[1]/td[1]/button[@type='button' and normalize-space(text())='ダウンロード']");
             while (!WebUI.isElementPresent(downloadButton, 200)) {
                 if (count >= 5) break;
-                WebElement btnReload = WebUI.findWebElementIfVisible(
+                WebElement btnReloadTmp = WebUI.findWebElementIfVisible(
                         By.xpath("//button[@class=\"btn btn-secondary btn-repeat\" and @data-original-title='更新']"));
-                btnReload.click();
+                btnReloadTmp.click();
                 WebUI.sleep(1000);
                 count++;
             }
 
             WebUI.waitForElementClickable(downloadButton, 2);
             WebUI.click(downloadButton);
+            WebUI.sleep(5000);
         }
     }
 
