@@ -12,11 +12,22 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ExcelUtils {
     static final Logger logger = LogManager.getLogger(ExcelUtils.class);
+
+    public static List<String[]> readDataFromStream(InputStream stream) {
+        try {
+            return readDataFromStream(stream, null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static List<String[]> readDataFromFilePath(String path) {
         return readDataFromFile(new File(path), null);
@@ -27,10 +38,19 @@ public class ExcelUtils {
     }
 
     public static List<String[]> readDataFromFile(File file, String sheetName) {
-        List<String[]> data = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(file)) {
+             return readDataFromStream(fis, sheetName);
+        } catch (Exception e) {
+            logger.error("Error reading data from Excel file: {}",
+                file.getAbsolutePath(), e);
+        }
 
-        try (FileInputStream fis = new FileInputStream(file);
-            Workbook workbook = new XSSFWorkbook(fis)) {
+        return Collections.emptyList();
+    }
+
+    public static List<String[]> readDataFromStream(InputStream in, String sheetName) throws IOException {
+        List<String[]> data = new ArrayList<>();
+        try(Workbook workbook = new XSSFWorkbook(in)) {
             Sheet sheet = sheetName == null
                 ? workbook.getSheetAt(0)
                 : workbook.getSheet(sheetName);
@@ -54,12 +74,7 @@ public class ExcelUtils {
                 }
                 data.add(rowData);
             }
-
-        } catch (Exception e) {
-            logger.error("Error reading data from Excel file: {}",
-                file.getAbsolutePath(), e);
         }
-
         return data;
     }
 

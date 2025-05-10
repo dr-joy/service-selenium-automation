@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class Configuration {
@@ -39,7 +40,7 @@ public class Configuration {
 
     public static String getBaseUrl() {
         if (env == null || env.isEmpty()) {
-            env = get("app.url.jackfruit");
+            return get("app.url.jackfruit");
         }
         return get(String.format("app.url.%s", env));
     }

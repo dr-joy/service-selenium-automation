@@ -1,5 +1,6 @@
 package com.drjoy.automation.execution.phase;
 
+import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.Execution;
 import com.drjoy.automation.logging.TaskLoggerManager;
 import com.drjoy.automation.service.LoginService;
@@ -31,13 +32,14 @@ public class PhaseProcessor {
 
     // Check login and handle login/logout if needed
     private static boolean loginIfNeeded(String username, String password, String previousUsername) {
+        TaskLoggerManager.info(DriverFactory.getCACHE_PATH());
         if (!username.equals(previousUsername)) {
             try {
                 LoginService.login(username, password);
                 TaskLoggerManager.info("Logged in as {}", username);
                 return true; // Login successful
             } catch (Exception e) {
-                TaskLoggerManager.error("Login failed for user {}: {}", username, e.getMessage());
+                TaskLoggerManager.error("Login failed for user: {}", e, username);
                 return false; // Login failed
             }
         }

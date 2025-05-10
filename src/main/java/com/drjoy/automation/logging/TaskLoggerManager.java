@@ -14,9 +14,7 @@ public class TaskLoggerManager {
     public static String generateTaskId(String prefix) {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String shortUUID = UUID.randomUUID().toString().substring(0, 5);
-        String taskId =  prefix + "_" + timestamp + "_" + shortUUID;
-
-        return taskId;
+        return prefix + "_" + timestamp + "_" + shortUUID;
     }
 
     public static void init(String taskId) {
@@ -37,6 +35,11 @@ public class TaskLoggerManager {
 
     public static void error(String message, Object... args) {
         getLogger().error(message, args);
+    }
+
+    public static void error(String message, Throwable t, Object... args) {
+        getLogger().error(message, args);
+        getLogger().error("DETAILS: ", t);
     }
 
     public static void debug(String message, Object... args) {

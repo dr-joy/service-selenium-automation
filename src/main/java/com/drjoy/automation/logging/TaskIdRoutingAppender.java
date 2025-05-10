@@ -5,16 +5,14 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.FileAppender;
 
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TaskIdRoutingAppender extends AppenderBase<ILoggingEvent> {
     private final Map<String, FileAppender<ILoggingEvent>> appenders = new ConcurrentHashMap<>();
-    private String logDir = "logs";
 
-    public void setLogDir(String logDir) {
-        this.logDir = logDir;
-    }
+    private final String logDir = Paths.get("C:/selenium-app-setting/logs").toAbsolutePath().toString();
 
     @Override
     protected void append(ILoggingEvent event) {

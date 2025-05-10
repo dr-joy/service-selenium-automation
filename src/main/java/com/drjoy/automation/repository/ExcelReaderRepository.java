@@ -9,7 +9,14 @@ import com.drjoy.automation.model.Request;
 import com.drjoy.automation.model.WorkSchedule;
 import com.drjoy.automation.utils.ExcelUtils;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,53 +24,82 @@ public class ExcelReaderRepository {
 
     private ExcelReaderRepository() {}
 
+    private static String getAbsolutePath(String fileName) {
+        String resourcePath = String.format("%s/%s", Configuration.getDataBasePath(), fileName);
+        String result = StringUtils.EMPTY;
+        try (InputStream in = ExcelReaderRepository.class.getResourceAsStream(resourcePath);) {
+            File temp = new File("temp" + fileName);
+            assert in != null;
+            Files.copy(in, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            result = temp.getAbsolutePath();
+        } catch (IOException e) {
+            System.out.println("Error");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private static InputStream getResourceInputStream(String fileName) {
+        String resourcePath = String.format("%s/%s", Configuration.getDataBasePath(), fileName);
+        return ExcelReaderRepository.class.getResourceAsStream(resourcePath);
+    }
+
     public static List<ExportTemplateFilterSetting> findAllExportFilterSetting() {
-        List<String[]> data = ExcelUtils.readDataFromFilePath(String.format("%s/Setting.xlsx", Configuration.getDataBasePath()));
         List<ExportTemplateFilterSetting> result = Lists.newArrayList();
+        try (InputStream resource = getResourceInputStream("Setting.xlsx")) {
+            List<String[]> data = ExcelUtils.readDataFromStream(resource);
+            for (String[] row : data) {
+                ExportTemplateFilterSetting setting = new ExportTemplateFilterSetting();
+                setting.setPhase(row[0]);
+                setting.setUserName(row[1]);
+                setting.setPassword(row[2]);
+                setting.setSheetName(row[3]);
+                setting.setTargetMonth(row[4]);
+                setting.setTargetUser(row[5]);
+                setting.setTargetUserDepartment(row[6]);
+                setting.setTargetUserJobType(row[7]);
+                setting.setTargetUserWorkForm(row[8]);
+                setting.setTargetUserWorkPattern(row[9]);
+                setting.setStartDate(row[10]);
+                setting.setEndDate(row[11]);
+                setting.setTemplateOp1(row[12]);
+                setting.setTemplateOp2(row[13]);
+                setting.setTemplateOp3(row[14]);
 
-        for (String[] row : data) {
-            ExportTemplateFilterSetting setting = new ExportTemplateFilterSetting();
-            setting.setPhase(row[0]);
-            setting.setUserName(row[1]);
-            setting.setPassword(row[2]);
-            setting.setSheetName(row[3]);
-            setting.setTargetMonth(row[4]);
-            setting.setTargetUser(row[5]);
-            setting.setTargetUserDepartment(row[6]);
-            setting.setTargetUserJobType(row[7]);
-            setting.setTargetUserWorkForm(row[8]);
-            setting.setTargetUserWorkPattern(row[9]);
-            setting.setStartDate(row[10]);
-            setting.setEndDate(row[11]);
-            setting.setTemplateOp1(row[12]);
-            setting.setTemplateOp2(row[13]);
-            setting.setTemplateOp3(row[14]);
-
-            result.add(setting);
+                result.add(setting);
+            }
+        } catch (Exception e) {
+            System.out.println("Error");
         }
 
         return result;
     }
 
     public static List<CheckingLog> findAllCheckingLog() {
-        List<String[]> data = ExcelUtils.readDataFromFilePath(String.format("%s/CheckingLog.xlsx", Configuration.getDataBasePath()));
         List<CheckingLog> result = Lists.newArrayList();
 
-        for (String[] row : data) {
-            CheckingLog setting = new CheckingLog();
-            setting.setPhase(row[0]);
-            setting.setDateIndex(row[1]);
-            setting.setLogTime(row[2]);
-            setting.setReason(row[3]);
+        try (InputStream resource = getResourceInputStream("CheckingLog.xlsx")) {
+            List<String[]> data = ExcelUtils.readDataFromStream(resource);
 
-            result.add(setting);
+            for (String[] row : data) {
+                CheckingLog setting = new CheckingLog();
+                setting.setPhase(row[0]);
+                setting.setDateIndex(row[1]);
+                setting.setLogTime(row[2]);
+                setting.setReason(row[3]);
+
+                result.add(setting);
+            }
+        } catch (Exception e) {
+            System.out.println("Error");
         }
 
         return result;
     }
 
     public static List<Request> findAllRequest(String sheet) {
-        List<String[]> data = ExcelUtils.readDataFromFilePath(String.format("%s/Request.xlsx", Configuration.getDataBasePath()), sheet);
+        List<String[]> data = ExcelUtils.readDataFromFilePath(getAbsolutePath(("Request.xlsx")), sheet);
         List<Request> result = new ArrayList<>();
 
         for (String[] row : data) {
@@ -88,7 +124,7 @@ public class ExcelReaderRepository {
     }
 
     public static List<WorkSchedule> findAllWorkSchedule(String sheet) {
-        List<String[]> data = ExcelUtils.readDataFromFilePath(String.format("%s/WorkSchedule.xlsx", Configuration.getDataBasePath()), sheet);
+        List<String[]> data = ExcelUtils.readDataFromFilePath(getAbsolutePath(("WorkSchedule.xlsx")), sheet);
         List<WorkSchedule> result = new ArrayList<>();
 
         for (String[] row : data) {
