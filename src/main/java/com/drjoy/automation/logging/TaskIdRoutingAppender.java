@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TaskIdRoutingAppender extends AppenderBase<ILoggingEvent> {
     private final Map<String, FileAppender<ILoggingEvent>> appenders = new ConcurrentHashMap<>();
 
-    private final String logDir = Paths.get("C:/selenium-app-setting/logs").toAbsolutePath().toString();
+    private final String logDir = System.getProperty("user.dir").concat("/selenium/logs");
 
     @Override
     protected void append(ILoggingEvent event) {

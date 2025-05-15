@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 package com.drjoy.automation;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.Map;
 
 import io.modelcontextprotocol.client.McpClient;
@@ -34,7 +39,6 @@ import io.modelcontextprotocol.spec.McpSchema.ListToolsResult;
 public class ClientStdio {
 
     public static void main(String[] args) {
-
         var stdioParams = ServerParameters.builder("java")
             .args("-jar",
                 "C:/Project/DRJAutomation/target/service-selenium-automation-1.0-SNAPSHOT.jar")
@@ -51,5 +55,4 @@ public class ClientStdio {
 
         client.closeGracefully();
     }
-
 }

@@ -13,7 +13,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class DriverFactory {
     @Getter
-    private static final String CACHE_PATH = "C:/selenium-app-setting/drivers/caches";
+    private static final String CACHE_PATH = System.getProperty("user.dir").concat("/selenium/bin/drivers");
 
     private static WebDriver driver;
 
@@ -56,7 +56,7 @@ public class DriverFactory {
                 WebDriverManager.chromedriver().cachePath(CACHE_PATH).setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
                 if (headless) chromeOptions.addArguments("--headless=new", "--disable-gpu");
-                driver = new RemoteWebDriver(chromeOptions);
+                driver = new ChromeDriver(chromeOptions);
                 break;
         }
 
