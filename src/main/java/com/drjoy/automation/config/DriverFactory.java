@@ -13,7 +13,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class DriverFactory {
     @Getter
-    private static final String CACHE_PATH = System.getProperty("user.dir").concat("/selenium/bin/drivers");
+    private static final String CACHE_PATH = System.getProperty("user.dir").concat("/resources/selenium/bin/drivers");
 
     private static WebDriver driver;
 
