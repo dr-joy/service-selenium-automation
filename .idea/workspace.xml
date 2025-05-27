@@ -5,33 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5165171-9e87-40a0-a94d-4b6050806792" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/drivers/caches/chromedriver/win64/134.0.6998.165/chromedriver.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/drivers/caches/chromedriver/win64/136.0.7103.92/chromedriver.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/data/Example/Setting.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/drjoy/automation/ClientStdio.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/drjoy/automation/SeleniumAutomationRunner.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tempRequest.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Example/CheckingLog.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/Example/CheckingLog.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Example/DownloadTemplate.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/Example/DownloadTemplate.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Example/JobTypes.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Example/Preset.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/Example/Preset.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Example/Request.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/Example/Request.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Example/Setting.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/tempSetting.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Example/WorkSchedule.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/Example/WorkSchedule.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Example/WorkingTimeType.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/data/Example/WorkingTimeType.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drivers/caches/resolution.properties" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/caches/resolution.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/config/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/config/Configuration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/config/DriverFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/config/DriverFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/phase/PhaseProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/execution/phase/PhaseProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/logging/TaskIdRoutingAppender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/logging/TaskIdRoutingAppender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/logging/TaskLoggerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/logging/TaskLoggerManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/repository/ExcelReaderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/repository/ExcelReaderRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/ExcelUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/drjoy/automation/utils/ExcelUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/log4j.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/log4j.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,23 +53,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.ClientStdio.executor": "Debug",
-    "Application.SeleniumAutomationApplication.executor": "Debug",
-    "Application.SeleniumAutomationRunner.executor": "Run",
-    "JUnit.SeleniumAutomationTest.testProcessAttendanceSteps_ValidPhaseRange_AllSteps.executor": "Run",
-    "Maven.service-selenium-automation [clean].executor": "Run",
-    "Maven.service-selenium-automation [install].executor": "Run",
-    "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "develop",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/JavaProjects/incubator",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.ClientStdio.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SeleniumAutomationApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.SeleniumAutomationRunner.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SeleniumAutomationTest.testProcessAttendanceSteps_ValidPhaseRange_AllSteps.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.service-selenium-automation [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.service-selenium-automation [install].executor&quot;: &quot;Run&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/JavaProjects/incubator&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Project\DRJAutomation" />
@@ -110,7 +85,7 @@
       <recent name="com.drjoy.automation" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.SeleniumAutomationRunner">
+  <component name="RunManager" selected="Application.SeleniumAutomationApplication">
     <configuration name="ClientStdio" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.drjoy.automation.ClientStdio" />
       <module name="service-selenium-automation" />
@@ -171,34 +146,16 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SeleniumAutomationTest.testProcessAttendanceSteps_ValidPhaseRange_AllSteps" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="service-selenium-automation" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.drjoy.automation.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.drjoy.automation" />
-      <option name="MAIN_CLASS_NAME" value="com.drjoy.automation.SeleniumAutomationTest" />
-      <option name="METHOD_NAME" value="testProcessAttendanceSteps_ValidPhaseRange_AllSteps" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="Application.SeleniumAutomationRunner" />
       <item itemvalue="Application.ClientStdio" />
       <item itemvalue="Application.Main" />
       <item itemvalue="Application.SeleniumAutomationApplication" />
-      <item itemvalue="JUnit.SeleniumAutomationTest.testProcessAttendanceSteps_ValidPhaseRange_AllSteps" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SeleniumAutomationRunner" />
         <item itemvalue="Application.SeleniumAutomationApplication" />
-        <item itemvalue="JUnit.SeleniumAutomationTest.testProcessAttendanceSteps_ValidPhaseRange_AllSteps" />
+        <item itemvalue="Application.SeleniumAutomationRunner" />
         <item itemvalue="Application.ClientStdio" />
         <item itemvalue="Application.Main" />
       </list>
