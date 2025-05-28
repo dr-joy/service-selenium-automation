@@ -8,6 +8,7 @@ import com.drjoy.automation.model.ExportTemplateFilterSetting;
 import com.drjoy.automation.repository.ExcelReaderRepository;
 import com.google.common.collect.Lists;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,15 @@ import java.util.stream.IntStream;
 
 @Service
 public class SeleniumAutomationService {
+    @Value("${powershell-log:false}")
+    private boolean isLogPowerShell;
 
     @Async
     public void processAttendanceSteps(ATTaskRequest request, String taskId) {
         TaskLoggerManager.init(taskId);
+        if (isLogPowerShell) {
+            TaskLoggerManager.openLogTail(taskId);
+        }
         int phaseStart = request.getPhaseStart();
         int phaseEnd = request.getPhaseEnd();
         List<ExportTemplateFilterSetting> allSettings = ExcelReaderRepository.findAllExportFilterSetting();
