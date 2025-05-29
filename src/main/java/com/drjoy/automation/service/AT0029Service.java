@@ -1,5 +1,7 @@
 package com.drjoy.automation.service;
 
+import com.drjoy.automation.config.Configuration;
+import com.drjoy.automation.config.DriverFactory;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -11,23 +13,20 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+
 @Service
 @Log4j2
 public class AT0029Service {
-
-    private final WebDriver driver;
-    private final WebDriverWait wait;
-
-    public AT0029Service(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, java.time.Duration.ofSeconds(10));
-    }
 
     /**
      * Thực hiện quy trình xuất CSV "休暇残数"
      * Giả định đã login, đã chuyển đúng URL.
      */
     public void exportLeaveBalanceCsv() {
+        WebDriver driver = DriverFactory.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.get(Configuration.getBaseUrl() + "/at/at0029");
         // Chọn "休暇残数" ở dropdown
         WebElement selectElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//div[@class='type-export-csv']//select")
