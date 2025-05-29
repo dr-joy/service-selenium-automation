@@ -1,6 +1,7 @@
 package com.drjoy.automation.controller;
 
 import com.drjoy.automation.controller.request.ATTaskRequest;
+import com.drjoy.automation.controller.request.ATTeireiRequest;
 import com.drjoy.automation.controller.response.ATTaskResponse;
 import com.drjoy.automation.logging.TaskLoggerManager;
 import com.drjoy.automation.service.SeleniumAutomationService;
@@ -26,6 +27,14 @@ public class SeleniumAutomationController {
         String taskId = TaskLoggerManager.generateTaskId("attendance");
 
         seleniumAutomationService.processAttendanceSteps(request, taskId);
+        return ResponseEntity.ok(new ATTaskResponse(taskId));
+    }
+
+    @PostMapping(value = "/selenium/teirei-screens")
+    public ResponseEntity<ATTaskResponse> processAttendanceSteps1(@RequestBody ATTeireiRequest request) throws ClassNotFoundException {
+        String taskId = TaskLoggerManager.generateTaskId("attendance");
+
+        seleniumAutomationService.processTeireiScreen(request, taskId);
         return ResponseEntity.ok(new ATTaskResponse(taskId));
     }
 }
