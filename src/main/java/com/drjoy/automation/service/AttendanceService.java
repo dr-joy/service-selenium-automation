@@ -545,17 +545,32 @@ public class AttendanceService {
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='残業・研鑽申請一覧']")).click();
 
         String btnMemberFilterXpath = "//*[@id='tab-content4']//app-at0022//app-destination-member-filter";
-        WebElement inputElementMemberFilter = DriverFactory.getDriver().findElement(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
+        WebUI.click(By.xpath(btnMemberFilterXpath));
+
+        By btnChooseAllItem = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全選択']");
+        if (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
+            // Click first time - choose all
+            WebUI.click(btnChooseAllItem);
+            // Delay in 1 sec
+            WebUI.sleep(500);
+        }
+
+        // Click seconds time - reset all
+        By btnResetAllItem = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全解除']");
+        WebUI.click(btnResetAllItem);
+        WebUI.sleep(500);
+
+        By searchUserNameInput = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']");
+        WebElement inputElementMemberFilter = DriverFactory.getDriver().findElement(searchUserNameInput);
 
         String filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
         if (!filterUserNameText.contains(setting.getTargetUser())) {
-            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
-
-            inputElementMemberFilter.clear();
             inputElementMemberFilter.sendKeys(setting.getTargetUser());
 
             WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
             WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+
+            WebUI.sleep(500);
         }
 
         String xpathSearchApplicationType = "//*[@id='tab-content4']//app-at0022//p[normalize-space(text())='申請種類を選択']/following-sibling::select";
@@ -582,6 +597,8 @@ public class AttendanceService {
             WebElement dropdownElementAT0022HeaderSelectStatus  = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
             Select dropdownAT0022HeaderSelectStatus  = new Select(dropdownElementAT0022HeaderSelectStatus );
             dropdownAT0022HeaderSelectStatus.selectByValue("RS_ACCEPTED");
+
+            WebUI.sleep(500);
         }
 
         // Check DayOff Request
@@ -597,6 +614,8 @@ public class AttendanceService {
 
             WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
             WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+
+            WebUI.sleep(500);
         }
 
         dropdownElementSearchApplicationType = DriverFactory.getDriver().findElement(By.xpath(xpathSearchApplicationType));
@@ -607,7 +626,7 @@ public class AttendanceService {
         dropdownSearchStatusButton  = new Select(dropdownElementSearchStatusButton );
         dropdownSearchStatusButton.selectByValue("RS_NEW");
 
-        if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 3) != null) {
+        if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
             String checkboxChooseAllRecordXpath = "//app-at0022//div[@id='table-header']//tr[1]/th[1]";
             WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
 
@@ -620,6 +639,8 @@ public class AttendanceService {
             WebElement dropdownElementAT0022HeaderSelectStatus  = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
             Select dropdownAT0022HeaderSelectStatus  = new Select(dropdownElementAT0022HeaderSelectStatus );
             dropdownAT0022HeaderSelectStatus.selectByValue("RS_ACCEPTED");
+
+            WebUI.sleep(500);
         }
     }
 
@@ -627,20 +648,39 @@ public class AttendanceService {
     public static void rejectAllRequest(ExportTemplateFilterSetting setting) {
         AttendanceUtils.navigateToATPage("at0022");
 
+        WebUI.clickAtCoordinates(0, 0);
+
         // Handle OT request
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='残業・研鑽申請一覧']")).click();
 
         String btnMemberFilterXpath = "//*[@id='tab-content4']//app-at0022//app-destination-member-filter";
-        WebElement inputElementMemberFilter = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
+        WebUI.click(By.xpath(btnMemberFilterXpath));
+
+        By btnChooseAllItem = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全選択']");
+        if (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
+            // Click first time - choose all
+            WebUI.click(btnChooseAllItem);
+            // Delay in 1 sec
+            WebUI.sleep(500);
+        }
+
+        // Click seconds time - reset all
+        By btnResetAllItem = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全解除']");
+        WebUI.click(btnResetAllItem);
+        WebUI.sleep(500);
+
+        By searchUserNameInput = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']");
+        WebElement inputElementMemberFilter = DriverFactory.getDriver().findElement(searchUserNameInput);
 
         String filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
         if (!filterUserNameText.contains(setting.getTargetUser())) {
             inputElementMemberFilter.clear();
             inputElementMemberFilter.sendKeys(setting.getTargetUser());
 
-            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
             WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
             WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+
+            WebUI.sleep(500);
         }
 
         String xpathSearchApplicationType = "//*[@id='tab-content4']//app-at0022//p[normalize-space(text())='申請種類を選択']/following-sibling::select";
@@ -652,6 +692,7 @@ public class AttendanceService {
         WebElement dropdownElementSearchStatusButton  = DriverFactory.getDriver().findElement(By.xpath(xpathSearchStatusButton));
         Select dropdownSearchStatusButton  = new Select(dropdownElementSearchStatusButton );
         dropdownSearchStatusButton.selectByValue("RS_ACCEPTED");
+        WebUI.sleep(500);
 
         String xpathAllRecords = "//app-at0022//div[@id='table-content']/table/tbody/tr";
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
@@ -681,7 +722,11 @@ public class AttendanceService {
         dropdownElementSearchApplicationType = DriverFactory.getDriver().findElement(By.xpath(xpathSearchApplicationType));
         dropdownSearchApplicationType = new Select(dropdownElementSearchApplicationType);
         dropdownSearchApplicationType.selectByVisibleText("すべて");
+
+        dropdownElementSearchStatusButton  = DriverFactory.getDriver().findElement(By.xpath(xpathSearchStatusButton));
+        dropdownSearchStatusButton  = new Select(dropdownElementSearchStatusButton);
         dropdownSearchStatusButton.selectByValue("RS_ACCEPTED");
+        WebUI.sleep(500);
 
         filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
         if (filterUserNameText.contains(setting.getTargetUser())) {
@@ -690,18 +735,19 @@ public class AttendanceService {
             inputElementMemberFilter = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
             inputElementMemberFilter.clear();
             inputElementMemberFilter.sendKeys(setting.getTargetUser());
-        }
 
-        WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
-        WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
+            WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+        }
 
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
             List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
             for (WebElement requestElement : requestRowElements) {
                 By rejectButton = By.xpath(xpathAllRecords + "/td[9]//button[normalize-space(text())='非承認']");
 
-                WebUI.waitForElementClickable(rejectButton, 10);
-                WebUI.click(rejectButton);
+                WebElement rejectElm = WebUI.waitForElementPresent(rejectButton, 3);
+                if (rejectElm == null) continue;
+                WebUI.clickWithScrollTo(rejectElm);
                 
                 WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value)).click();
 
