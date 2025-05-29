@@ -82,7 +82,7 @@ public class AttendanceService {
     public static void removeAllCheckingLogInPage() {
         String acceptCheckingLogButtonXpath = "//app-at0023//form[@id='checking-log']//table//tbody/tr[1]/td[last()-1]//button[normalize-space(text())='確定']";
 
-        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 5) != null) {
+        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 3) != null) {
             return;
         }
 
