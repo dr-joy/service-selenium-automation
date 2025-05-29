@@ -1,8 +1,18 @@
 <configuration>
+    <!-- Appender cho console mặc định -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!-- Root logger: dùng cho toàn bộ Spring Boot, framework,... -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
     <appender name="TASK_ROUTING" class="com.drjoy.automation.logging.TaskIdRoutingAppender">
         <logDir>logs</logDir> <!-- hoặc để mặc định trong appender -->
     </appender>
-
     <logger name="taskLogger" level="DEBUG" additivity="false">
         <appender-ref ref="TASK_ROUTING"/>
     </logger>
