@@ -129,7 +129,7 @@ public class SeleniumAutomationService {
 
     private static List<String> getAt0047Methods() {
         return List.of(
-                "runAT0047_1_2_5",
+                "AT_AT0047_1_2_5",
                 "AT_AT0047_1_3_6"
         );
     }
