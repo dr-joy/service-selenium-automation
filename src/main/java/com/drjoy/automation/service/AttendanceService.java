@@ -14,6 +14,7 @@ import com.drjoy.automation.utils.AttendanceUtils;
 import com.drjoy.automation.utils.DateUtils;
 import com.drjoy.automation.utils.WebUI;
 import com.drjoy.automation.utils.xpath.common.XpathCommon;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -82,13 +83,15 @@ public class AttendanceService {
     public static void removeAllCheckingLogInPage() {
         String acceptCheckingLogButtonXpath = "//app-at0023//form[@id='checking-log']//table//tbody/tr[1]/td[last()-1]//button[normalize-space(text())='確定']";
 
-        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 3) != null) {
+        waitForLoadingElement();
+        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 2) != null) {
             return;
         }
 
         WebElement requestButton = WebUI.findWebElementIfVisible(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button"));
         requestButton.click();
 
+        waitForLoadingElement();
         while (WebUI.waitForElementPresent(By.xpath(XpathCommon.MODAL_CONFIRM_WITH_JP_TEXT_BTN.value), 2) != null) {
             WebElement confirmButton = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_WITH_JP_TEXT_BTN.value));
             confirmButton.click();
@@ -132,6 +135,7 @@ public class AttendanceService {
         AttendanceUtils.navigateToATPage("at0001");
         waitForLoadingElement();
 
+        WebUI.sleep(500);
         AttendanceUtils.selectUserAndMonthOnTimesheetPage(setting.getTargetUser(), setting.getTargetMonth());
 
         List<CheckingLog> allLogs = ExcelReaderRepository.findAllCheckingLog();
@@ -153,29 +157,40 @@ public class AttendanceService {
                 WebUI.sleep(1000);
             }
 
+            Map<String, List<Request>> mapRequestsByDay = mapGroupingRequestByDay(dateIndex, setting.getSheetName(), setting.getPhase());
+
+            // Xử lý day off request
+            ExecutionHelper.runStepWithLogging(String.format("Make day off request: dateIndex:%s", dateIndex), () ->
+                handleDayOffRequestByDateIndex(mapRequestsByDay, dateIndex)
+            );
+
             // Nhập checking log
-            for (int i = 0; i < logsInDay.size(); i++) {
-                CheckingLog log = logsInDay.get(i);
-                String xpathLogTime = String.format("//app-at0023//form[@id='checking-log']//table//tbody/tr[%d]/td[1]//input", i + 1);
-                String xpathReason = String.format("//app-at0023//form[@id='checking-log']//table//tbody/tr[%d]/td[3]//textarea", i + 1);
+            ExecutionHelper.runStepWithLogging(String.format("Enter the checking log: dateIndex:%s", dateIndex), () -> {
+                for (int i = 0; i < logsInDay.size(); i++) {
+                    CheckingLog log = logsInDay.get(i);
+                    String xpathLogTime = String.format("//app-at0023//form[@id='checking-log']//table//tbody/tr[%d]/td[1]//input", i + 1);
+                    String xpathReason = String.format("//app-at0023//form[@id='checking-log']//table//tbody/tr[%d]/td[3]//textarea", i + 1);
 
-                WebElement inputTime = WebUI.findWebElementIfVisible(By.xpath(xpathLogTime));
-                WebElement inputReason = WebUI.findWebElementIfVisible(By.xpath(xpathReason));
+                    WebElement inputTime = WebUI.findWebElementIfVisible(By.xpath(xpathLogTime));
+                    WebElement inputReason = WebUI.findWebElementIfVisible(By.xpath(xpathReason));
 
-                if (inputTime != null) inputTime.sendKeys(log.getLogTime());
-                if (inputReason != null) inputReason.sendKeys(Optional.ofNullable(log.getReason()).orElse(""));
+                    if (inputTime != null) inputTime.sendKeys(log.getLogTime());
+                    if (inputReason != null) inputReason.sendKeys(Optional.ofNullable(log.getReason()).orElse(""));
 
-                if (i >= 1 && i < logsInDay.size()) {
-                    WebElement btnAddLog = WebUI.findWebElementIfVisible(By.cssSelector("#checking-log div div button.add-link"));
-                    if (WebUI.waitForElementClickable(By.cssSelector("#checking-log div div button.add-link")) != null) WebUI.clickWithScrollTo(btnAddLog);
+                    if (i >= 1 && i < logsInDay.size()) {
+                        WebElement btnAddLog = WebUI.findWebElementIfVisible(By.cssSelector("#checking-log div div button.add-link"));
+                        if (WebUI.waitForElementClickable(By.cssSelector("#checking-log div div button.add-link")) != null) WebUI.clickWithScrollTo(btnAddLog);
+                    }
                 }
-            }
 
-            // Submit checking log
-            WebUI.findWebElementIfPresent(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button")).click();
+                // Submit checking log
+                WebUI.findWebElementIfPresent(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button")).click();
+            });
 
-            // Gửi request
-            addRequestByDateIndex(dateIndex, setting.getSheetName(), setting.getPhase());
+            // Xử lý OT request
+            ExecutionHelper.runStepWithLogging(String.format("Make OT request: dateIndex:%s", dateIndex), () ->
+                handleOTAndResearchRequestByDateIndex(mapRequestsByDay, dateIndex)
+            );
 
             // Quay lại AT0001
             WebElement backBtn = WebUI.findWebElementIfVisible(By.xpath("//a[@class='page-head-backlink']"));
@@ -192,21 +207,34 @@ public class AttendanceService {
         }
     }
 
-    public static void addRequestByDateIndex(String dateIndex, String sheet, String phaseTest) {
-        if (dateIndex == null || dateIndex.isEmpty()) return;
+//    public static void addRequestByDateIndex(String dateIndex, String sheet, String phaseTest) {
+//        if (dateIndex == null || dateIndex.isEmpty()) return;
+//
+//        waitForLoadingElement();
+//
+//        List<Request> requestData = ExcelReaderRepository.findAllRequest(sheet); // sheet == null thì xử lý trong hàm này
+//
+//        // Group by dateIndex
+//        Map<String, List<Request>> mapGroupingByDay = requestData.stream()
+//            .filter(row -> phaseTest.equals(row.getPhase()))
+//            .filter(row -> row.getDateIndex() != null && !row.getDateIndex().isEmpty())
+//            .collect(Collectors.groupingBy(Request::getDateIndex));
+//
+//        handleOTAndResearchRequestByDateIndex(mapGroupingByDay, dateIndex);
+//        handleDayOffRequestByDateIndex(mapGroupingByDay, dateIndex);
+//    }
+
+    public static Map<String, List<Request>> mapGroupingRequestByDay(String dateIndex, String sheet, String phaseTest) {
+        if (dateIndex == null || dateIndex.isEmpty()) return Maps.newHashMap();
 
         waitForLoadingElement();
 
         List<Request> requestData = ExcelReaderRepository.findAllRequest(sheet); // sheet == null thì xử lý trong hàm này
 
-        // Group by dateIndex
-        Map<String, List<Request>> mapGroupingByDay = requestData.stream()
+        return requestData.stream()
             .filter(row -> phaseTest.equals(row.getPhase()))
             .filter(row -> row.getDateIndex() != null && !row.getDateIndex().isEmpty())
             .collect(Collectors.groupingBy(Request::getDateIndex));
-
-        handleOTAndResearchRequestByDateIndex(mapGroupingByDay, dateIndex);
-        handleDayOffRequestByDateIndex(mapGroupingByDay, dateIndex);
     }
 
     public static void handleOTAndResearchRequestByDateIndex(Map<String, List<Request>> mapGroupingByDay, String dateIndex) {
@@ -303,6 +331,23 @@ public class AttendanceService {
                     default:
                         break;
                 }
+            }
+
+            // Lựa chọn màn hình "AT0023C"
+            selectScreenBtn = WebUI.findWebElementIfVisible(By.xpath("//app-at0024//div[contains(@class, 'select-screen')]//select"));
+            dropdown = new Select(selectScreenBtn);
+            dropdown.selectByValue("AT0023C");
+
+            // Chờ tải lại trang
+            waitForLoadingElement();
+
+            // Xử lý confirm popup nếu có
+            int retry = 0;
+            while (retry < 5) {
+                WebElement confirmBtn = WebUI.waitForElementClickable(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value), 2);
+                if (confirmBtn == null) break;
+                confirmBtn.click();
+                retry++;
             }
         }
     }
@@ -549,9 +594,10 @@ public class AttendanceService {
 
         By btnChooseAllItem = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全選択']");
         if (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
+            WebUI.sleep(500);
             // Click first time - choose all
-            WebUI.click(btnChooseAllItem);
-            // Delay in 1 sec
+//            WebUI.click(btnChooseAllItem);
+            WebUI.clickByJS(WebUI.findWebElementIfVisible(btnChooseAllItem));
             WebUI.sleep(500);
         }
 
@@ -589,7 +635,9 @@ public class AttendanceService {
             WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
 
             String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
-            AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0);
+            ExecutionHelper.runStepWithLogging("AT0022 - Check OT request -> Click & Confirm ", () ->
+                AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
+            );
 
             waitForLoadingElement();
 
@@ -631,7 +679,9 @@ public class AttendanceService {
             WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
 
             String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
-            AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0);
+            ExecutionHelper.runStepWithLogging("AT0022 - Check DayOff request -> Click & Confirm ", () ->
+                AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
+            );
 
             waitForLoadingElement();
 
@@ -658,8 +708,9 @@ public class AttendanceService {
 
         By btnChooseAllItem = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全選択']");
         if (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
+            WebUI.sleep(500);
             // Click first time - choose all
-            WebUI.click(btnChooseAllItem);
+            WebUI.clickByJS(WebUI.findWebElementIfVisible(btnChooseAllItem));
             // Delay in 1 sec
             WebUI.sleep(500);
         }
@@ -696,24 +747,28 @@ public class AttendanceService {
 
         String xpathAllRecords = "//app-at0022//div[@id='table-content']/table/tbody/tr";
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
-            List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
-            for (WebElement requestElement : requestRowElements) {
-                By rejectButton = By.xpath(xpathAllRecords + "/td[10]//span[normalize-space(text())='非承認']/ancestor::button");
+            ExecutionHelper.runStepWithLogging("AT0022 - Reject OT Request -> Click & Confirm ", () ->{
+                List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
 
-                WebUI.waitForElementClickable(rejectButton, 10);
-                WebUI.click(rejectButton);
+                for (int i = 0; i < requestRowElements.size(); i++) {
+                    WebUI.sleep(500);
+                    By rejectButton = By.xpath(xpathAllRecords + "[1]//span[normalize-space(text())='非承認']/ancestor::button");
 
-                WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value)).click();
+                    WebUI.waitForElementClickable(rejectButton, 10);
+                    WebUI.click(rejectButton);
 
-                WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5));
-                WebElement loader = DriverFactory.getDriver().findElement(By.xpath("//app-loader-empty")); // cần đúng xpath tương ứng với 'app-loader-empty'
-                wait.until(ExpectedConditions.attributeToBe(loader, "ng-reflect-is-show-loading", "false"));
-            }
+                    WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value)).click();
 
-            String xpathAT0022HeaderSelectStatus = "//*[@id=\"tab-content4\"]//app-at0022//p[normalize-space(text())='ステータスを選択']/following-sibling::select";
-            WebElement dropdownElementAT0022HeaderSelectStatus  = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
-            Select dropdownAT0022HeaderSelectStatus  = new Select(dropdownElementAT0022HeaderSelectStatus );
-            dropdownAT0022HeaderSelectStatus.selectByValue("RS_REJECTED");
+                    WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5));
+                    WebElement loader = DriverFactory.getDriver().findElement(By.xpath("//app-loader-empty")); // cần đúng xpath tương ứng với 'app-loader-empty'
+                    wait.until(ExpectedConditions.attributeToBe(loader, "ng-reflect-is-show-loading", "false"));
+                }
+
+                String xpathAT0022HeaderSelectStatus = "//*[@id=\"tab-content4\"]//app-at0022//p[normalize-space(text())='ステータスを選択']/following-sibling::select";
+                WebElement dropdownElementAT0022HeaderSelectStatus  = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
+                Select dropdownAT0022HeaderSelectStatus  = new Select(dropdownElementAT0022HeaderSelectStatus );
+                dropdownAT0022HeaderSelectStatus.selectByValue("RS_REJECTED");
+            });
         }
 
         // Handle DayOff request
@@ -741,25 +796,27 @@ public class AttendanceService {
         }
 
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
-            List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
-            for (WebElement requestElement : requestRowElements) {
-                By rejectButton = By.xpath(xpathAllRecords + "/td[9]//button[normalize-space(text())='非承認']");
+            ExecutionHelper.runStepWithLogging("AT0022 - Reject Day off Request -> Click & Confirm ", () ->{
+                List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
+                for (int i = 0; i < requestRowElements.size(); i++) {
+                    By rejectButton = By.xpath(xpathAllRecords + "[1]//span[normalize-space(text())='非承認']/ancestor::button");
 
-                WebElement rejectElm = WebUI.waitForElementPresent(rejectButton, 3);
-                if (rejectElm == null) continue;
-                WebUI.clickWithScrollTo(rejectElm);
-                
-                WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value)).click();
+                    WebElement rejectElm = WebUI.waitForElementPresent(rejectButton, 3);
+                    if (rejectElm == null) continue;
+                    WebUI.clickWithScrollTo(rejectElm);
 
-                WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5));
-                WebElement loader = DriverFactory.getDriver().findElement(By.xpath("//app-loader-empty")); // cần đúng xpath tương ứng với 'app-loader-empty'
-                wait.until(ExpectedConditions.attributeToBe(loader, "ng-reflect-is-show-loading", "false"));
-            }
+                    WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value)).click();
 
-            String xpathAT0022HeaderSelectStatus = "//*[@id=\"tab-content4\"]//app-at0022//p[normalize-space(text())='ステータスを選択']/following-sibling::select";
-            WebElement dropdownElementAT0022HeaderSelectStatus  = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
-            Select dropdownAT0022HeaderSelectStatus  = new Select(dropdownElementAT0022HeaderSelectStatus );
-            dropdownAT0022HeaderSelectStatus.selectByValue("RS_REJECTED");
+                    WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5));
+                    WebElement loader = DriverFactory.getDriver().findElement(By.xpath("//app-loader-empty")); // cần đúng xpath tương ứng với 'app-loader-empty'
+                    wait.until(ExpectedConditions.attributeToBe(loader, "ng-reflect-is-show-loading", "false"));
+                }
+
+                String xpathAT0022HeaderSelectStatus = "//*[@id=\"tab-content4\"]//app-at0022//p[normalize-space(text())='ステータスを選択']/following-sibling::select";
+                WebElement dropdownElementAT0022HeaderSelectStatus  = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
+                Select dropdownAT0022HeaderSelectStatus  = new Select(dropdownElementAT0022HeaderSelectStatus );
+                dropdownAT0022HeaderSelectStatus.selectByValue("RS_REJECTED");
+            });
         }
     }
 

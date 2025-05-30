@@ -24,6 +24,8 @@ public class PhaseProcessor {
             // Attempt login and execute with retries
             if (loginIfNeeded(username, password, previousUsername)) {
                 executePhaseWithRetry(execution, current, i);
+
+                previousUsername = username;
             }
         }
 

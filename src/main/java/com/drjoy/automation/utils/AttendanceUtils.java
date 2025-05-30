@@ -2,6 +2,7 @@ package com.drjoy.automation.utils;
 
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
+import com.drjoy.automation.execution.ExecutionHelper;
 import com.drjoy.automation.model.JobType;
 import com.drjoy.automation.repository.ExcelReaderRepository;
 import com.drjoy.automation.utils.xpath.at.Screen;
@@ -92,59 +93,74 @@ public class AttendanceUtils {
         WebElement monthYearElement = WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content1']/app-at0001-summary//div[contains(@class, 'header-block-option')]//h2"));
         String currMonthYearText = convertMonthYearToAT0001TitleFormat(monthYearElement.getText());
 
-        if (monthYear != null && !monthYear.equals(currMonthYearText)) {
-            // Click nút chọn tháng
-//            WebUI.sleep(2000);
-            waitForLoadingOverlayElement();
-            WebElement chooseMonthBtn = WebUI.findWebElementIfVisible(By.xpath("//app-at0001-date-picker//span[text()='月選択']/ancestor::button"));
-            WebUI.clickAtCoordinates(800, 400);
-            chooseMonthBtn.click();
+        ExecutionHelper.runStepWithLogging(String.format("Select Month: month: %s", monthYear), () -> {
+            if (monthYear != null && !monthYear.equals(currMonthYearText)) {
+                // Click nút chọn tháng
+                waitForLoadingOverlayElement();
+                WebUI.sleep(200);
+                WebElement chooseMonthBtn = WebUI.findWebElementIfVisible(By.xpath("//app-at0001-date-picker//span[text()='月選択']/ancestor::button"));
+                WebUI.clickAtCoordinates(800, 400);
+                WebUI.sleep(200);
+                WebUI.clickByJS(chooseMonthBtn);
 
-            String baseDatePickerXpath = "//app-at0001-date-picker//div[contains(@class, 'date-picker')]";
-            String textYearCenterXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-center')]//span";
+                String baseDatePickerXpath = "//app-at0001-date-picker//div[contains(@class, 'date-picker')]";
+                String textYearCenterXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-center')]//span";
 
-            WebElement yearElement = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath));
-            String currYear = yearElement.getText();
+                WebElement yearElement = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath));
+                String currYear = yearElement.getText();
 
-            // Di chuyển đến năm mục tiêu
-            while (Integer.parseInt(targetYear) < Integer.parseInt(currYear)) {
-                String backYearBtnXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-left')]//i";
-                WebUI.findWebElementIfVisible(By.xpath(backYearBtnXpath)).click();
-                currYear = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath)).getText();
+                // Di chuyển đến năm mục tiêu
+                while (Integer.parseInt(targetYear) < Integer.parseInt(currYear)) {
+                    String backYearBtnXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-left')]//i";
+                    WebUI.clickByJS(WebUI.findWebElementIfVisible(By.xpath(backYearBtnXpath)));
+                    currYear = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath)).getText();
+                }
+
+                // Chọn tháng
+                WebUI.sleep(300);
+                String targetMonthXpath = baseDatePickerXpath + "//div[contains(@class, 'month text-center')]//button[" + targetMonth + "]";
+                WebUI.clickByJS(WebUI.findWebElementIfVisible(By.xpath(targetMonthXpath)));
+                WebUI.sleep(200);
             }
-
-            // Chọn tháng
-            String targetMonthXpath = baseDatePickerXpath + "//div[contains(@class, 'month text-center')]//button[" + targetMonth + "]";
-            WebUI.findWebElementIfVisible(By.xpath(targetMonthXpath)).click();
-        }
+        });
 
         // Chọn phòng ban "すべて"
-        waitForLoadingOverlayElement();
-        String baseDeptSelectionXpath = "//app-history-department-select";
-        WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath)).click();
-        WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'search-dept')]/input")).sendKeys("すべて");
-        WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'department-content')]//span[text()='すべて']")).click();
-        waitForLoadingElement();
+        ExecutionHelper.runStepWithLogging("Select department", () -> {
+            waitForLoadingOverlayElement();
+            WebUI.sleep(500);
+            String baseDeptSelectionXpath = "//app-history-department-select";
+            By deptSelectionBy = By.xpath(baseDeptSelectionXpath);
+            WebUI.findWebElementIfVisible(deptSelectionBy).click();
+
+            WebUI.sleep(500);
+            WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'search-dept')]/input")).sendKeys("すべて");
+            WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'department-content')]//span[text()='すべて']")).click();
+            waitForLoadingElement();
+        });
 
         // Chọn user mục tiêu
-        String baseUserSelectionXpath = "//app-at0001-summary//div[contains(@class, 'hoz-user pl-2')]";
-        WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath)).click();
+        ExecutionHelper.runStepWithLogging(String.format("Select user: targetUser: %s", targetUser), () -> {
+            String baseUserSelectionXpath = "//app-at0001-summary//div[contains(@class, 'hoz-user pl-2')]";
+            WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath)).click();
 
-        WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//input"))
-            .sendKeys(targetUser);
+            WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//input"))
+                .sendKeys(targetUser);
 
-        WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//button"))
-            .click();
+            WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//button"))
+                .click();
+            WebUI.sleep(300);
 
-        String targetUserBtnXpath = baseUserSelectionXpath +
-            "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'popup-content fs14')]//span[normalize-space(text())='" + targetUser + "']";
+            String targetUserBtnXpath = baseUserSelectionXpath +
+                "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'popup-content fs14')]//span[normalize-space(text())='" + targetUser + "']";
 
-        List<WebElement> userBtns = WebUI.findWebElementsIfVisible(By.xpath(targetUserBtnXpath));
-        if (!userBtns.isEmpty()) {
-            userBtns.get(0).click();
-        }
+            List<WebElement> userBtns = WebUI.findWebElementsIfVisible(By.xpath(targetUserBtnXpath));
+            WebUI.sleep(200);
+            if (!userBtns.isEmpty()) {
+                userBtns.get(0).click();
+            }
 
-        waitForLoadingElement();
+            waitForLoadingElement();
+        });
     }
 
     public static String convertMonthYearToAT0001TitleFormat(String input) {
@@ -172,10 +188,12 @@ public class AttendanceUtils {
     public static void clickAndConfirm(By targetButton, int timeoutSeconds) {
         WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(timeoutSeconds));
 
+        WebUI.sleep(500);
         // Wait và click target button
         wait.until(ExpectedConditions.elementToBeClickable(targetButton));
         DriverFactory.getDriver().findElement(targetButton).click();
 
+        WebUI.sleep(500);
         // Wait và click confirm button
         By confirmButton = By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value); // cần chỉnh lại xpath cho đúng với 'button_confirm' thực tế
         wait.until(ExpectedConditions.elementToBeClickable(confirmButton));
