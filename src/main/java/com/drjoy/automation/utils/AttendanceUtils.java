@@ -97,11 +97,11 @@ public class AttendanceUtils {
             if (monthYear != null && !monthYear.equals(currMonthYearText)) {
                 // Click nút chọn tháng
                 waitForLoadingOverlayElement();
-                WebUI.sleep(500);
+                WebUI.sleep(200);
                 WebElement chooseMonthBtn = WebUI.findWebElementIfVisible(By.xpath("//app-at0001-date-picker//span[text()='月選択']/ancestor::button"));
                 WebUI.clickAtCoordinates(800, 400);
-                WebUI.sleep(500);
-                chooseMonthBtn.click();
+                WebUI.sleep(200);
+                WebUI.clickByJS(chooseMonthBtn);
 
                 String baseDatePickerXpath = "//app-at0001-date-picker//div[contains(@class, 'date-picker')]";
                 String textYearCenterXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-center')]//span";
@@ -112,14 +112,15 @@ public class AttendanceUtils {
                 // Di chuyển đến năm mục tiêu
                 while (Integer.parseInt(targetYear) < Integer.parseInt(currYear)) {
                     String backYearBtnXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-left')]//i";
-                    WebUI.findWebElementIfVisible(By.xpath(backYearBtnXpath)).click();
+                    WebUI.clickByJS(WebUI.findWebElementIfVisible(By.xpath(backYearBtnXpath)));
                     currYear = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath)).getText();
                 }
 
                 // Chọn tháng
+                WebUI.sleep(300);
                 String targetMonthXpath = baseDatePickerXpath + "//div[contains(@class, 'month text-center')]//button[" + targetMonth + "]";
-                WebUI.findWebElementIfVisible(By.xpath(targetMonthXpath)).click();
-                WebUI.sleep(500);
+                WebUI.clickByJS(WebUI.findWebElementIfVisible(By.xpath(targetMonthXpath)));
+                WebUI.sleep(200);
             }
         });
 
@@ -138,7 +139,6 @@ public class AttendanceUtils {
         });
 
         // Chọn user mục tiêu
-
         ExecutionHelper.runStepWithLogging(String.format("Select user: targetUser: %s", targetUser), () -> {
             String baseUserSelectionXpath = "//app-at0001-summary//div[contains(@class, 'hoz-user pl-2')]";
             WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath)).click();
@@ -148,11 +148,13 @@ public class AttendanceUtils {
 
             WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//button"))
                 .click();
+            WebUI.sleep(300);
 
             String targetUserBtnXpath = baseUserSelectionXpath +
                 "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'popup-content fs14')]//span[normalize-space(text())='" + targetUser + "']";
 
             List<WebElement> userBtns = WebUI.findWebElementsIfVisible(By.xpath(targetUserBtnXpath));
+            WebUI.sleep(200);
             if (!userBtns.isEmpty()) {
                 userBtns.get(0).click();
             }
