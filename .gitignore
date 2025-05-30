@@ -30,8 +30,13 @@ build/
 
 ### Resources ###
 resources/data/*
+!resources/data/.placeholder
+
 resources/selenium/bin/*
+!resources/selenium/bin/.placeholder
+
 resources/selenium/logs/*
+!resources/selenium/logs/.placeholder
 
 ### VS Code ###
 .vscode/
