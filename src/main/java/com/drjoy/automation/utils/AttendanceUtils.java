@@ -97,6 +97,7 @@ public class AttendanceUtils {
             if (monthYear != null && !monthYear.equals(currMonthYearText)) {
                 // Click nút chọn tháng
                 waitForLoadingOverlayElement();
+                WebUI.sleep(500);
                 WebElement chooseMonthBtn = WebUI.findWebElementIfVisible(By.xpath("//app-at0001-date-picker//span[text()='月選択']/ancestor::button"));
                 WebUI.clickAtCoordinates(800, 400);
                 WebUI.sleep(500);
@@ -118,6 +119,7 @@ public class AttendanceUtils {
                 // Chọn tháng
                 String targetMonthXpath = baseDatePickerXpath + "//div[contains(@class, 'month text-center')]//button[" + targetMonth + "]";
                 WebUI.findWebElementIfVisible(By.xpath(targetMonthXpath)).click();
+                WebUI.sleep(500);
             }
         });
 

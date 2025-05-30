@@ -132,10 +132,10 @@ public class AttendanceService {
 
     @ExecutionStep(value = "addCheckingLogs")
     public static void addAllCheckingLogs(ExportTemplateFilterSetting setting) {
-        WebUI.sleep(500);
         AttendanceUtils.navigateToATPage("at0001");
         waitForLoadingElement();
 
+        WebUI.sleep(500);
         AttendanceUtils.selectUserAndMonthOnTimesheetPage(setting.getTargetUser(), setting.getTargetMonth());
 
         List<CheckingLog> allLogs = ExcelReaderRepository.findAllCheckingLog();
@@ -749,8 +749,10 @@ public class AttendanceService {
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
             ExecutionHelper.runStepWithLogging("AT0022 - Reject OT Request -> Click & Confirm ", () ->{
                 List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
-                for (WebElement requestElement : requestRowElements) {
-                    By rejectButton = By.xpath(xpathAllRecords + "/td[10]//span[normalize-space(text())='非承認']/ancestor::button");
+
+                for (int i = 0; i < requestRowElements.size(); i++) {
+                    WebUI.sleep(500);
+                    By rejectButton = By.xpath(xpathAllRecords + "[1]//span[normalize-space(text())='非承認']/ancestor::button");
 
                     WebUI.waitForElementClickable(rejectButton, 10);
                     WebUI.click(rejectButton);
@@ -794,10 +796,10 @@ public class AttendanceService {
         }
 
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
-            ExecutionHelper.runStepWithLogging("AT0022 - Reject OT Request -> Click & Confirm ", () ->{
+            ExecutionHelper.runStepWithLogging("AT0022 - Reject Day off Request -> Click & Confirm ", () ->{
                 List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
-                for (WebElement requestElement : requestRowElements) {
-                    By rejectButton = By.xpath(xpathAllRecords + "/td[9]//button[normalize-space(text())='非承認']");
+                for (int i = 0; i < requestRowElements.size(); i++) {
+                    By rejectButton = By.xpath(xpathAllRecords + "[1]//span[normalize-space(text())='非承認']/ancestor::button");
 
                     WebElement rejectElm = WebUI.waitForElementPresent(rejectButton, 3);
                     if (rejectElm == null) continue;
