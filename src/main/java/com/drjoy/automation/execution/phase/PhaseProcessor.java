@@ -34,7 +34,7 @@ public class PhaseProcessor {
 
     // Check login and handle login/logout if needed
     private static boolean loginIfNeeded(String username, String password, String previousUsername) {
-        TaskLoggerManager.info(DriverFactory.getCACHE_PATH());
+//        TaskLoggerManager.info(DriverFactory.getCACHE_PATH());
         if (!username.equals(previousUsername)) {
             try {
                 LoginService.login(username, password);

@@ -1,5 +1,6 @@
 package com.drjoy.automation.execution;
 
+import com.drjoy.automation.execution.phase.PhaseSetting;
 import com.drjoy.automation.logging.TaskLoggerManager;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +15,7 @@ public class StaticExecutionRunner {
 
     private static final Map<Class<?>, Map<String, Method>> methodMapCache = new HashMap<>();
 
-    public static void runSteps(Class<?> serviceClass, Object setting, List<String> orderedStepNames) {
+    public static void runSteps(Class<?> serviceClass, PhaseSetting setting, List<String> orderedStepNames) {
         Map<String, Method> stepMethodMap = getCachedStepMethods(serviceClass, setting);
 
         for (String stepName : orderedStepNames) {
@@ -23,18 +24,18 @@ public class StaticExecutionRunner {
 
             try {
                 ExecutionContext.pushStep(stepName);
-                TaskLoggerManager.info("▶ Running step: " + stepName);
+                TaskLoggerManager.info("[{}] Running step: {}", setting.getPhase(), stepName);
                 method.invoke(null, setting);
                 ExecutionContext.popStep();
             } catch (InvocationTargetException e) {
                 TaskLoggerManager.error("Detail: {}", e.getCause().getMessage());
-                TaskLoggerManager.error("❌ Lỗi ở bước: {}", stepName);
-                TaskLoggerManager.error("▶ Stack logic: " + String.join(" > ", ExecutionContext.getStepTrace()));
+                TaskLoggerManager.error("Error in step: {}", stepName);
+                TaskLoggerManager.error("=> Stack logic: " + String.join(" > ", ExecutionContext.getStepTrace()));
                 ExecutionContext.clear();
                 break;
             } catch (Exception e) {
-                TaskLoggerManager.error("❌ Lỗi ở bước: {}", stepName);
-                TaskLoggerManager.error("▶ Stack logic: " + String.join(" > ", ExecutionContext.getStepTrace()));
+                TaskLoggerManager.error("Error in step: {}", stepName);
+                TaskLoggerManager.error("=> Stack logic: " + String.join(" > ", ExecutionContext.getStepTrace()));
                 TaskLoggerManager.error("Detail: {}", e.getCause().getMessage());
                 ExecutionContext.clear();
                 break;

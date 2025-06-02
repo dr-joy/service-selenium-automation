@@ -41,14 +41,12 @@ public class AttendanceService {
 
     @ExecutionStep(value = "removeCheckingLog")
     public static void removeAllCheckingLogInTimeSheetPage(ExportTemplateFilterSetting setting) {
-        ExecutionHelper.runStepWithLogging("Navigate to AT0001",
+        ExecutionHelper.runStepWithLoggingByPhase(setting, "Navigate to AT0001",
             () -> AttendanceUtils.navigateToATPage("at0001")
         );
         waitForLoadingElement();
 
-        ExecutionHelper.runStepWithLogging("Select user and Month in AT0001",
-            () -> AttendanceUtils.selectUserAndMonthOnTimesheetPage(setting.getTargetUser(), setting.getTargetMonth())
-        );
+        AttendanceUtils.selectUserAndMonthOnTimesheetPage(setting);
 
         String xpathRowAt0001 = "//app-at0001//div[@id='tbl-sheet']/table/tbody//tr";
         List<WebElement> dayElements = WebUI.findWebElementsIfPresent(By.xpath(xpathRowAt0001));
@@ -68,7 +66,7 @@ public class AttendanceService {
             waitForLoadingElement();
 
             // AT0023: Remove checking logs
-            ExecutionHelper.runStepWithLogging("Remove all checking logs in AT0023",
+            ExecutionHelper.runStepWithLoggingByPhase(setting,"Remove all checking logs in AT0023",
                 AttendanceService::removeAllCheckingLogInPage
             );
 
@@ -84,15 +82,17 @@ public class AttendanceService {
         String acceptCheckingLogButtonXpath = "//app-at0023//form[@id='checking-log']//table//tbody/tr[1]/td[last()-1]//button[normalize-space(text())='確定']";
 
         waitForLoadingElement();
-        WebUI.sleep(600);
+        WebUI.sleep(200);
         if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 1) == null) {
+            WebUI.sleep(200);
             WebElement requestButton = WebUI.findWebElementIfVisible(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button"));
-            requestButton.click();
+            WebUI.clickByJS(requestButton);
 
             waitForLoadingElement();
             while (WebUI.waitForElementPresent(By.xpath(XpathCommon.MODAL_CONFIRM_WITH_JP_TEXT_BTN.value), 2) != null) {
                 WebElement confirmButton = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_WITH_JP_TEXT_BTN.value));
-                confirmButton.click();
+                WebUI.sleep(200);
+                WebUI.clickByJS(confirmButton);
                 waitForLoadingElement();
             }
         }
@@ -135,7 +135,7 @@ public class AttendanceService {
         waitForLoadingElement();
 
         WebUI.sleep(500);
-        AttendanceUtils.selectUserAndMonthOnTimesheetPage(setting.getTargetUser(), setting.getTargetMonth());
+        AttendanceUtils.selectUserAndMonthOnTimesheetPage(setting);
 
         List<CheckingLog> allLogs = ExcelReaderRepository.findAllCheckingLog();
         // Lọc theo phase
@@ -159,12 +159,12 @@ public class AttendanceService {
             Map<String, List<Request>> mapRequestsByDay = mapGroupingRequestByDay(dateIndex, setting.getSheetName(), setting.getPhase());
 
             // Xử lý day off request
-            ExecutionHelper.runStepWithLogging(String.format("Make day off request: dateIndex:%s", dateIndex), () ->
+            ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Make day off request: dateIndex:%s", dateIndex), () ->
                 handleDayOffRequestByDateIndex(mapRequestsByDay, dateIndex)
             );
 
             // Nhập checking log
-            ExecutionHelper.runStepWithLogging(String.format("Enter the checking log: dateIndex:%s", dateIndex), () -> {
+            ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Enter the checking log: dateIndex:%s", dateIndex), () -> {
                 for (int i = 0; i < logsInDay.size(); i++) {
                     CheckingLog log = logsInDay.get(i);
                     String xpathLogTime = String.format("//app-at0023//form[@id='checking-log']//table//tbody/tr[%d]/td[1]//input", i + 1);
@@ -187,7 +187,7 @@ public class AttendanceService {
             });
 
             // Xử lý OT request
-            ExecutionHelper.runStepWithLogging(String.format("Make OT request: dateIndex:%s", dateIndex), () ->
+            ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Make OT request: dateIndex:%s", dateIndex), () ->
                 handleOTAndResearchRequestByDateIndex(mapRequestsByDay, dateIndex)
             );
 
@@ -638,7 +638,7 @@ public class AttendanceService {
             WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
 
             String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
-            ExecutionHelper.runStepWithLogging("AT0022 - Check OT request -> Click & Confirm ", () ->
+            ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Check OT request -> Click & Confirm ", () ->
                 AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
             );
 
@@ -682,7 +682,7 @@ public class AttendanceService {
             WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
 
             String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
-            ExecutionHelper.runStepWithLogging("AT0022 - Check DayOff request -> Click & Confirm ", () ->
+            ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Check DayOff request -> Click & Confirm ", () ->
                 AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
             );
 
@@ -755,7 +755,7 @@ public class AttendanceService {
 
         String xpathAllRecords = "//app-at0022//div[@id='table-content']/table/tbody/tr";
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
-            ExecutionHelper.runStepWithLogging("AT0022 - Reject OT Request -> Click & Confirm ", () ->{
+            ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Reject OT Request -> Click & Confirm ", () ->{
                 List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
 
                 for (int i = 0; i < requestRowElements.size(); i++) {
@@ -804,7 +804,7 @@ public class AttendanceService {
         }
 
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
-            ExecutionHelper.runStepWithLogging("AT0022 - Reject Day off Request -> Click & Confirm ", () ->{
+            ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Reject Day off Request -> Click & Confirm ", () ->{
                 List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
                 for (int i = 0; i < requestRowElements.size(); i++) {
                     By rejectButton = By.xpath(xpathAllRecords + "[1]//span[normalize-space(text())='非承認']/ancestor::button");

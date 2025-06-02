@@ -3,6 +3,7 @@ package com.drjoy.automation.utils;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionHelper;
+import com.drjoy.automation.model.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.JobType;
 import com.drjoy.automation.repository.ExcelReaderRepository;
 import com.drjoy.automation.utils.xpath.at.Screen;
@@ -81,20 +82,20 @@ public class AttendanceUtils {
         waitForLoadingElement();
     }
 
-    public static void selectUserAndMonthOnTimesheetPage(String targetUser, String monthYear) {
-        String[] splitMonthYear = DateUtils.splitMonthYear(monthYear);
+    public static void selectUserAndMonthOnTimesheetPage(ExportTemplateFilterSetting setting) {
+        String[] splitMonthYear = DateUtils.splitMonthYear(setting.getTargetMonth());
         String targetYear = splitMonthYear[0];
         String targetMonth = splitMonthYear[1];
 
         waitForLoadingElement();
 
         // Kiểm tra current month-year
-        WebUI.sleep(1000);
+        WebUI.sleep(500);
         WebElement monthYearElement = WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content1']/app-at0001-summary//div[contains(@class, 'header-block-option')]//h2"));
         String currMonthYearText = convertMonthYearToAT0001TitleFormat(monthYearElement.getText());
 
-        ExecutionHelper.runStepWithLogging(String.format("Select Month: month: %s", monthYear), () -> {
-            if (monthYear != null && !monthYear.equals(currMonthYearText)) {
+        ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Select Month: month: %s", setting.getTargetMonth()), () -> {
+            if (setting.getTargetMonth() != null && !setting.getTargetMonth().equals(currMonthYearText)) {
                 // Click nút chọn tháng
                 waitForLoadingOverlayElement();
                 WebUI.sleep(200);
@@ -125,9 +126,10 @@ public class AttendanceUtils {
         });
 
         // Chọn phòng ban "すべて"
-        ExecutionHelper.runStepWithLogging("Select department", () -> {
+        ExecutionHelper.runStepWithLoggingByPhase(setting, "Select department", () -> {
+            WebUI.sleep(200);
             waitForLoadingOverlayElement();
-            WebUI.sleep(500);
+            WebUI.sleep(400);
             String baseDeptSelectionXpath = "//app-history-department-select";
             By deptSelectionBy = By.xpath(baseDeptSelectionXpath);
             WebUI.findWebElementIfVisible(deptSelectionBy).click();
@@ -141,12 +143,12 @@ public class AttendanceUtils {
         });
 
         // Chọn user mục tiêu
-        ExecutionHelper.runStepWithLogging(String.format("Select user: targetUser: %s", targetUser), () -> {
+        ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Select user: targetUser: %s", setting.getTargetUser()), () -> {
             String baseUserSelectionXpath = "//app-at0001-summary//div[contains(@class, 'hoz-user pl-2')]";
             WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath)).click();
 
             WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//input"))
-                .sendKeys(targetUser);
+                .sendKeys(setting.getTargetUser());
 
             WebUI.sleep(200);
             WebElement searchUserBtn = WebUI.findWebElementIfVisible(
@@ -156,7 +158,7 @@ public class AttendanceUtils {
             WebUI.sleep(500);
 
             String targetUserBtnXpath = baseUserSelectionXpath +
-                "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'popup-content fs14')]//span[normalize-space(text())='" + targetUser + "']";
+                "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'popup-content fs14')]//span[normalize-space(text())='" + setting.getTargetUser() + "']";
 
             int findSearchBtnCounter = 0;
             while (!WebUI.isElementPresent(By.xpath(targetUserBtnXpath), 1)) {
