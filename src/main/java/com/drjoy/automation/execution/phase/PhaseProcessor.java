@@ -19,11 +19,11 @@ public class PhaseProcessor {
             String username = current.getUserName();
             String password = current.getPassword();
 
-            TaskLoggerManager.info("Processing phase {}: {}", i + 1, username);
+            TaskLoggerManager.info("Processing phase {}: {}", current.getPhase(), username);
 
             // Attempt login and execute with retries
             if (loginIfNeeded(username, password, previousUsername)) {
-                executePhaseWithRetry(execution, current, i);
+                executePhaseWithRetry(execution, current);
 
                 previousUsername = username;
             }
@@ -49,18 +49,18 @@ public class PhaseProcessor {
     }
 
     // Execute phase with retry logic
-    private static <T extends PhaseSetting> void executePhaseWithRetry(Execution<T> execution, T current, int phaseIndex) {
+    private static <T extends PhaseSetting> void executePhaseWithRetry(Execution<T> execution, T current) {
         for (int attempt = 1; attempt <= 2; attempt++) {
             try {
                 execution.run(current);
-                TaskLoggerManager.info("Phase {} completed successfully", phaseIndex + 1);
+                TaskLoggerManager.info("Phase {} completed successfully", current.getPhase());
                 break; // Exit after successful execution
             } catch (Exception e) {
-                TaskLoggerManager.error("Phase {} attempt {}/2 failed: {}", phaseIndex + 1, attempt, e.getMessage(), e);
+                TaskLoggerManager.error("Phase {} attempt {}/2 failed: {}", current.getPhase(), attempt, e.getMessage(), e);
                 if (attempt == 2) {
-                    TaskLoggerManager.error("Phase {} failed after 2 attempts", phaseIndex + 1);
+                    TaskLoggerManager.error("Phase {} failed after 2 attempts", current.getPhase());
                 } else {
-                    TaskLoggerManager.info("Retrying phase {}...", phaseIndex + 1);
+                    TaskLoggerManager.info("Retrying phase {}...", current.getPhase());
                 }
             }
         }

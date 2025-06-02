@@ -84,18 +84,16 @@ public class AttendanceService {
         String acceptCheckingLogButtonXpath = "//app-at0023//form[@id='checking-log']//table//tbody/tr[1]/td[last()-1]//button[normalize-space(text())='確定']";
 
         waitForLoadingElement();
-        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 2) != null) {
-            return;
-        }
+        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 2) == null) {
+            WebElement requestButton = WebUI.findWebElementIfVisible(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button"));
+            requestButton.click();
 
-        WebElement requestButton = WebUI.findWebElementIfVisible(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button"));
-        requestButton.click();
-
-        waitForLoadingElement();
-        while (WebUI.waitForElementPresent(By.xpath(XpathCommon.MODAL_CONFIRM_WITH_JP_TEXT_BTN.value), 2) != null) {
-            WebElement confirmButton = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_WITH_JP_TEXT_BTN.value));
-            confirmButton.click();
             waitForLoadingElement();
+            while (WebUI.waitForElementPresent(By.xpath(XpathCommon.MODAL_CONFIRM_WITH_JP_TEXT_BTN.value), 2) != null) {
+                WebElement confirmButton = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_WITH_JP_TEXT_BTN.value));
+                confirmButton.click();
+                waitForLoadingElement();
+            }
         }
 
         List<WebElement> checkingLogsElement = WebUI.findWebElementsIfVisible(By.xpath("//app-at0023//form[@id='checking-log']//table//tbody/tr"));
@@ -588,6 +586,7 @@ public class AttendanceService {
 
         // Check OT Request
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='残業・研鑽申請一覧']")).click();
+        waitForLoadingElement();
 
         String btnMemberFilterXpath = "//*[@id='tab-content4']//app-at0022//app-destination-member-filter";
         WebUI.click(By.xpath(btnMemberFilterXpath));
@@ -596,7 +595,6 @@ public class AttendanceService {
         if (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
             WebUI.sleep(500);
             // Click first time - choose all
-//            WebUI.click(btnChooseAllItem);
             WebUI.clickByJS(WebUI.findWebElementIfVisible(btnChooseAllItem));
             WebUI.sleep(500);
         }
@@ -702,6 +700,7 @@ public class AttendanceService {
 
         // Handle OT request
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='残業・研鑽申請一覧']")).click();
+        waitForLoadingElement();
 
         String btnMemberFilterXpath = "//*[@id='tab-content4']//app-at0022//app-destination-member-filter";
         WebUI.click(By.xpath(btnMemberFilterXpath));
