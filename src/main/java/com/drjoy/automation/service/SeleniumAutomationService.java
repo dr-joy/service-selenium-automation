@@ -113,7 +113,7 @@ public class SeleniumAutomationService {
     }
 
     private static List<String> getAt0029Methods() {
-        return List.of();
+        return List.of("exportLeaveBalance");
     }
 
     private static List<String> getAt0037Methods() {
