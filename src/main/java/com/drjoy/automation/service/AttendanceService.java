@@ -633,24 +633,27 @@ public class AttendanceService {
         dropdownSearchStatusButton.selectByValue("RS_NEW");
 
         String xpathAllRecords = "//app-at0022//div[@id='table-content']/table/tbody/tr";
-        if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
-            String checkboxChooseAllRecordXpath = "//app-at0022//div[@id='table-header']//tr[1]/th[1]";
-            WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
+        ExecutionHelper.runStepWithLoggingByPhase(setting, "Approve request OT", () -> {
+            if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
+                String checkboxChooseAllRecordXpath = "//app-at0022//div[@id='table-header']//tr[1]/th[1]";
+                WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
+                WebUI.sleep(400);
 
-            String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
-            ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Check OT request -> Click & Confirm ", () ->
-                AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
-            );
+                String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
+                ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Check OT request -> Click & Confirm ", () ->
+                    AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
+                );
 
-            waitForLoadingElement();
+                waitForLoadingElement();
 
-            String xpathAT0022HeaderSelectStatus = "//*[@id=\"tab-content4\"]//app-at0022//p[normalize-space(text())='ステータスを選択']/following-sibling::select";
-            WebElement dropdownElementAT0022HeaderSelectStatus  = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
-            Select dropdownAT0022HeaderSelectStatus  = new Select(dropdownElementAT0022HeaderSelectStatus );
-            dropdownAT0022HeaderSelectStatus.selectByValue("RS_ACCEPTED");
+                String xpathAT0022HeaderSelectStatus = "//*[@id=\"tab-content4\"]//app-at0022//p[normalize-space(text())='ステータスを選択']/following-sibling::select";
+                WebElement dropdownElementAT0022HeaderSelectStatus = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
+                Select dropdownAT0022HeaderSelectStatus = new Select(dropdownElementAT0022HeaderSelectStatus);
+                dropdownAT0022HeaderSelectStatus.selectByValue("RS_ACCEPTED");
 
-            WebUI.sleep(500);
-        }
+                WebUI.sleep(400);
+            }
+        });
 
         // Check DayOff Request
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='各種申請一覧']")).click();
@@ -677,24 +680,27 @@ public class AttendanceService {
         dropdownSearchStatusButton  = new Select(dropdownElementSearchStatusButton );
         dropdownSearchStatusButton.selectByValue("RS_NEW");
 
-        if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
-            String checkboxChooseAllRecordXpath = "//app-at0022//div[@id='table-header']//tr[1]/th[1]";
-            WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
+        ExecutionHelper.runStepWithLoggingByPhase(setting, "Approve request day off", () -> {
+            if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
+                String checkboxChooseAllRecordXpath = "//app-at0022//div[@id='table-header']//tr[1]/th[1]";
+                WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
+                WebUI.sleep(400);
 
-            String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
-            ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Check DayOff request -> Click & Confirm ", () ->
-                AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
-            );
+                String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
+                ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Check DayOff request -> Click & Confirm ", () ->
+                    AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
+                );
 
-            waitForLoadingElement();
+                waitForLoadingElement();
 
-            String xpathAT0022HeaderSelectStatus = "//*[@id=\"tab-content4\"]//app-at0022//p[normalize-space(text())='ステータスを選択']/following-sibling::select";
-            WebElement dropdownElementAT0022HeaderSelectStatus  = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
-            Select dropdownAT0022HeaderSelectStatus  = new Select(dropdownElementAT0022HeaderSelectStatus );
-            dropdownAT0022HeaderSelectStatus.selectByValue("RS_ACCEPTED");
+                String xpathAT0022HeaderSelectStatus = "//*[@id=\"tab-content4\"]//app-at0022//p[normalize-space(text())='ステータスを選択']/following-sibling::select";
+                WebElement dropdownElementAT0022HeaderSelectStatus = DriverFactory.getDriver().findElement(By.xpath(xpathAT0022HeaderSelectStatus));
+                Select dropdownAT0022HeaderSelectStatus = new Select(dropdownElementAT0022HeaderSelectStatus);
+                dropdownAT0022HeaderSelectStatus.selectByValue("RS_ACCEPTED");
 
-            WebUI.sleep(500);
-        }
+                WebUI.sleep(500);
+            }
+        });
     }
 
     @ExecutionStep(value = "rejectRequests")
