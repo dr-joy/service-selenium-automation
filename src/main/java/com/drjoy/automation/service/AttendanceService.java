@@ -84,7 +84,8 @@ public class AttendanceService {
         String acceptCheckingLogButtonXpath = "//app-at0023//form[@id='checking-log']//table//tbody/tr[1]/td[last()-1]//button[normalize-space(text())='確定']";
 
         waitForLoadingElement();
-        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 2) == null) {
+        WebUI.sleep(600);
+        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 1) == null) {
             WebElement requestButton = WebUI.findWebElementIfVisible(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button"));
             requestButton.click();
 
@@ -592,11 +593,15 @@ public class AttendanceService {
         WebUI.click(By.xpath(btnMemberFilterXpath));
 
         By btnChooseAllItem = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全選択']");
-        if (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
+        int clickCounter = 0;
+        while (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
+            if (clickCounter >= 5) break;
             WebUI.sleep(500);
             // Click first time - choose all
             WebUI.clickByJS(WebUI.findWebElementIfVisible(btnChooseAllItem));
             WebUI.sleep(500);
+
+            clickCounter++;
         }
 
         // Click seconds time - reset all
@@ -706,12 +711,16 @@ public class AttendanceService {
         WebUI.click(By.xpath(btnMemberFilterXpath));
 
         By btnChooseAllItem = By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全選択']");
-        if (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
-            WebUI.sleep(500);
+        int clickCounter = 0;
+        while (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
+            if (clickCounter >= 5) break;
+            WebUI.sleep(200);
             // Click first time - choose all
             WebUI.clickByJS(WebUI.findWebElementIfVisible(btnChooseAllItem));
             // Delay in 1 sec
-            WebUI.sleep(500);
+            WebUI.sleep(200);
+
+            clickCounter++;
         }
 
         // Click seconds time - reset all

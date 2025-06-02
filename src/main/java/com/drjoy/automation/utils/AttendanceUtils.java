@@ -134,7 +134,9 @@ public class AttendanceUtils {
 
             WebUI.sleep(500);
             WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'search-dept')]/input")).sendKeys("すべて");
-            WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'department-content')]//span[text()='すべて']")).click();
+            WebElement allDeptBtn = WebUI.findWebElementIfVisible(By.xpath(baseDeptSelectionXpath + "//div[contains(@class, 'department-content')]//span[text()='すべて']"));
+
+            WebUI.clickByJS(allDeptBtn);
             waitForLoadingElement();
         });
 
@@ -151,10 +153,20 @@ public class AttendanceUtils {
                 By.xpath(baseUserSelectionXpath + "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'search-name')]//button")
             );
             WebUI.clickByJS(searchUserBtn);
-            WebUI.sleep(200);
+            WebUI.sleep(500);
 
             String targetUserBtnXpath = baseUserSelectionXpath +
                 "//div[contains(@class, 'wrap-popup')]//div[contains(@class, 'popup-content fs14')]//span[normalize-space(text())='" + targetUser + "']";
+
+            int findSearchBtnCounter = 0;
+            while (!WebUI.isElementPresent(By.xpath(targetUserBtnXpath), 1)) {
+                if (findSearchBtnCounter >= 5) break;
+
+                WebUI.clickByJS(searchUserBtn);
+                WebUI.sleep(500);
+
+                findSearchBtnCounter++;
+            }
 
             List<WebElement> userBtns = WebUI.findWebElementsIfVisible(By.xpath(targetUserBtnXpath));
             WebUI.sleep(200);
