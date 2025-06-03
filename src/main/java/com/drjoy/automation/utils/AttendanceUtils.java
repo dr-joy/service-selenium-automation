@@ -23,6 +23,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
+
 public class AttendanceUtils {
     private static final Logger logger = LogManager.getLogger(AttendanceUtils.class);
     private AttendanceUtils() {}
@@ -35,49 +37,59 @@ public class AttendanceUtils {
         waitForLoadingElement();
         WebDriver driver = DriverFactory.getDriver();
         String curURL = driver.getCurrentUrl();
-        String targetURL = String.format("%sat/%s", Configuration.getBaseUrl(), pageName);
+        String targetURL = format("%sat/%s", Configuration.getBaseUrl(), pageName);
 
-        if (!targetURL.equals(curURL)) {
-            if (curURL.contains("/at/")) {
-                WebUI.sleep(1000);
-                String accessBtnXpath = String.format(
-                    "//app-at0001//ul[@role='tablist']/li[%d]", Screen.valueOf(pageName.toUpperCase()).indexInNavBar
-                );
-                WebElement accessBtn = WebUI.findWebElementIfVisible(By.xpath(accessBtnXpath));
-                WebUI.mouseOver(accessBtn);
-                WebUI.sleep(500);
+        ExecutionHelper.runStepWithLogging(format("Navigate to %s with %s", pageName, targetURL), () -> {
+            if (!targetURL.equals(curURL)) {
+                WebUI.scrollToTop();
 
-                WebElement targetPage = WebUI.findWebElementIfVisible(By.xpath(Screen.valueOf(pageName.toUpperCase()).xpathToScreen));
-                targetPage.click();
-            } else if (curURL.contains("/me/me0090")) {
-                String accessAtFuncSideMenu = "//app-side-menu-drjoy//i[@class='fa fa-clock-o']/following-sibling::strong[text()='勤務管理']";
-                By byAccessByXpath = By.xpath(accessAtFuncSideMenu);
-
-                WebElement atFuncSideMenu = WebUI.findWebElementIfVisible(byAccessByXpath);
-                atFuncSideMenu.click();
-
-                String accessAT0001BtnXpath = accessAtFuncSideMenu + "/ancestor::a[@class='nav-link nav-table']/following-sibling::ul/li[1]";
-                By byAccessAt0001Btn = By.xpath(accessAT0001BtnXpath);
-                WebUI.click(byAccessAt0001Btn);
-                waitForLoadingElement();
-
-                if (!pageName.equals("at0001")) {
+                if (curURL.contains("/at/")) {
                     WebUI.sleep(1000);
-                    String accessBtnXpath = String.format(
+                    String accessBtnXpath = format(
                         "//app-at0001//ul[@role='tablist']/li[%d]", Screen.valueOf(pageName.toUpperCase()).indexInNavBar
                     );
                     WebElement accessBtn = WebUI.findWebElementIfVisible(By.xpath(accessBtnXpath));
-                    WebUI.mouseOver(accessBtn, 2000);
+                    WebUI.mouseOver(accessBtn, 1000);
+
+                    By targetPageBy = By.xpath(Screen.valueOf(pageName.toUpperCase()).xpathToScreen);
+                    WebUI.clickByJS(WebUI.findWebElementIfVisible(targetPageBy));
 
                     waitForLoadingElement();
-                    WebElement targetPage = WebUI.findWebElementIfVisible(By.xpath(Screen.valueOf(pageName.toUpperCase()).xpathToScreen));
-                    WebUI.clickByJS(targetPage);
+                    WebUI.click(By.xpath("//app-at0001"));
+                } else if (curURL.contains("/me/me0090")) {
+                    String accessAtFuncSideMenu = "//app-side-menu-drjoy//i[@class='fa fa-clock-o']/following-sibling::strong[text()='勤務管理']";
+                    By byAccessByXpath = By.xpath(accessAtFuncSideMenu);
+
+                    WebElement atFuncSideMenu = WebUI.findWebElementIfVisible(byAccessByXpath);
+                    atFuncSideMenu.click();
+
+                    String accessAT0001BtnXpath = accessAtFuncSideMenu + "/ancestor::a[@class='nav-link nav-table']/following-sibling::ul/li[1]";
+                    By byAccessAt0001Btn = By.xpath(accessAT0001BtnXpath);
+                    WebUI.click(byAccessAt0001Btn);
+                    waitForLoadingElement();
+                    WebUI.click(By.xpath("//app-at0001"));
+
+                    if (!pageName.equals("at0001")) {
+                        WebUI.sleep(1000);
+                        String accessBtnXpath = format(
+                            "//app-at0001//ul[@role='tablist']/li[%d]", Screen.valueOf(pageName.toUpperCase()).indexInNavBar
+                        );
+                        WebElement accessBtn = WebUI.findWebElementIfVisible(By.xpath(accessBtnXpath));
+                        WebUI.mouseOver(accessBtn, 500);
+
+                        waitForLoadingElement();
+                        WebElement targetPage = WebUI.findWebElementIfVisible(By.xpath(Screen.valueOf(pageName.toUpperCase()).xpathToScreen));
+                        WebUI.clickByJS(targetPage);
+
+                        waitForLoadingElement();
+                        WebUI.click(By.xpath("//app-at0001"));
+                    }
+                } else {
+                    driver.navigate().to(targetURL);
+                    WebUI.sleep(1000);
                 }
-            } else {
-                driver.navigate().to(targetURL);
-                WebUI.sleep(1000);
             }
-        }
+        });
 
         waitForLoadingElement();
     }
@@ -94,7 +106,7 @@ public class AttendanceUtils {
         WebElement monthYearElement = WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content1']/app-at0001-summary//div[contains(@class, 'header-block-option')]//h2"));
         String currMonthYearText = convertMonthYearToAT0001TitleFormat(monthYearElement.getText());
 
-        ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Select Month: month: %s", setting.getTargetMonth()), () -> {
+        ExecutionHelper.runStepWithLoggingByPhase(setting, format("Select Month: month: %s", setting.getTargetMonth()), () -> {
             if (setting.getTargetMonth() != null && !setting.getTargetMonth().equals(currMonthYearText)) {
                 // Click nút chọn tháng
                 waitForLoadingOverlayElement();
@@ -143,7 +155,7 @@ public class AttendanceUtils {
         });
 
         // Chọn user mục tiêu
-        ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Select user: targetUser: %s", setting.getTargetUser()), () -> {
+        ExecutionHelper.runStepWithLoggingByPhase(setting, format("Select user: targetUser: %s", setting.getTargetUser()), () -> {
             String baseUserSelectionXpath = "//app-at0001-summary//div[contains(@class, 'hoz-user pl-2')]";
             WebUI.findWebElementIfVisible(By.xpath(baseUserSelectionXpath)).click();
 
@@ -187,7 +199,7 @@ public class AttendanceUtils {
 
         if (matcher.find()) {
             String year = matcher.group(1);
-            String month = String.format("%02d", Integer.parseInt(matcher.group(2)));
+            String month = format("%02d", Integer.parseInt(matcher.group(2)));
             return year + month;
         }
         return "";

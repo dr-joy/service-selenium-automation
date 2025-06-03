@@ -4,6 +4,7 @@ import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.constants.AttendanceConstants;
 import com.drjoy.automation.execution.ExecutionHelper;
 import com.drjoy.automation.execution.ExecutionStep;
+import com.drjoy.automation.logging.TaskLoggerManager;
 import com.drjoy.automation.model.CheckingLog;
 import com.drjoy.automation.model.DownloadTemplate;
 import com.drjoy.automation.model.ExportTemplateFilterSetting;
@@ -27,14 +28,17 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
 import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingOverlayElement;
+import static java.lang.String.format;
 
 @Service
 public class AttendanceService {
@@ -52,7 +56,7 @@ public class AttendanceService {
         List<WebElement> dayElements = WebUI.findWebElementsIfPresent(By.xpath(xpathRowAt0001));
 
         for (int i = 0; i < dayElements.size(); i++) {
-            String xpathRow = String.format("%s[%d]", xpathRowAt0001, i + 1);
+            String xpathRow = format("%s[%d]", xpathRowAt0001, i + 1);
 
             WebElement startTimeCol = WebUI.findWebElementIfPresent(By.xpath(xpathRow + "/td[4]"));
             String startTimeValue = startTimeCol.getText();
@@ -149,7 +153,7 @@ public class AttendanceService {
             String dateIndex = entry.getKey();
             List<CheckingLog> logsInDay = entry.getValue();
 
-            String xpathRow = String.format(xpathRowAT0001, dateIndex);
+            String xpathRow = format(xpathRowAT0001, dateIndex);
             WebElement editButton = WebUI.findWebElementIfVisible(By.xpath(xpathRow + "/td[last()-1]/button"));
             if (editButton != null) {
                 editButton.click();
@@ -159,16 +163,16 @@ public class AttendanceService {
             Map<String, List<Request>> mapRequestsByDay = mapGroupingRequestByDay(dateIndex, setting.getSheetName(), setting.getPhase());
 
             // Xử lý day off request
-            ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Make day off request: dateIndex:%s", dateIndex), () ->
+            ExecutionHelper.runStepWithLoggingByPhase(setting, format("Make day off request: dateIndex:%s", dateIndex), () ->
                 handleDayOffRequestByDateIndex(mapRequestsByDay, dateIndex)
             );
 
             // Nhập checking log
-            ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Enter the checking log: dateIndex:%s", dateIndex), () -> {
+            ExecutionHelper.runStepWithLoggingByPhase(setting, format("Enter the checking log: dateIndex:%s", dateIndex), () -> {
                 for (int i = 0; i < logsInDay.size(); i++) {
                     CheckingLog log = logsInDay.get(i);
-                    String xpathLogTime = String.format("//app-at0023//form[@id='checking-log']//table//tbody/tr[%d]/td[1]//input", i + 1);
-                    String xpathReason = String.format("//app-at0023//form[@id='checking-log']//table//tbody/tr[%d]/td[3]//textarea", i + 1);
+                    String xpathLogTime = format("//app-at0023//form[@id='checking-log']//table//tbody/tr[%d]/td[1]//input", i + 1);
+                    String xpathReason = format("//app-at0023//form[@id='checking-log']//table//tbody/tr[%d]/td[3]//textarea", i + 1);
 
                     WebElement inputTime = WebUI.findWebElementIfVisible(By.xpath(xpathLogTime));
                     WebElement inputReason = WebUI.findWebElementIfVisible(By.xpath(xpathReason));
@@ -187,7 +191,7 @@ public class AttendanceService {
             });
 
             // Xử lý OT request
-            ExecutionHelper.runStepWithLoggingByPhase(setting, String.format("Make OT request: dateIndex:%s", dateIndex), () ->
+            ExecutionHelper.runStepWithLoggingByPhase(setting, format("Make OT request: dateIndex:%s", dateIndex), () ->
                 handleOTAndResearchRequestByDateIndex(mapRequestsByDay, dateIndex)
             );
 
@@ -262,7 +266,7 @@ public class AttendanceService {
             // Tạo mới các request OT/research
             for (int i = 0; i < otRequestInTargetDate.size(); i++) {
                 Request request = otRequestInTargetDate.get(i);
-                String curRowXpath = String.format("%s[%d]", requestRowXpath, i + 1);
+                String curRowXpath = format("%s[%d]", requestRowXpath, i + 1);
 
                 WebElement btnAddRequest = WebUI.findWebElementIfVisible(By.xpath("//app-at0023//div[@class='ot-table-container']/button"));
                 btnAddRequest.click();
@@ -361,7 +365,7 @@ public class AttendanceService {
         // カテゴリ - Loại lý do nghỉ
         String reasonTypeBaseXPath = "//app-at0024//div[text()='カテゴリ']/following-sibling::div";
         String reasonType = dayoffRequest.getReasonType().trim();
-        String reasonBtnXpath = String.format("%s//span[text()[normalize-space()='%s']]", reasonTypeBaseXPath, reasonType);
+        String reasonBtnXpath = format("%s//span[text()[normalize-space()='%s']]", reasonTypeBaseXPath, reasonType);
         WebElement reasonTypeBtn = WebUI.findWebElementIfVisible(By.xpath(reasonBtnXpath));
         WebUI.scrollToElementCenter(reasonTypeBtn);
         if (reasonTypeBtn.isEnabled()) {
@@ -371,7 +375,7 @@ public class AttendanceService {
         // 休暇名 - Tên lý do nghỉ
         String reasonNameBaseXpath = "//app-at0024//div[text()='休暇名']/following-sibling::div";
         String reasonName = dayoffRequest.getReasonName().trim();
-        String reasonNameXpath = String.format("%s//span[text()[normalize-space()='%s']]", reasonNameBaseXpath, reasonName);
+        String reasonNameXpath = format("%s//span[text()[normalize-space()='%s']]", reasonNameBaseXpath, reasonName);
         WebElement reasonNameBtn = WebUI.findWebElementIfVisible(By.xpath(reasonNameXpath));
 
         if (reasonNameBtn.isEnabled()) {
@@ -496,59 +500,68 @@ public class AttendanceService {
     public static void addWorkSchedule(ExportTemplateFilterSetting setting) {
         AttendanceUtils.navigateToATPage("at0033");
 
-        Map<String, List<WorkSchedule>> mapGroupingByPhase = new HashMap<>();
-
         List<WorkSchedule> workScheduleData = ExcelReaderRepository.findAllWorkSchedule(setting.getSheetName()); // sheet == null thì xử lý trong hàm này
 
+        List<WorkSchedule> filteredRows = new ArrayList<>();
         for (WorkSchedule row : workScheduleData) {
-            if (row.getPhase() != null && row.getPhase().equals(setting.getPhase()) && row.getDayIndex() != null && !row.getDayIndex().toString().isEmpty()) {
-                String phase = row.getPhase().toString();
-                if (!mapGroupingByPhase.containsKey(phase)) {
-                    mapGroupingByPhase.put(phase, new ArrayList<>());
-                }
-                mapGroupingByPhase.get(phase).add(row);
+            if (row.getPhase() != null
+                && row.getPhase().equals(setting.getPhase())
+                && row.getDayIndex() != null
+                && !row.getDayIndex().isEmpty()) {
+                filteredRows.add(row);
             }
         }
 
         waitForLoadingElement();
-        for (Map.Entry<String, List<WorkSchedule>> entry : mapGroupingByPhase.entrySet()) {
-            WebUI.clickAtCoordinates(0,0);
-            WebElement inputElementAT0033SearchName = WebUI.findWebElementIfVisible(By.xpath("//app-at0033//input[@placeholder=\"ユーザー名を検索\"]"));
-            inputElementAT0033SearchName.clear();
-            inputElementAT0033SearchName.sendKeys(setting.getTargetUser());
+        if (!filteredRows.isEmpty()) {
+            filteredRows.sort(Comparator.comparingInt(row -> Integer.parseInt(row.getDayIndex())));
 
-            WebUI.findWebElementIfVisible(By.xpath("//app-at0033//input[@placeholder=\"ユーザー名を検索\"]/following-sibling::button")).click();
+            ExecutionHelper.runStepWithLoggingByPhase(setting, "Access to the target user", () -> {
+                WebElement inputElementAT0033SearchName = WebUI.findWebElementIfVisible(By.xpath("//app-at0033//input[@placeholder=\"ユーザー名を検索\"]"));
+                inputElementAT0033SearchName.clear();
+                inputElementAT0033SearchName.sendKeys(setting.getTargetUser());
 
-            waitForLoadingElement();
+                WebElement searchNameBtn = WebUI.findWebElementIfVisible(
+                    By.xpath("//app-at0033//input[@placeholder=\"ユーザー名を検索\"]/following-sibling::button")
+                );
+                WebUI.clickByJS(searchNameBtn);
 
-            String xpathEditButton = String.format(
+                waitForLoadingElement();
+            });
+
+            ExecutionHelper.runStepWithLoggingByPhase(setting, "Access the edit work schedule screen [編集]", () -> {
+                String xpathEditButton = format(
                     "//app-at0033//div[@id='tbl-sheet']//table/tbody//span[normalize-space(text())='%s']/ancestor::tr//button[normalize-space(text())='編集']",
                     setting.getTargetUser()
-            );
-            WebUI.findWebElementIfVisible(By.xpath(xpathEditButton)).click();
-            waitForLoadingElement();
+                );
+                WebElement editBtn = WebUI.findWebElementIfVisible(By.xpath(xpathEditButton));
+                WebUI.clickByJS(editBtn);
+                waitForLoadingElement();
+            });
 
-            String[] splitedMonthYear = DateUtils.splitMonthYear(setting.getTargetMonth());
-            String targetYear = splitedMonthYear[0];
-            String targetMonth = splitedMonthYear[1];
+            ExecutionHelper.runStepWithLoggingByPhase(setting, "Access the schedule by target month", () -> {
+                String[] splitedMonthYear = DateUtils.splitMonthYear(setting.getTargetMonth());
+                String targetYear = splitedMonthYear[0];
+                String targetMonth = splitedMonthYear[1];
 
-            String currMonthYearText = DateUtils.convertToYYYYMM(WebUI.findWebElementIfVisible(By.xpath("//div[contains(@class, 'text-center')]//h2")).getText());
-            if (setting.getTargetMonth() != null && !setting.getTargetMonth().equals(currMonthYearText)) {
-                WebUI.findWebElementIfVisible(By.xpath("//app-at0035b-date-picker//button[normalize-space(text())='月選択']")).click();
+                String currMonthYearText = DateUtils.convertToYYYYMM(WebUI.findWebElementIfVisible(By.xpath("//div[contains(@class, 'text-center')]//h2")).getText());
+                if (setting.getTargetMonth() != null && !setting.getTargetMonth().equals(currMonthYearText)) {
+                    WebUI.findWebElementIfVisible(By.xpath("//app-at0035b-date-picker//button[normalize-space(text())='月選択']")).click();
 
-                String baseDatePickerXpath = "//app-at0035b-date-picker//div[contains(@class, 'date-picker')]";
-                String textYearCenterXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-center')]//span";
-                String currYear = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath)).getText();
+                    String baseDatePickerXpath = "//app-at0035b-date-picker//div[contains(@class, 'date-picker')]";
+                    String textYearCenterXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-center')]//span";
+                    String currYear = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath)).getText();
 
-                while (Integer.parseInt(targetYear) < Integer.parseInt(currYear)) {
-                    String backLeftYearBtnXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-left')]//i";
-                    WebUI.findWebElementIfVisible(By.xpath(backLeftYearBtnXpath)).click();
-                    currYear = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath)).getText();
+                    while (Integer.parseInt(targetYear) < Integer.parseInt(currYear)) {
+                        String backLeftYearBtnXpath = baseDatePickerXpath + "//div[contains(@class, 'date-tab-bar')]//div[contains(@class, 'text-left')]//i";
+                        WebUI.findWebElementIfVisible(By.xpath(backLeftYearBtnXpath)).click();
+                        currYear = WebUI.findWebElementIfVisible(By.xpath(textYearCenterXpath)).getText();
+                    }
+
+                    String textMonthCenterXpath = baseDatePickerXpath + "//div[contains(@class, 'month text-center')]//button[" + targetMonth + "]";
+                    WebUI.findWebElementIfVisible(By.xpath(textMonthCenterXpath)).click();
                 }
-
-                String textMonthCenterXpath = baseDatePickerXpath + "//div[contains(@class, 'month text-center')]//button[" + targetMonth + "]";
-                WebUI.findWebElementIfVisible(By.xpath(textMonthCenterXpath)).click();
-            }
+            });
 
             String xpathDateInMonth = "//div[@id='tbl-sheet']//table/tbody/tr[@ng-reflect-name and @ng-reflect-ng-class]";
             waitForLoadingElement();
@@ -562,9 +575,13 @@ public class AttendanceService {
             }
             boolean isDiscretionaryScreen = curURL != null && curURL.contains("/at/at0036b/");
             if (isDiscretionaryScreen) {
-                handleDiscretionarySchedule(entry.getValue(), dateElements, xpathDateInMonth);
+                ExecutionHelper.runStepWithLoggingByPhase(setting, "Handle discretionary schedule", () ->
+                    handleDiscretionarySchedule(setting, filteredRows, dateElements, xpathDateInMonth)
+                );
             } else {
-                handleIndividualAndVariableSchedule(entry.getValue(), dateElements, xpathDateInMonth);
+                ExecutionHelper.runStepWithLoggingByPhase(setting, "Handle individual or variable schedule", () ->
+                    handleIndividualAndVariableSchedule(setting, filteredRows, dateElements, xpathDateInMonth)
+                );
             }
 
             if (WebUI.waitForElementClickable(By.xpath("//button[normalize-space(text())='保存' and not(@disabled)]"), 1) != null) {
@@ -577,6 +594,7 @@ public class AttendanceService {
                 }
             }
 
+            WebUI.scrollToTop();
             WebUI.findWebElementIfVisible(By.xpath("//a[@class='page-head-backlink']")).click();
         }
     }
@@ -878,7 +896,7 @@ public class AttendanceService {
 
             String mode = entry.getKey();
             WebUI.findWebElementIfVisible(By.xpath("//input[@placeholder=\"テンプレート名称\"]"))
-                    .sendKeys(String.format(AttendanceConstants.TEMPLATE_NAME, mode.toUpperCase()));
+                    .sendKeys(format(AttendanceConstants.TEMPLATE_NAME, mode.toUpperCase()));
 
             switch (mode.toLowerCase()) {
                 case "day":
@@ -932,7 +950,7 @@ public class AttendanceService {
                 String itemTitle = org.apache.commons.lang3.StringUtils.trimToNull(item.getTitle());
                 if (itemTitle != null) {
                     WebElement targetItem = WebUI.findWebElementIfVisible(
-                            By.xpath(String.format(queryXpathByTitle, itemTitle)));
+                            By.xpath(format(queryXpathByTitle, itemTitle)));
                     targetItem.click();
                 }
             }
@@ -962,7 +980,7 @@ public class AttendanceService {
         boolean isSelectedDepartment = false;
         for (Map.Entry<String, List<DownloadTemplate>> entry : mapGroupingByTemplateMode.entrySet()) {
             String mode = entry.getKey();
-            String templateName = String.format(AttendanceConstants.TEMPLATE_NAME, mode.toUpperCase());
+            String templateName = format(AttendanceConstants.TEMPLATE_NAME, mode.toUpperCase());
 
             waitForLoadingElement();
             WebElement templateSelectBox = WebUI.findWebElementIfPresent(
@@ -1025,12 +1043,12 @@ public class AttendanceService {
 
                 String deptItemXpath = "//app-multi-select-department//div[contains(@class, 'popup-list-department')]//span[contains(text(), '%s')]/ancestor::div/label";
                 WebElement allDeptItem = WebUI.findWebElementIfVisible(
-                        By.xpath(String.format(deptItemXpath + "/input[@type='checkbox' and @ng-reflect-model='true']/ancestor::label", "すべて")));
+                        By.xpath(format(deptItemXpath + "/input[@type='checkbox' and @ng-reflect-model='true']/ancestor::label", "すべて")));
                 allDeptItem.click();
                 WebUI.sleep(500);
 
                 WebElement targetDeptItem = WebUI.findWebElementIfVisible(
-                        By.xpath(String.format(deptItemXpath + "/input[@type='checkbox' and " +
+                        By.xpath(format(deptItemXpath + "/input[@type='checkbox' and " +
                                 "@ng-reflect-model='false']/ancestor::label", department)));
                 targetDeptItem.click();
                 WebUI.sleep(500);
@@ -1088,7 +1106,7 @@ public class AttendanceService {
         }
     }
 
-    public static void handleDiscretionarySchedule(List<WorkSchedule> workScheduleList, List<WebElement> dateElements, String baseXpath) {
+    public static void handleDiscretionarySchedule(ExportTemplateFilterSetting setting, List<WorkSchedule> workScheduleList, List<WebElement> dateElements, String baseXpath) {
         WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5));
 
         for (int j = 0; j < workScheduleList.size(); j++) {
@@ -1101,101 +1119,119 @@ public class AttendanceService {
 
             // Handle DayType
             String dayType = workScheduleList.get(j).getDayType();
-            if (StringUtils.isNotBlank(dayType)) {
-                By dayTypeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[3]/select");
+            ExecutionHelper.runStepWithLoggingByPhase(setting, format("Day %s, dayType %s", dateIndexStr, dayType), () -> {
+                if (StringUtils.isNotBlank(dayType)) {
+                    By dayTypeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[3]/select");
 
-                try {
-                    WebElement selectElement = wait.until(ExpectedConditions.presenceOfElementLocated(dayTypeSelectBox));
-                    Select select = new Select(selectElement);
-                    select.selectByVisibleText(dayType);
-                } catch (TimeoutException e) {
-                    // not found, skip
+                    try {
+                        WebElement selectElement = wait.until(ExpectedConditions.presenceOfElementLocated(dayTypeSelectBox));
+                        Select select = new Select(selectElement);
+                        Pattern pattern = Pattern.compile(".*" + Pattern.quote(dayType) + ".*", Pattern.CASE_INSENSITIVE);
+
+                        for (WebElement option : select.getOptions()) {
+                            String text = option.getText().trim();
+                            if (pattern.matcher(text).matches()) {
+                                select.selectByVisibleText(text);
+                                break;
+                            }
+                        }
+                    } catch (TimeoutException e) {
+                        // not found, skip
+                        TaskLoggerManager.error("Xpath: {}", baseXpath + "[" + dateIndex + "]/td[3]/select");
+                    }
                 }
-            }
+            });
 
-            boolean needToAddNewDuration = false;
+            AtomicBoolean needToAddNewDuration = new AtomicBoolean(false);
 
             // Handle WorkingTimeType
             String workingTimeType = workScheduleList.get(j).getWorkingTimeType();
-            if (StringUtils.isNotBlank(workingTimeType)) {
-                By wttSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//select");
+            ExecutionHelper.runStepWithLoggingByPhase(setting, format("Day: %s, working time type: %s", dateIndexStr, workingTimeType), () -> {
+                if (StringUtils.isNotBlank(workingTimeType)) {
+                    By wttSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//select");
 
-                if (DriverFactory.getDriver().findElements(wttSelectBox).isEmpty()) {
-                    // Button to add WorkingTime
-                    By buttonAddTimeDuration = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//i[contains(@class, 'fa-plus-square')]/ancestor::button[contains(@class, 'btn btn-link add-link')]");
-                    DriverFactory.getDriver().findElement(buttonAddTimeDuration).click();
-                    needToAddNewDuration = true;
+                    if (DriverFactory.getDriver().findElements(wttSelectBox).isEmpty()) {
+                        // Button to add WorkingTime
+                        By buttonAddTimeDuration = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//i[contains(@class, 'fa-plus-square')]/ancestor::button[contains(@class, 'btn btn-link add-link')]");
+                        DriverFactory.getDriver().findElement(buttonAddTimeDuration).click();
+                        needToAddNewDuration.set(true);
+                    }
+
+                    WebElement wttElement = wait.until(ExpectedConditions.presenceOfElementLocated(wttSelectBox));
+                    Select select = new Select(wttElement);
+                    select.selectByVisibleText(workingTimeType);
                 }
-
-                WebElement wttElement = wait.until(ExpectedConditions.presenceOfElementLocated(wttSelectBox));
-                Select select = new Select(wttElement);
-                select.selectByVisibleText(workingTimeType);
-            }
+            });
 
             // Handle StartTime
             String startTime = workScheduleList.get(j).getStartTime();
-            if (StringUtils.isNotBlank(startTime)) {
-                By startTimeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//input[1]");
+            String endTime = workScheduleList.get(j).getEndTime();
+            ExecutionHelper.runStepWithLoggingByPhase(setting, format("Day: %s, working time [%s-%s]", dateIndexStr, startTime, endTime), () -> {
+                if (StringUtils.isNotBlank(startTime)) {
+                    By startTimeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//input[1]");
 
-                if (!DriverFactory.getDriver().findElements(startTimeSelectBox).isEmpty()) {
-                    DriverFactory.getDriver().findElement(startTimeSelectBox).click();
-                    String formattedTime = startTime.substring(0, 2) + ":" + startTime.substring(2);
-                    By timeOption = By.xpath(String.format("//app-at0036b-time-picker//ul//li[@data-value='%s']", formattedTime));
+                    if (!DriverFactory.getDriver().findElements(startTimeSelectBox).isEmpty()) {
+                        DriverFactory.getDriver().findElement(startTimeSelectBox).click();
+                        String formattedTime = startTime.substring(0, 2) + ":" + startTime.substring(2);
+                        By timeOption = By.xpath(format("//app-at0036b-time-picker//ul//li[@data-value='%s']", formattedTime));
+                        DriverFactory.getDriver().findElement(timeOption).click();
+                    }
+                } else {
+                    // Delete startTime input
+                    By buttonDeleteTimeDuration = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//i[contains(@class, 'fa fa-times')]/ancestor::button");
+                    if (!DriverFactory.getDriver().findElements(buttonDeleteTimeDuration).isEmpty()) {
+                        DriverFactory.getDriver().findElement(buttonDeleteTimeDuration).click();
+                    }
+                }
+
+                // Handle EndTime
+                if (StringUtils.isNotBlank(endTime)) {
+                    By endTimeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//input[2]");
+                    DriverFactory.getDriver().findElement(endTimeSelectBox).click();
+                    String formattedTime = endTime.substring(0, 2) + ":" + endTime.substring(2);
+                    By timeOption = By.xpath(format("//app-at0036b-time-picker//ul//li[@data-value='%s']", formattedTime));
                     DriverFactory.getDriver().findElement(timeOption).click();
                 }
-            } else {
-                // Delete startTime input
-                By buttonDeleteTimeDuration = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//i[contains(@class, 'fa fa-times')]/ancestor::button");
-                if (!DriverFactory.getDriver().findElements(buttonDeleteTimeDuration).isEmpty()) {
-                    DriverFactory.getDriver().findElement(buttonDeleteTimeDuration).click();
-                }
-            }
-
-            // Handle EndTime
-            String endTime = workScheduleList.get(j).getEndTime();
-            if (StringUtils.isNotBlank(endTime)) {
-                By endTimeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[4]//input[2]");
-                DriverFactory.getDriver().findElement(endTimeSelectBox).click();
-                String formattedTime = endTime.substring(0, 2) + ":" + endTime.substring(2);
-                By timeOption = By.xpath(String.format("//app-at0036b-time-picker//ul//li[@data-value='%s']", formattedTime));
-                DriverFactory.getDriver().findElement(timeOption).click();
-            }
+            });
 
             // Handle StartBreakTime
             String startBreakTime = workScheduleList.get(j).getStartBreakTime();
-            if (StringUtils.isNotBlank(startBreakTime)) {
-                By startBreakTimeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//input[1]");
-
-                if (needToAddNewDuration && DriverFactory.getDriver().findElements(startBreakTimeSelectBox).isEmpty()) {
-                    By buttonAddBreakTimeDuration = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//i[contains(@class, 'fa-plus-square')]/ancestor::button");
-                    DriverFactory.getDriver().findElement(buttonAddBreakTimeDuration).click();
-                }
-
-                DriverFactory.getDriver().findElement(startBreakTimeSelectBox).click();
-                String formattedTime = startBreakTime.substring(0, 2) + ":" + startBreakTime.substring(2);
-                By timeOption = By.xpath(String.format("//app-at0036b-time-picker//ul//li[@data-value='%s']", formattedTime));
-                DriverFactory.getDriver().findElement(timeOption).click();
-            } else {
-                // Delete startBreakTime
-                By buttonDeleteTimeDuration = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//i[contains(@class, 'fa fa-times')]/ancestor::button");
-                if (!DriverFactory.getDriver().findElements(buttonDeleteTimeDuration).isEmpty()) {
-                    DriverFactory.getDriver().findElement(buttonDeleteTimeDuration).click();
-                }
-            }
-
-            // Handle EndBreakTime
             String endBreakTime = workScheduleList.get(j).getEndBreakTime();
-            if (StringUtils.isNotBlank(endBreakTime)) {
-                By endBreakTimeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//input[2]");
-                DriverFactory.getDriver().findElement(endBreakTimeSelectBox).click();
-                String formattedTime = endBreakTime.substring(0, 2) + ":" + endBreakTime.substring(2);
-                By timeOption = By.xpath(String.format("//app-at0036b-time-picker//ul//li[@data-value='%s']", formattedTime));
-                DriverFactory.getDriver().findElement(timeOption).click();
-            }
+            ExecutionHelper.runStepWithLoggingByPhase(setting, format("Day: %s, break time [%s-%s]", dateIndexStr, startBreakTime, endBreakTime), () -> {
+                if (StringUtils.isNotBlank(startBreakTime)) {
+                    By startBreakTimeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//input[1]");
+
+                    if (needToAddNewDuration.get() && DriverFactory.getDriver().findElements(startBreakTimeSelectBox).isEmpty()) {
+                        By buttonAddBreakTimeDuration = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//i[contains(@class, 'fa-plus-square')]/ancestor::button");
+                        DriverFactory.getDriver().findElement(buttonAddBreakTimeDuration).click();
+                    }
+
+                    DriverFactory.getDriver().findElement(startBreakTimeSelectBox).click();
+                    String formattedTime = startBreakTime.substring(0, 2) + ":" + startBreakTime.substring(2);
+                    By timeOption = By.xpath(format("//app-at0036b-time-picker//ul//li[@data-value='%s']", formattedTime));
+                    DriverFactory.getDriver().findElement(timeOption).click();
+                } else {
+                    // Delete startBreakTime
+                    By buttonDeleteTimeDuration = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//i[contains(@class, 'fa fa-times')]/ancestor::button");
+                    if (!DriverFactory.getDriver().findElements(buttonDeleteTimeDuration).isEmpty()) {
+                        DriverFactory.getDriver().findElement(buttonDeleteTimeDuration).click();
+                    }
+                }
+
+                // Handle EndBreakTime
+                if (StringUtils.isNotBlank(endBreakTime)) {
+                    By endBreakTimeSelectBox = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//input[2]");
+                    DriverFactory.getDriver().findElement(endBreakTimeSelectBox).click();
+                    String formattedTime = endBreakTime.substring(0, 2) + ":" + endBreakTime.substring(2);
+                    By timeOption = By.xpath(format("//app-at0036b-time-picker//ul//li[@data-value='%s']", formattedTime));
+                    DriverFactory.getDriver().findElement(timeOption).click();
+                }
+            });
         }
     }
 
     public static void handleIndividualAndVariableSchedule(
+            ExportTemplateFilterSetting setting,
             List<WorkSchedule> workScheduleList,
             List<WebElement> dateElements,
             String baseXpath
