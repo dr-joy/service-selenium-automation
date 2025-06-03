@@ -3,7 +3,8 @@ package com.drjoy.automation.service;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -24,7 +25,7 @@ public class AT0037Service {
      * Tìm kiếm user và export CSV trên màn hình AT0037.
      */
     @ExecutionStep(value = "exportCSV")
-    public static void exportCSV(ExportTemplateFilterSetting setting) throws InterruptedException {
+    public static void exportCSV(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "/at/at0037");

@@ -1,12 +1,14 @@
 package com.drjoy.automation.service;
 
+import com.drjoy.automation.config.Configuration;
+import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionHelper;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
-import com.drjoy.automation.utils.AttendanceUtils;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import com.drjoy.automation.utils.DateUtils;
 import com.drjoy.automation.utils.WebUI;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,8 @@ import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
 public class AT0021Service {
 
     @ExecutionStep(value = "filterRequestsOnAT0021")
-    public static void filterRequestsOnAT0021(ExportTemplateFilterSetting setting) {
+    public static void filterRequestsOnAT0021(TeireiSetting setting) {
+        WebDriver driver = DriverFactory.getDriver();
 
         String yearStart = setting.getYearStart();
         String monthStart = setting.getMonthStart();
@@ -31,7 +34,8 @@ public class AT0021Service {
         String requestStatus = setting.getRequestStatus();
 
         ExecutionHelper.runStepWithLogging("Navigate to AT0021 and apply filters", () -> {
-            AttendanceUtils.navigateToATPage("at0021"); // Corresponds to WebUI.callTestCase with uri '/at/at0021'
+            //AttendanceUtils.navigateToATPage("at0021"); // Corresponds to WebUI.callTestCase with uri '/at/at0021'
+            driver.get(Configuration.getBaseUrl() + "at/at0021");
             waitForLoadingElement(); // Ensure page is loaded
 
             // Define XPaths based on Katalon variables
@@ -47,12 +51,12 @@ public class AT0021Service {
             WebElement datePickerStartInput = WebUI.findWebElementIfVisible(By.xpath(xpathSlDatePickerStart));
             // DateUtils.chooseDatePicker should handle clicking the input, then selecting year, month, and day
             DateUtils.chooseDatePicker(datePickerStartInput, yearStart, monthStart, dateStart);
-            WebUI.sleep(500); // Short pause if needed for UI to update
+            WebUI.sleep(2000); // Short pause if needed for UI to update
 
             // Handle End Date selection
             WebElement datePickerEndInput = WebUI.findWebElementIfVisible(By.xpath(xpathSlDatePickerEnd));
             DateUtils.chooseDatePicker(datePickerEndInput, yearEnd, monthEnd, dateEnd);
-            WebUI.sleep(500);
+            WebUI.sleep(2000);
 
             // Select Request Type
             // Katalon: WebUI.selectOptionByLabel(getTestObject(xpathSelectFilter, requestTypeLabel), requestType, false)
@@ -60,7 +64,7 @@ public class AT0021Service {
             WebElement requestTypeDropdownElement = WebUI.findWebElementIfVisible(By.xpath(xpathRequestTypeDropdown));
             Select selectRequestType = new Select(requestTypeDropdownElement);
             selectRequestType.selectByVisibleText(requestType); // selectByVisibleText is equivalent to Katalon's selectOptionByLabel
-            WebUI.sleep(500);
+            WebUI.sleep(2000);
 
             // Select Request Status
             // Katalon: WebUI.selectOptionByLabel(getTestObject(xpathSelectFilter, requestStatusLabel), requestStatus, false)
@@ -68,7 +72,17 @@ public class AT0021Service {
             WebElement requestStatusDropdownElement = WebUI.findWebElementIfVisible(By.xpath(xpathRequestStatusDropdown));
             Select selectRequestStatus = new Select(requestStatusDropdownElement);
             selectRequestStatus.selectByVisibleText(requestStatus);
-            WebUI.sleep(500);
+            WebUI.sleep(3000);
+
+            // Click button 当直｜休暇等の申請
+            WebElement searchButton = WebUI.findWebElementIfVisible(By.xpath("//*[@id=\"tab-content3\"]/app-at0021/app-at0021-other-request/div[1]/div[2]/button[2]"));
+            if (searchButton != null) {
+                searchButton.click();
+                waitForLoadingElement();
+            }
+
+            // Delay 5 seconds
+            WebUI.sleep(5000);
 
             // If there's a search or filter button to click after setting these values, add it here.
             // For example:
@@ -83,7 +97,8 @@ public class AT0021Service {
     @ExecutionStep(value = "navigateToRequestCreationPageFromAT0021")
     public static void navigateToRequestCreationPageFromAT0021() {
         ExecutionHelper.runStepWithLogging("Navigate to AT0021 and click '休暇｜当直等の申請' button", () -> {
-            AttendanceUtils.navigateToATPage("at0021"); // Corresponds to WebUI.callTestCase with uri '/at/at0021'
+            WebDriver driver = DriverFactory.getDriver();
+            driver.get(Configuration.getBaseUrl() + "at/at0021");
             waitForLoadingElement(); // Ensure page is loaded
 
             // Define XPath for the button based on Katalon

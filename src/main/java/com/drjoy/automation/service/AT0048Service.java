@@ -3,13 +3,13 @@ package com.drjoy.automation.service;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class AT0048Service {
      * Chọn user cho dòng thời gian nghỉ, tạo mới nếu chưa có.
      */
     @ExecutionStep(value = "electUserForTimeOff")
-    public static void selectUserForTimeOff(ExportTemplateFilterSetting setting) throws InterruptedException {
+    public static void selectUserForTimeOff(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 

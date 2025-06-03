@@ -1,4 +1,4 @@
-package com.drjoy.automation.model;
+package com.drjoy.automation.model.setting;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -10,20 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @Accessors(chain = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ExportTemplateFilterSetting extends Setting {
-    String targetUserDepartment;
-    String targetUserJobType;
-    String targetUserWorkForm;
-    String targetUserWorkPattern;
-
-    // Use for export template DAY
-    String startDate;
-    String endDate;
-
-    String templateOp1;
-    String templateOp2;
-    String templateOp3;
-
+public class TeireiSetting extends Setting{
     // New fields based on your request
     String yearStart;
     String monthStart;
@@ -41,12 +28,10 @@ public class ExportTemplateFilterSetting extends Setting {
     String date;     // Corresponds to 'date' variable for single date
     String requestDescription; // Corresponds to 'requestDescription' variable
 
-    // TODO NAM
     String searchText1;
     String searchText2;
     String at0051OrderUser;
     String at0051Number;
     String at0052Year;
     String at0052Number;
-
 }

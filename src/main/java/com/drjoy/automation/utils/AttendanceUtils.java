@@ -3,7 +3,7 @@ package com.drjoy.automation.utils;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionHelper;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.JobType;
 import com.drjoy.automation.repository.ExcelReaderRepository;
 import com.drjoy.automation.utils.xpath.at.Screen;

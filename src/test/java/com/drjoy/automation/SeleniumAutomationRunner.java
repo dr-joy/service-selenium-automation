@@ -4,7 +4,7 @@ import com.drjoy.automation.controller.request.ATTaskRequest;
 import com.drjoy.automation.execution.StaticExecutionRunner;
 import com.drjoy.automation.execution.phase.PhaseProcessor;
 import com.drjoy.automation.logging.TaskLoggerManager;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
 import com.drjoy.automation.repository.ExcelReaderRepository;
 import com.drjoy.automation.service.AttendanceService;
 import com.drjoy.automation.service.SeleniumAutomationService;

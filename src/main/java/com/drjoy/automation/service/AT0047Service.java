@@ -3,8 +3,8 @@ package com.drjoy.automation.service;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
-import com.drjoy.automation.utils.AttendanceUtils;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -16,14 +16,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
-import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
-
 @Service
 @Log4j2
 public class AT0047Service {
 
     @ExecutionStep(value = "AT_AT0047_1_2_5")
-    public static void runAT0047_1_2_5(ExportTemplateFilterSetting setting) throws InterruptedException {
+    public static void runAT0047_1_2_5(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "/at/at0047");
@@ -92,7 +90,7 @@ public class AT0047Service {
     }
 
     @ExecutionStep(value = "AT_AT0047_1_3_6")
-    public static void runAT0047_1_3_6(ExportTemplateFilterSetting setting) throws InterruptedException {
+    public static void runAT0047_1_3_6(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "/at/at0047");

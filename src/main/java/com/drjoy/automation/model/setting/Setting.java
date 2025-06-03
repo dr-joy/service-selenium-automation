@@ -1,4 +1,4 @@
-package com.drjoy.automation.model;
+package com.drjoy.automation.model.setting;
 
 import com.drjoy.automation.execution.phase.PhaseSetting;
 import lombok.Data;

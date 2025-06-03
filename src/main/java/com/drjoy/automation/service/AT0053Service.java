@@ -2,26 +2,17 @@ package com.drjoy.automation.service;
 
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
-import com.drjoy.automation.execution.ExecutionHelper;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
-import com.drjoy.automation.utils.AttendanceUtils;
-import com.drjoy.automation.utils.WebUI;
-import lombok.Value;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.logging.Logger;
-
-import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
 
 @Service
 @Log4j2
