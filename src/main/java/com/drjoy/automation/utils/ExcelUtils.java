@@ -68,7 +68,7 @@ public class ExcelUtils {
                 // Create an array with the correct size
                 String[] rowData = new String[totalColumn];
 
-                for (int j = 0; j < row.getLastCellNum(); j++) {
+                for (int j = 0; j < totalColumn; j++) {
                     Cell cell = row.getCell(j, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
                     rowData[j] = getCellValue(cell, formatter);
                 }

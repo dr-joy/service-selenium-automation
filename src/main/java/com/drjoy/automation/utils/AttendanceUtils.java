@@ -55,6 +55,7 @@ public class AttendanceUtils {
                     WebUI.clickByJS(WebUI.findWebElementIfVisible(targetPageBy));
 
                     waitForLoadingElement();
+                    waitForLoadingOverlayElement();
                     WebUI.click(By.xpath("//app-at0001"));
                 } else if (curURL.contains("/me/me0090")) {
                     String accessAtFuncSideMenu = "//app-side-menu-drjoy//i[@class='fa fa-clock-o']/following-sibling::strong[text()='勤務管理']";
@@ -67,6 +68,8 @@ public class AttendanceUtils {
                     By byAccessAt0001Btn = By.xpath(accessAT0001BtnXpath);
                     WebUI.click(byAccessAt0001Btn);
                     waitForLoadingElement();
+
+                    waitForLoadingOverlayElement();
                     WebUI.click(By.xpath("//app-at0001"));
 
                     if (!pageName.equals("at0001")) {
@@ -82,6 +85,7 @@ public class AttendanceUtils {
                         WebUI.clickByJS(targetPage);
 
                         waitForLoadingElement();
+                        waitForLoadingOverlayElement();
                         WebUI.click(By.xpath("//app-at0001"));
                     }
                 } else {
