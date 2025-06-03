@@ -4,8 +4,7 @@ import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionHelper;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
-import com.drjoy.automation.utils.AttendanceUtils;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import com.drjoy.automation.utils.DateUtils;
 import com.drjoy.automation.utils.WebUI;
 import org.openqa.selenium.By;
@@ -20,7 +19,7 @@ import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
 public class AT0021Service {
 
     @ExecutionStep(value = "filterRequestsOnAT0021")
-    public static void filterRequestsOnAT0021(ExportTemplateFilterSetting setting) {
+    public static void filterRequestsOnAT0021(TeireiSetting setting) {
         WebDriver driver = DriverFactory.getDriver();
 
         String yearStart = setting.getYearStart();

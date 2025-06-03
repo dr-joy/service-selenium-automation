@@ -3,10 +3,11 @@ package com.drjoy.automation.repository;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.model.CheckingLog;
 import com.drjoy.automation.model.DownloadTemplate;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.JobType;
 import com.drjoy.automation.model.Request;
 import com.drjoy.automation.model.WorkSchedule;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import com.drjoy.automation.utils.ExcelUtils;
 import com.google.common.collect.Lists;
 
@@ -45,20 +46,39 @@ public class ExcelReaderRepository {
             setting.setTemplateOp1(row[12]);
             setting.setTemplateOp2(row[13]);
             setting.setTemplateOp3(row[14]);
-            setting.setSearchText1(row[15]);
-            setting.setSearchText2(row[16]);
-            setting.setAt0051OrderUser(row[17]);
-            setting.setAt0051Number(row[18]);
-            setting.setAt0052Year(row[19]);
-            setting.setAt0052Number(row[20]);
-            setting.setYearStart(row[21]);
-            setting.setMonthStart(row[22]);
-            setting.setDateStart(row[23]);
-            setting.setYearEnd(row[24]);
-            setting.setMonthEnd(row[25]);
-            setting.setDateEnd(row[26]);
-            setting.setRequestType(row[27]);
-            setting.setRequestStatus(row[28]);
+
+            result.add(setting);
+        }
+
+        return result;
+    }
+
+    public static List<TeireiSetting> findAllTeireiSetting() {
+        List<TeireiSetting> result = Lists.newArrayList();
+
+        List<String[]> data = ExcelUtils.readDataFromFilePath(getAbsolutePath("TeireiSetting.xlsx"));
+        for (String[] row : data) {
+            TeireiSetting setting = new TeireiSetting();
+            setting.setPhase(row[0]);
+            setting.setUserName(row[1]);
+            setting.setPassword(row[2]);
+            setting.setSheetName(row[3]);
+            setting.setTargetMonth(row[4]);
+            setting.setTargetUser(row[5]);
+            setting.setSearchText1(row[6]);
+            setting.setSearchText2(row[7]);
+            setting.setAt0051OrderUser(row[8]);
+            setting.setAt0051Number(row[9]);
+            setting.setAt0052Year(row[10]);
+            setting.setAt0052Number(row[11]);
+            setting.setYearStart(row[12]);
+            setting.setMonthStart(row[13]);
+            setting.setDateStart(row[14]);
+            setting.setYearEnd(row[15]);
+            setting.setMonthEnd(row[16]);
+            setting.setDateEnd(row[17]);
+            setting.setRequestType(row[18]);
+            setting.setRequestStatus(row[19]);
 
             result.add(setting);
         }

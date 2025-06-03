@@ -6,7 +6,7 @@ import com.drjoy.automation.execution.ExecutionHelper;
 import com.drjoy.automation.execution.ExecutionStep;
 import com.drjoy.automation.model.CheckingLog;
 import com.drjoy.automation.model.DownloadTemplate;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.Request;
 import com.drjoy.automation.model.WorkSchedule;
 import com.drjoy.automation.repository.ExcelReaderRepository;

@@ -5,7 +5,8 @@ import com.drjoy.automation.controller.request.ATTeireiRequest;
 import com.drjoy.automation.execution.StaticExecutionRunner;
 import com.drjoy.automation.execution.phase.PhaseProcessor;
 import com.drjoy.automation.logging.TaskLoggerManager;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import com.drjoy.automation.repository.ExcelReaderRepository;
 import com.google.common.collect.Lists;
 
@@ -60,13 +61,13 @@ public class SeleniumAutomationService {
         TaskLoggerManager.init(taskId);
         int phaseStart = request.getPhaseStart();
         int phaseEnd = request.getPhaseEnd();
-        List<ExportTemplateFilterSetting> allSettings = ExcelReaderRepository.findAllExportFilterSetting();
+        List<TeireiSetting> allSettings = ExcelReaderRepository.findAllTeireiSetting();
 
         if (phaseStart < 1 || phaseEnd > allSettings.size() || phaseStart > phaseEnd) {
             throw new IllegalArgumentException("Invalid phase range");
         }
 
-        List<ExportTemplateFilterSetting> selectedSettings = IntStream.rangeClosed(phaseStart, phaseEnd)
+        List<TeireiSetting> selectedSettings = IntStream.rangeClosed(phaseStart, phaseEnd)
                 .mapToObj(i -> allSettings.get(i - 1)) // i - 1 vì danh sách index 0-based
                 .collect(Collectors.toList());
 
@@ -74,7 +75,7 @@ public class SeleniumAutomationService {
         handle(Class.forName(className), selectedSettings);
     }
 
-    private static <T> void handle(Class<T> clazz, List<ExportTemplateFilterSetting> selectedSettings) {
+    private static <T> void handle(Class<T> clazz, List<TeireiSetting> selectedSettings) {
         var orderedSteps = switch (clazz.getSimpleName()) {
             // DOING
             case "AT0021Service" -> getAt0021Methods();

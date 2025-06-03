@@ -3,7 +3,8 @@ package com.drjoy.automation.service;
 import com.drjoy.automation.config.DriverFactory; // Assuming DriverFactory provides WebDriver
 import com.drjoy.automation.execution.ExecutionHelper;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import com.drjoy.automation.utils.AttendanceUtils;
 import com.drjoy.automation.utils.DateUtils;
 import com.drjoy.automation.utils.WebUI; // Still used for other actions
@@ -27,7 +28,7 @@ import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingOverlayEl
 public class AT0024Service {
 
     @ExecutionStep(value = "createSingleDayRequestOnAT0024B")
-    public static void createSingleDayRequestOnAT0024B(ExportTemplateFilterSetting setting) {
+    public static void createSingleDayRequestOnAT0024B(TeireiSetting setting) {
         String unitTime = setting.getUnitTime();
         String year = setting.getYear();
         String month = setting.getMonth();
@@ -124,7 +125,7 @@ public class AT0024Service {
     }
 
     @ExecutionStep(value = "createPeriodRequestOnAT0024B")
-    public static void createPeriodRequestOnAT0024B(ExportTemplateFilterSetting setting) {
+    public static void createPeriodRequestOnAT0024B(TeireiSetting setting) {
         String unitTime = setting.getUnitTime();
         String yearStart = setting.getYearStart();
         String monthStart = setting.getMonthStart();
