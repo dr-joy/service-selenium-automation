@@ -45,12 +45,20 @@ public class ExcelReaderRepository {
             setting.setTemplateOp1(row[12]);
             setting.setTemplateOp2(row[13]);
             setting.setTemplateOp3(row[14]);
-//            setting.setSearchText1(row[15]);
-//            setting.setSearchText2(row[16]);
-//            setting.setAt0051OrderUser(row[17]);
-//            setting.setAt0051Number(row[18]);
-//            setting.setAt0052Year(row[19]);
-//            setting.setAt0052Number(row[20]);
+            setting.setSearchText1(row[15]);
+            setting.setSearchText2(row[16]);
+            setting.setAt0051OrderUser(row[17]);
+            setting.setAt0051Number(row[18]);
+            setting.setAt0052Year(row[19]);
+            setting.setAt0052Number(row[20]);
+            setting.setYearStart(row[21]);
+            setting.setMonthStart(row[22]);
+            setting.setDateStart(row[23]);
+            setting.setYearEnd(row[24]);
+            setting.setMonthEnd(row[25]);
+            setting.setDateEnd(row[26]);
+            setting.setRequestType(row[27]);
+            setting.setRequestStatus(row[28]);
 
             result.add(setting);
         }

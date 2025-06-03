@@ -101,15 +101,15 @@ public class SeleniumAutomationService {
     }
 
     private static List<String> getAt0021Methods() {
-        return List.of();
+        return List.of("filterRequestsOnAT0021");
     }
 
     private static List<String> getAt0024Methods() {
-        return List.of();
+        return List.of("createSingleDayRequestOnAT0024B", "createPeriodRequestOnAT0024B");
     }
 
     private static List<String> getAt0026Methods() {
-        return List.of();
+        return List.of("editDayOffRequestReason");
     }
 
     private static List<String> getAt0029Methods() {
