@@ -605,6 +605,9 @@ public class AttendanceService {
                 }
             }
 
+            waitForLoadingElement();
+            WebUI.sleep(1000);
+
             WebUI.scrollToTop();
             WebElement backBtn = WebUI.findWebElementIfVisible(By.xpath("//a[@class='page-head-backlink']"));
             WebUI.clickByJS(backBtn);
