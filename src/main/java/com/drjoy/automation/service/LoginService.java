@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
+
 public class LoginService {
     private static final Logger logger = LogManager.getLogger(LoginService.class);
 
@@ -38,8 +40,11 @@ public class LoginService {
             WebUI.findWebElementIfPresent(By.xpath("//button[@type='submit']")).click(); // Thay bằng ID thực tế nếu khác
 
             try {
-                WebUI.sleep(5000);
+                WebUI.sleep(4000);
+                waitForLoadingElement();
 
+                WebUI.sleep(1000);
+                waitForLoadingElement();
                 By btnApprove = By.xpath("//button[@class='btn btn-success' and @type='submit' and text()='同意する']");
                 if (WebUI.waitForElementClickable(btnApprove, 5) != null) {
                     driver.findElement(By.xpath("//label[@class='custom-control custom-checkbox m-0']")).click();

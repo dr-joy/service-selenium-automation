@@ -3,6 +3,7 @@ package com.drjoy.automation.utils;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionHelper;
+import com.drjoy.automation.logging.TaskLoggerManager;
 import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.JobType;
 import com.drjoy.automation.repository.ExcelReaderRepository;
@@ -56,7 +57,6 @@ public class AttendanceUtils {
 
                     waitForLoadingElement();
                     waitForLoadingOverlayElement();
-                    WebUI.click(By.xpath("//app-at0001"));
                 } else if (curURL.contains("/me/me0090")) {
                     String accessAtFuncSideMenu = "//app-side-menu-drjoy//i[@class='fa fa-clock-o']/following-sibling::strong[text()='勤務管理']";
                     By byAccessByXpath = By.xpath(accessAtFuncSideMenu);
@@ -70,7 +70,6 @@ public class AttendanceUtils {
                     waitForLoadingElement();
 
                     waitForLoadingOverlayElement();
-                    WebUI.click(By.xpath("//app-at0001"));
 
                     if (!pageName.equals("at0001")) {
                         WebUI.sleep(1000);
@@ -86,7 +85,6 @@ public class AttendanceUtils {
 
                         waitForLoadingElement();
                         waitForLoadingOverlayElement();
-                        WebUI.click(By.xpath("//app-at0001"));
                     }
                 } else {
                     driver.navigate().to(targetURL);
@@ -96,6 +94,10 @@ public class AttendanceUtils {
         });
 
         waitForLoadingElement();
+
+        TaskLoggerManager.info("Loading page ....");
+        waitForConditionSucceed(driver.getCurrentUrl().equals(targetURL));
+        WebUI.click(By.xpath("//app-at0001"));
     }
 
     public static void selectUserAndMonthOnTimesheetPage(ExportTemplateFilterSetting setting) {
@@ -217,6 +219,15 @@ public class AttendanceUtils {
     public static void waitForLoadingElement() {
         By loadingCircle = By.xpath(XpathCommon.APP_LOAD_CIRCLE.value);
         WebUI.waitForElementNotPresent(loadingCircle, WebUI.LARGE_TIMEOUT);
+    }
+
+    public static void waitForConditionSucceed(boolean condition) {
+        int waitCounter = 0;
+        while (!condition && ++waitCounter <= WebUI.SMALL_TIMEOUT) {
+            WebUI.sleep(1000);
+
+            TaskLoggerManager.info("=>> Waiting for {} sec", waitCounter);
+        }
     }
 
     public static void clickAndConfirm(By targetButton, int timeoutSeconds) {

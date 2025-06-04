@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -516,7 +517,7 @@ public class AttendanceService {
         if (!filteredRows.isEmpty()) {
             filteredRows.sort(Comparator.comparingInt(row -> Integer.parseInt(row.getDayIndex())));
 
-            ExecutionHelper.runStepWithLoggingByPhase(setting, "Access to the target user", () -> {
+            ExecutionHelper.runStepWithLoggingByPhase(setting, format("Access to the target user: %s", setting.getTargetUser()), () -> {
                 WebElement inputElementAT0033SearchName = WebUI.findWebElementIfVisible(By.xpath("//app-at0033//input[@placeholder=\"ユーザー名を検索\"]"));
                 inputElementAT0033SearchName.clear();
                 inputElementAT0033SearchName.sendKeys(setting.getTargetUser());
@@ -539,7 +540,7 @@ public class AttendanceService {
                 waitForLoadingElement();
             });
 
-            ExecutionHelper.runStepWithLoggingByPhase(setting, "Access the schedule by target month", () -> {
+            ExecutionHelper.runStepWithLoggingByPhase(setting, format("Access the schedule by target month: %s", setting.getTargetMonth()), () -> {
                 String[] splitedMonthYear = DateUtils.splitMonthYear(setting.getTargetMonth());
                 String targetYear = splitedMonthYear[0];
                 String targetMonth = splitedMonthYear[1];
@@ -568,18 +569,28 @@ public class AttendanceService {
             List<WebElement> dateElements = WebUI.findWebElementsIfVisible(By.xpath(xpathDateInMonth));
 
             String curURL = "";
+            String curScreen = "";
             try {
                 curURL = DriverFactory.getDriver().getCurrentUrl();
+
+                Pattern pattern = Pattern.compile("https?://[^/]+(/[^/]+/[^/]+/)");
+                Matcher matcher = pattern.matcher(curURL);
+                if (matcher.find()) {
+                    curScreen = matcher.group(1);
+                }
             } catch (Exception e) {
                 // Handle or log the error if needed
             }
+
+
             boolean isDiscretionaryScreen = curURL != null && curURL.contains("/at/at0036b/");
             if (isDiscretionaryScreen) {
-                ExecutionHelper.runStepWithLoggingByPhase(setting, "Handle discretionary schedule", () ->
+                ExecutionHelper.runStepWithLoggingByPhase(setting, format("Handle discretionary schedule [%s]", curScreen), () ->
                     handleDiscretionarySchedule(setting, filteredRows, dateElements, xpathDateInMonth)
                 );
             } else {
-                ExecutionHelper.runStepWithLoggingByPhase(setting, "Handle individual or variable schedule", () ->
+                String workPattern = curScreen.contains("/at/at0035") ? "variable" : "individual";
+                ExecutionHelper.runStepWithLoggingByPhase(setting, format("Handle %s schedule [%s]", workPattern, curScreen), () ->
                     handleIndividualAndVariableSchedule(setting, filteredRows, dateElements, xpathDateInMonth)
                 );
             }
@@ -595,7 +606,8 @@ public class AttendanceService {
             }
 
             WebUI.scrollToTop();
-            WebUI.findWebElementIfVisible(By.xpath("//a[@class='page-head-backlink']")).click();
+            WebElement backBtn = WebUI.findWebElementIfVisible(By.xpath("//a[@class='page-head-backlink']"));
+            WebUI.clickByJS(backBtn);
         }
     }
 
@@ -1266,7 +1278,7 @@ public class AttendanceService {
                         WebElement dayTypeSelectBox = wait.until(ExpectedConditions.presenceOfElementLocated(dayTypeSelectLocator));
                         Select dayTypeSelect = new Select(dayTypeSelectBox);
                         for (WebElement option : dayTypeSelect.getOptions()) {
-                            if (option.getText().contains(": " + dayType)) {
+                            if (option.getAttribute("value").contains(": " + dayType)) {
                                 dayTypeSelect.selectByVisibleText(option.getText());
                                 break;
                             }
