@@ -1304,37 +1304,21 @@ public class AttendanceService {
             });
 
             String workingTimeType = workSchedule.getWorkingTimeType();
-            if (workingTimeType != null && !workingTimeType.isEmpty()) {
-                ExecutionHelper.runStepWithLoggingByPhase(setting, format("Day %s - Working time type: %s", dateIndex, workingTimeType), () -> {
-                    By wttSelectLocator = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//select");
-                    List<WebElement> wttSelectElements = DriverFactory.getDriver().findElements(wttSelectLocator);
-
-                    if (wttSelectElements.isEmpty()) {
-                        String ancestorPath = workingTimeType.equals("WORKING")
-                            ? "/ancestor::td/div/div[1]//div[contains(@class, 'tbl-select-time')]/button"
-                            : "/ancestor::td/div/div[contains(@class, 'working-time-controls-not-working')]/button";
-
-                        By addButtonLocator = By.xpath(baseXpath + "[" + dateIndex + "]/td[5]//i[contains(@class, 'fa-plus-square')]" + ancestorPath);
-                        DriverFactory.getDriver().findElement(addButtonLocator).click();
-                    } else {
-                        Select wttSelect = new Select(wttSelectElements.get(0));
-                        wttSelect.selectByVisibleText(workingTimeType);
-                    }
-                });
-            }
-
             String startTime = workSchedule.getStartTime();
             String endTime = workSchedule.getEndTime();
-            if (startTime != null && !startTime.isEmpty() && endTime != null && !endTime.isEmpty()) {
+            if (workingTimeType != null && !workingTimeType.isEmpty()
+                && startTime != null && !startTime.isEmpty()
+                && endTime != null && !endTime.isEmpty()) {
                 ExecutionHelper.runStepWithLoggingByPhase(setting, format("Day %s - Working time: [%s-%s]", dateIndex, startTime, endTime), () -> {
+                    String[] wttArr = workingTimeType.split(",");
                     String[] startTimesArr = startTime.split(",");
                     String[] endTimesArr = endTime.split(",");
 
-                    int loopCount = Math.min(startTimesArr.length, endTimesArr.length);
-
+                    int loopCount = Math.min(wttArr.length, Math.min(startTimesArr.length, endTimesArr.length));
                     for (int i = 0; i < loopCount; i++) {
-                        String st = startTimesArr[i];
-                        String et = endTimesArr[i];
+                        String workingTimeTypeRowText = wttArr[i];
+                        String startTimeRowText = startTimesArr[i];
+                        String endTimeRowText = endTimesArr[i];
 
                         if (i > 0) {
                             String ancestorPath = "WORKING".equals(dayType)
@@ -1345,21 +1329,31 @@ public class AttendanceService {
                             WebUI.findWebElementIfPresent(addButtonLocator).click();
                         }
 
+                        String baseRowFormat = "%s[%s]/td[5]/div/div[%d]%s";
+                        // Handle working time type
+                        WebElement wttSelectElement = WebUI.findWebElementIfPresent(
+                            By.xpath(format(baseRowFormat, baseXpath, dateIndex, (i + 1), "//select"))
+                        );
+                        Select wttSelect = new Select(wttSelectElement);
+                        wttSelect.selectByVisibleText(workingTimeTypeRowText);
+
+                        // Handle start time
                         WebElement startTimeInput = WebUI.findWebElementIfPresent(
-                            By.xpath(baseXpath + "[" + (dateIndex) + "]/td[5]/div/div[" + (i + 1) + "]//div[contains(@class, 'tbl-select-time')]//input[1]")
+                            By.xpath(format(baseRowFormat, baseXpath, dateIndex, (i + 1), "//div[contains(@class, 'tbl-select-time')]//input[1]"))
                         );
                         WebUI.scrollToElementCenter(startTimeInput);
                         startTimeInput.click();
 
-                        String formattedSTime = st.substring(0, 2) + ":" + st.substring(2);
+                        String formattedSTime = startTimeRowText.substring(0, 2) + ":" + startTimeRowText.substring(2);
                         WebElement stTimeOption = WebUI.findWebElementIfPresent(By.xpath(format("//app-at0035b-time-picker//ul//li[@data-value='%s']", formattedSTime)));
                         stTimeOption.click();
 
+                        // Handle end time
                         WebElement endTimeInput = WebUI.findWebElementIfPresent(
-                            By.xpath(baseXpath + "[" + (dateIndex) + "]/td[5]/div/div[" + (i + 1) + "]//div[contains(@class, 'tbl-select-time')]//input[2]")
+                            By.xpath(format(baseRowFormat, baseXpath, dateIndex, (i + 1), "//div[contains(@class, 'tbl-select-time')]//input[2]"))
                         );
                         endTimeInput.click();
-                        String formattedETime = et.substring(0, 2) + ":" + et.substring(2);
+                        String formattedETime = endTimeRowText.substring(0, 2) + ":" + endTimeRowText.substring(2);
                         WebElement etTimeOption = WebUI.findWebElementIfPresent(By.xpath(format("//app-at0035b-time-picker//ul//li[@data-value='%s']", formattedETime)));
                         etTimeOption.click();
                     }
