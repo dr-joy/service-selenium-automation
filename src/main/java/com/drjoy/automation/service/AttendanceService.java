@@ -158,7 +158,7 @@ public class AttendanceService {
             WebElement editButton = WebUI.findWebElementIfVisible(By.xpath(xpathRow + "/td[last()-1]/button"));
             if (editButton != null) {
                 editButton.click();
-                WebUI.sleep(1000);
+                waitForLoadingElement();
             }
 
             Map<String, List<Request>> mapRequestsByDay = mapGroupingRequestByDay(dateIndex, setting.getSheetName(), setting.getPhase());
@@ -210,23 +210,6 @@ public class AttendanceService {
             }
         }
     }
-
-//    public static void addRequestByDateIndex(String dateIndex, String sheet, String phaseTest) {
-//        if (dateIndex == null || dateIndex.isEmpty()) return;
-//
-//        waitForLoadingElement();
-//
-//        List<Request> requestData = ExcelReaderRepository.findAllRequest(sheet); // sheet == null thì xử lý trong hàm này
-//
-//        // Group by dateIndex
-//        Map<String, List<Request>> mapGroupingByDay = requestData.stream()
-//            .filter(row -> phaseTest.equals(row.getPhase()))
-//            .filter(row -> row.getDateIndex() != null && !row.getDateIndex().isEmpty())
-//            .collect(Collectors.groupingBy(Request::getDateIndex));
-//
-//        handleOTAndResearchRequestByDateIndex(mapGroupingByDay, dateIndex);
-//        handleDayOffRequestByDateIndex(mapGroupingByDay, dateIndex);
-//    }
 
     public static Map<String, List<Request>> mapGroupingRequestByDay(String dateIndex, String sheet, String phaseTest) {
         if (dateIndex == null || dateIndex.isEmpty()) return Maps.newHashMap();
@@ -564,7 +547,7 @@ public class AttendanceService {
                 }
             });
 
-            String xpathDateInMonth = "//div[@id='tbl-sheet']//table/tbody/tr[@ng-reflect-name and @ng-reflect-ng-class]";
+            String xpathDateInMonth = "//div[@id='tbl-sheet']//table/tbody/tr[not(contains(@class, 'box-time')) and not(contains(@class, 'no-border')) and not (contains(@class, 'bottom-tbl'))]";
             waitForLoadingElement();
             List<WebElement> dateElements = WebUI.findWebElementsIfVisible(By.xpath(xpathDateInMonth));
 
@@ -1309,7 +1292,10 @@ public class AttendanceService {
             if (workingTimeType != null && !workingTimeType.isEmpty()
                 && startTime != null && !startTime.isEmpty()
                 && endTime != null && !endTime.isEmpty()) {
-                ExecutionHelper.runStepWithLoggingByPhase(setting, format("Day %s - Working time: [%s-%s]", dateIndex, startTime, endTime), () -> {
+                ExecutionHelper.runStepWithLoggingByPhase(setting,
+                    format("Day %s - WorkingTimeType: [%s], Working time: [%s-%s]",
+                    dateIndex, workingTimeType, startTime, endTime),
+                    () -> {
                     String[] wttArr = workingTimeType.split(",");
                     String[] startTimesArr = startTime.split(",");
                     String[] endTimesArr = endTime.split(",");
@@ -1320,7 +1306,10 @@ public class AttendanceService {
                         String startTimeRowText = startTimesArr[i];
                         String endTimeRowText = endTimesArr[i];
 
-                        if (i > 0) {
+                        String baseRowFormat = "%s[%s]/td[5]/div/div[%d]%s";
+                        By wttBy = By.xpath(format(baseRowFormat, baseXpath, dateIndex, (i + 1), "//select"));
+
+                        if (i > 0 || WebUI.isElementNotPresent(wttBy, 500L)) {
                             String ancestorPath = "WORKING".equals(dayType)
                                 ? "/ancestor::td/div/div[1]//div[contains(@class, 'tbl-select-time')]/button"
                                 : "/ancestor::td/div/div[contains(@class, 'working-time-controls-not-working')]/button";
@@ -1329,11 +1318,8 @@ public class AttendanceService {
                             WebUI.findWebElementIfPresent(addButtonLocator).click();
                         }
 
-                        String baseRowFormat = "%s[%s]/td[5]/div/div[%d]%s";
                         // Handle working time type
-                        WebElement wttSelectElement = WebUI.findWebElementIfPresent(
-                            By.xpath(format(baseRowFormat, baseXpath, dateIndex, (i + 1), "//select"))
-                        );
+                        WebElement wttSelectElement = WebUI.findWebElementIfPresent(wttBy);
                         Select wttSelect = new Select(wttSelectElement);
                         wttSelect.selectByVisibleText(workingTimeTypeRowText);
 

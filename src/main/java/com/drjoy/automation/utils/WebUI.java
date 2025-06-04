@@ -182,9 +182,22 @@ public class WebUI {
             WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(timeoutSeconds));
             wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         } catch (Exception e) {
-            logger.error("Element {} not present within {}s: {}", by, timeoutSeconds, e);
             return false;
         }
         return true;
+    }
+
+    public static boolean isElementPresent(By by, long millis) {
+        try {
+            WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofMillis(millis));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isElementNotPresent(By by, long millis) {
+        return !isElementPresent(by, millis);
     }
 }
