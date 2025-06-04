@@ -40,7 +40,7 @@ public class LoginService {
             WebUI.findWebElementIfPresent(By.xpath("//button[@type='submit']")).click(); // Thay bằng ID thực tế nếu khác
 
             try {
-                WebUI.sleep(4000);
+                WebUI.sleep(2000);
                 waitForLoadingElement();
 
                 WebUI.sleep(1000);

@@ -1289,6 +1289,17 @@ public class AttendanceService {
                 });
             }
 
+            ExecutionHelper.runStepWithLoggingByPhase(setting, "Remove all working time before handle", () -> {
+                By deleteLocator = By.xpath(
+                    baseXpath
+                        + "[" + dateIndex + "]"
+                        + "/td[5]//i[contains(@class, 'fa fa-times')]/ancestor::button[not(@disabled)][1]"
+                );
+                while (WebUI.isElementPresent(deleteLocator, 1)) {
+                    WebUI.findWebElementIfVisible(deleteLocator).click();
+                }
+            });
+
             String workingTimeType = workSchedule.getWorkingTimeType();
             if (workingTimeType != null && !workingTimeType.isEmpty()) {
                 ExecutionHelper.runStepWithLoggingByPhase(setting, format("Day %s - Working time type: %s", dateIndex, workingTimeType), () -> {
