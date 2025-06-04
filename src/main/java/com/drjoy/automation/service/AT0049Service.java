@@ -3,9 +3,10 @@ package com.drjoy.automation.service;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,6 +14,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.time.Duration;
 
 @Service
@@ -24,10 +26,10 @@ public class AT0049Service {
      * Yêu cầu: Đã login và đã chuyển hướng tới trang /at/at0049
      */
     @ExecutionStep(value = "searchByCurrentUsername")
-    public static void searchByCurrentUsername(ExportTemplateFilterSetting setting) throws InterruptedException {
+    public static void searchByCurrentUsername(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.get(Configuration.getBaseUrl() + "/at/at0049");
+        driver.get(Configuration.getBaseUrl() + "at/at0049");
 
         Thread.sleep(5000);
 
@@ -51,12 +53,12 @@ public class AT0049Service {
      * Yêu cầu: Đã login và đã chuyển hướng tới trang /at/at0049b.
      */
     @ExecutionStep(value = "clickVacationHistoryButton")
-    public static void clickVacationHistoryButton(ExportTemplateFilterSetting setting) throws InterruptedException {
+    public static void clickVacationHistoryButton(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.get(Configuration.getBaseUrl() + "/at/at0049b");
+        driver.get(Configuration.getBaseUrl() + "at/at0049b");
 
-        // Chờ 10 giây để các thành phần trang tải hoàn tất (tương tự WebUI.delay(10))
+        // Chờ 5 giây để các thành phần trang tải hoàn tất (tương tự WebUI.delay(5))
         Thread.sleep(5000);
 
         // Xác định và click nút "休暇履歴"
@@ -65,6 +67,33 @@ public class AT0049Service {
         );
         WebElement btn = driver.findElement(vacationHistoryBtnLocator);
         btn.click();
+        Thread.sleep(5000);
+    }
+
+    @ExecutionStep(value = "importFile")
+    public static void importFile(TeireiSetting setting) throws InterruptedException {
+        WebDriver driver = DriverFactory.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.get(Configuration.getBaseUrl() + "at/at0049");
+        Thread.sleep(5000);
+
+        // Get path file import
+        String pathFile = getAbsolutePath("GrantVacation.csv");
+
+        // Import file csv
+        // Find the hidden input element (by tag, class, or another attribute)
+        WebElement uploadInput = driver.findElement(By.cssSelector("input[type='file']"));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].classList.remove('d-none')", uploadInput);
+        uploadInput.sendKeys(pathFile);
+        Thread.sleep(3000);
+
+    }
+
+    private static String getAbsolutePath(String fileName) {
+        String resourcePath = String.format("%s/%s", Configuration.getDataBasePath(), fileName);
+        File tmpFile = new File(resourcePath);
+        return tmpFile.getAbsolutePath();
     }
 
 }

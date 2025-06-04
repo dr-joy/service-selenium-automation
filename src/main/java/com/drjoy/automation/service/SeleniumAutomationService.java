@@ -143,7 +143,8 @@ public class SeleniumAutomationService {
     private static List<String> getAt0049Methods() {
         return List.of(
                 "searchByCurrentUsername",
-                "clickVacationHistoryButton"
+                "clickVacationHistoryButton",
+                "importFile"
         );
     }
 
