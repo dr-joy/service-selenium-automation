@@ -1371,19 +1371,18 @@ public class AttendanceService {
 
             String startBreakTime = workSchedule.getStartBreakTime();
             String endBreakTime = workSchedule.getEndBreakTime();
+            ExecutionHelper.runStepWithLoggingByPhase(setting, "Remove all break time before handle", () -> {
+                By deleteBreakLocator = By.xpath(
+                    baseXpath
+                        + "[" + dateIndex + "]"
+                        + "/td[6]//i[contains(@class, 'fa fa-times')]/ancestor::button"
+                );
+                while (WebUI.isElementPresent(deleteBreakLocator, 1)) {
+                    WebUI.findWebElementIfVisible(deleteBreakLocator).click();
+                }
+            });
             if (startBreakTime != null && !startBreakTime.isEmpty() && endBreakTime != null && !endBreakTime.isEmpty()) {
                 ExecutionHelper.runStepWithLoggingByPhase(setting, format("Day %s - Break time: [%s-%s]", dateIndex, startBreakTime, endBreakTime), () -> {
-
-                    By deleteBreakLocator = By.xpath(
-                        baseXpath
-                            + "[" + dateIndex + "]"
-                            + "/td[6]//i[contains(@class, 'fa fa-times')]/ancestor::button"
-                    );
-                    List<WebElement> deleteBreakButtons = DriverFactory.getDriver().findElements(deleteBreakLocator);
-                    for (WebElement button : deleteBreakButtons) {
-                        WebUI.clickWithScrollTo(button);
-                    }
-
                     String[] startBTimesArr = startBreakTime.split(",");
                     String[] endBTimesArr = endBreakTime.split(",");
 
