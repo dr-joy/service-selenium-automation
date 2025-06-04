@@ -110,7 +110,7 @@ public class SeleniumAutomationService {
     }
 
     private static List<String> getAt0026Methods() {
-        return List.of("editDayOffRequestReason");
+        return List.of("editDayOffRequestReason", "addDayOffReason", "editOvertimeReason", "editResearchReason", "editWatchReason", "editDayOffWorkingReason", "editPreOvertimeReason", "editOtherReason");
     }
 
     private static List<String> getAt0029Methods() {
@@ -131,7 +131,8 @@ public class SeleniumAutomationService {
     private static List<String> getAt0047Methods() {
         return List.of(
                 "AT_AT0047_1_2_5",
-                "AT_AT0047_1_3_6"
+                "AT_AT0047_1_3_6",
+                "half_time"
         );
     }
 

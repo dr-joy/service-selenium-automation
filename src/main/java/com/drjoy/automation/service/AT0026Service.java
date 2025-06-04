@@ -3,7 +3,7 @@ package com.drjoy.automation.service;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -23,10 +23,11 @@ public class AT0026Service {
 
     // ================== 1.2 ==================
     @ExecutionStep(value = "editDayOffRequestReason")
-    public static void editDayOffRequestReason(ExportTemplateFilterSetting setting) {
+    public static void editDayOffRequestReason(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0026");
+        Thread.sleep(5000);
 
         String xpathDefault = "//*[@id='container-at-table-content']//div[contains(@class, 'at-table-tr')]/div[2]//span[text()='%s']/../../..%s";
 
@@ -67,7 +68,7 @@ public class AT0026Service {
 
     // ================== 3 ==================
     @ExecutionStep(value = "addDayOffReason")
-    public static void addDayOffReason(ExportTemplateFilterSetting setting) {
+    public static void addDayOffReason(TeireiSetting setting) {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0026");
@@ -104,7 +105,7 @@ public class AT0026Service {
 
     // ================== 4 ==================
     @ExecutionStep(value = "editOvertimeReason")
-    public static void editOvertimeReason(ExportTemplateFilterSetting setting) {
+    public static void editOvertimeReason(TeireiSetting setting) {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0026");
@@ -132,7 +133,7 @@ public class AT0026Service {
 
     // ================== 5 ==================
     @ExecutionStep(value = "editResearchReason")
-    public static void editResearchReason(ExportTemplateFilterSetting setting) {
+    public static void editResearchReason(TeireiSetting setting) {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0026");
@@ -160,7 +161,7 @@ public class AT0026Service {
 
     // ================== 6 ==================
     @ExecutionStep(value = "editWatchReason")
-    public static void editWatchReason(ExportTemplateFilterSetting setting) {
+    public static void editWatchReason(TeireiSetting setting) {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0026");
@@ -184,7 +185,7 @@ public class AT0026Service {
 
     // ================== 7 ==================
     @ExecutionStep(value = "editDayOffWorkingReason")
-    public static void editDayOffWorkingReason(ExportTemplateFilterSetting setting) {
+    public static void editDayOffWorkingReason(TeireiSetting setting) {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0026");
@@ -208,7 +209,7 @@ public class AT0026Service {
 
     // ================== 8 ==================
     @ExecutionStep(value = "editPreOvertimeReason")
-    public static void editPreOvertimeReason(ExportTemplateFilterSetting setting) {
+    public static void editPreOvertimeReason(TeireiSetting setting) {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0026");
@@ -232,7 +233,7 @@ public class AT0026Service {
 
     // ================== 9 ==================
     @ExecutionStep(value = "editOtherReason")
-    public static void editOtherReason(ExportTemplateFilterSetting setting) {
+    public static void editOtherReason(TeireiSetting setting) {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0026");
