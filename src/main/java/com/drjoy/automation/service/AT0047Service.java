@@ -3,7 +3,6 @@ package com.drjoy.automation.service;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.setting.TeireiSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
@@ -24,7 +23,7 @@ public class AT0047Service {
     public static void runAT0047_1_2_5(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.get(Configuration.getBaseUrl() + "/at/at0047");
+        driver.get(Configuration.getBaseUrl() + "at/at0047");
 
         Thread.sleep(5000);
 
@@ -93,7 +92,7 @@ public class AT0047Service {
     public static void runAT0047_1_3_6(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.get(Configuration.getBaseUrl() + "/at/at0047");
+        driver.get(Configuration.getBaseUrl() + "at/at0047");
 
         // Chuyển sang tab "時間休"
         By jikanTabLocator = By.xpath("//div[contains(@class,'item-tab' ) and text()='時間休']");
@@ -123,9 +122,7 @@ public class AT0047Service {
         deleteLink.click();
 
         // Click Save
-        By saveBtnLocator = By.xpath("//*[@id='btn-save']/button");
-        WebElement saveBtn = wait.until(ExpectedConditions.elementToBeClickable(saveBtnLocator));
-        saveBtn.click();
+        clickButtonSave(wait);
 
         // Xác thực text-danger phải rỗng
         By dangerTextLocator = By.xpath("//*[@id='tbl-sheet']/table/tbody/tr[last()]/td/span[@class='text-danger']");
@@ -135,8 +132,63 @@ public class AT0047Service {
         }
 
         // Click xác nhận
+        clickButtonConfirm(wait);
+    }
+
+    @ExecutionStep(value = "half_time")
+    public static void runAT0047_halfTime(TeireiSetting setting) throws InterruptedException {
+        WebDriver driver = DriverFactory.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.get(Configuration.getBaseUrl() + "at/at0047");
+
+        // Chuyển sang tab "半日休"
+        By jikanTabLocator = By.xpath("//div[contains(@class,'item-tab' ) and text()='半日休']");
+        WebElement jikanTab = wait.until(ExpectedConditions.elementToBeClickable(jikanTabLocator));
+        jikanTab.click();
+        Thread.sleep(3000);
+
+        // Click button add
+        By addLinkLocator = By.xpath("//*[@id=\"paging\"]/div[1]/a");
+        WebElement addLinkElement = wait.until(ExpectedConditions.elementToBeClickable(addLinkLocator));
+        addLinkElement.click();
+        Thread.sleep(1000);
+
+        // Chọn preset
+        By lastInputLocator = By.xpath("//*[@id=\"tbl-sheet\"]/form/table/tbody/tr[2]/td[1]/select/option[last()]");
+        WebElement lastInput = wait.until(ExpectedConditions.elementToBeClickable(lastInputLocator));
+        lastInput.click();
+
+        // Click button Save
+        clickButtonSave(wait);
+
+        // Click xác nhận
+        clickButtonConfirm(wait);
+
+        // Click button xóa
+        By xpath_button_delete = By.xpath("//*[@id=\"tbl-sheet\"]/form/table/tbody/tr[2]/td[last()]/a");
+        WebElement button_delete = wait.until(ExpectedConditions.elementToBeClickable(xpath_button_delete));
+        button_delete.click();
+        Thread.sleep(3000);
+
+        // Click button Save
+        clickButtonSave(wait);
+
+        // Click xác nhận
+        clickButtonConfirm(wait);
+    }
+
+    private static void clickButtonSave(WebDriverWait wait) throws InterruptedException {
+        By saveBtnLocator = By.xpath("//*[@id='btn-save']/button");
+        WebElement saveBtn = wait.until(ExpectedConditions.elementToBeClickable(saveBtnLocator));
+        saveBtn.click();
+        Thread.sleep(3000);
+    }
+
+    private static void clickButtonConfirm(WebDriverWait wait) throws InterruptedException {
         By positiveBtn = By.xpath("//*[@id = 'positiveButton']");
         WebElement positiveButton = wait.until(ExpectedConditions.elementToBeClickable(positiveBtn));
         positiveButton.click();
+        Thread.sleep(2000);
     }
+
 }

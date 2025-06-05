@@ -1,5 +1,6 @@
 package com.drjoy.automation.service;
 
+import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory; // Assuming DriverFactory provides WebDriver
 import com.drjoy.automation.execution.ExecutionHelper;
 import com.drjoy.automation.execution.ExecutionStep;
@@ -37,7 +38,7 @@ public class AT0024Service {
 
         ExecutionHelper.runStepWithLogging("Create single day request on AT0024B", () -> {
             WebDriver driver = DriverFactory.getDriver(); // Get WebDriver instance
-            AttendanceUtils.navigateToATPage("at0024b");
+            driver.get(Configuration.getBaseUrl() + "at/at0024");
             waitForLoadingElement();
 
             String xpathSlUnitTime = "//option[@value='ALL_DAY']/..";
