@@ -88,7 +88,7 @@ public class AttendanceService {
 
         waitForLoadingElement();
         WebUI.sleep(200);
-        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), 1) == null) {
+        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), WebUI.SMALL_TIMEOUT) == null) {
             WebUI.sleep(200);
             WebElement requestButton = WebUI.findWebElementIfVisible(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button"));
             WebUI.clickByJS(requestButton);

@@ -1,6 +1,5 @@
 package com.drjoy.automation.execution.phase;
 
-import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.Execution;
 import com.drjoy.automation.logging.TaskLoggerManager;
 import com.drjoy.automation.service.LoginService;
@@ -14,8 +13,7 @@ public class PhaseProcessor {
     public static <T extends PhaseSetting> void process(List<T> phaseSetting, Execution<T> execution) {
         String previousUsername = "";
 
-        for (int i = 0; i < phaseSetting.size(); i++) {
-            T current = phaseSetting.get(i);
+        for (T current : phaseSetting) {
             String username = current.getUserName();
             String password = current.getPassword();
 
@@ -34,7 +32,6 @@ public class PhaseProcessor {
 
     // Check login and handle login/logout if needed
     private static boolean loginIfNeeded(String username, String password, String previousUsername) {
-//        TaskLoggerManager.info(DriverFactory.getCACHE_PATH());
         if (!username.equals(previousUsername)) {
             try {
                 LoginService.login(username, password);

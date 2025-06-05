@@ -109,7 +109,11 @@ public class AttendanceUtils {
 
         // Kiểm tra current month-year
         WebUI.sleep(500);
-        WebElement monthYearElement = WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content1']/app-at0001-summary//div[contains(@class, 'header-block-option')]//h2"));
+
+        By monthYearBy = By.xpath("//*[@id='tab-content1']/app-at0001-summary//div[contains(@class, 'header-block-option')]//h2");
+        waitForConditionSucceed(WebUI.isElementPresent(monthYearBy, 500L));
+
+        WebElement monthYearElement = WebUI.findWebElementIfVisible(monthYearBy);
         String currMonthYearText = convertMonthYearToAT0001TitleFormat(monthYearElement.getText());
 
         ExecutionHelper.runStepWithLoggingByPhase(setting, format("Select Month: month: %s", setting.getTargetMonth()), () -> {

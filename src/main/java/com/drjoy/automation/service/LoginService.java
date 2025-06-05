@@ -40,13 +40,16 @@ public class LoginService {
             WebUI.findWebElementIfPresent(By.xpath("//button[@type='submit']")).click(); // Thay bằng ID thực tế nếu khác
 
             try {
-                WebUI.sleep(2000);
+                WebUI.sleep(1000);
+                waitForLoadingElement();
+
+                WebUI.sleep(1000);
                 waitForLoadingElement();
 
                 WebUI.sleep(1000);
                 waitForLoadingElement();
                 By btnApprove = By.xpath("//button[@class='btn btn-success' and @type='submit' and text()='同意する']");
-                if (WebUI.waitForElementClickable(btnApprove, 5) != null) {
+                if (WebUI.waitForElementClickable(btnApprove, 3) != null) {
                     driver.findElement(By.xpath("//label[@class='custom-control custom-checkbox m-0']")).click();
                     driver.findElement(btnApprove).click();
                 }
