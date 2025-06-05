@@ -14,10 +14,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0048Service {
+public class AT0048Service extends AbstractTestSuite {
 
     /**
      * Test case: AT0047_SelectUserForTimeOff
@@ -82,4 +83,8 @@ public class AT0048Service {
         positiveBtn.click();
     }
 
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("electUserForTimeOff");
+    }
 }

@@ -13,10 +13,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
 
 @Service
-public class AT0021Service {
+public class AT0021Service extends AbstractTestSuite {
 
     @ExecutionStep(value = "filterRequestsOnAT0021")
     public static void filterRequestsOnAT0021(TeireiSetting setting) {
@@ -116,5 +118,10 @@ public class AT0021Service {
                 // throw new RuntimeException("Button '休暇｜当直等の申請' not found on page AT0021.");
             }
         });
+    }
+
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("filterRequestsOnAT0021", "navigateToRequestCreationPageFromAT0021");
     }
 }

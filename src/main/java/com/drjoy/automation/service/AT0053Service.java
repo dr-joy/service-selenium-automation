@@ -13,10 +13,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0053Service {
+public class AT0053Service extends AbstractTestSuite {
 
     @ExecutionStep(value = "checkForgetRequestOptions")
     public static void checkForgetRequestOptions(ExportTemplateFilterSetting setting) {
@@ -108,5 +109,10 @@ public class AT0053Service {
         } catch (Exception e) {
             System.out.println("Send mail option is not checked");
         }
+    }
+
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("checkForgetRequestOptions", "checkLack5DayOffOptions");
     }
 }

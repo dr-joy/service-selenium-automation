@@ -16,10 +16,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0052Service {
+public class AT0052Service extends AbstractTestSuite {
 
     @ExecutionStep(value = "executeAT0052Flow")
     public static void executeAT0052Flow(TeireiSetting setting) {
@@ -173,4 +174,8 @@ public class AT0052Service {
         }
     }
 
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("executeAT0052Flow", "runHourlyPaidLeaveManagement");
+    }
 }

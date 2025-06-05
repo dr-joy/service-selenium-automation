@@ -14,10 +14,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0047Service {
+public class AT0047Service extends AbstractTestSuite {
 
     @ExecutionStep(value = "AT_AT0047_1_2_5")
     public static void runAT0047_1_2_5(TeireiSetting setting) throws InterruptedException {
@@ -191,4 +192,8 @@ public class AT0047Service {
         Thread.sleep(2000);
     }
 
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("AT_AT0047_1_2_5", "AT_AT0047_1_3_6", "half_time");
+    }
 }

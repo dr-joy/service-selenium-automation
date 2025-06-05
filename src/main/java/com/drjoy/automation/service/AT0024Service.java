@@ -20,13 +20,14 @@ import org.openqa.selenium.support.ui.WebDriverWait; // For explicit waits
 import org.springframework.stereotype.Service;
 
 import java.time.Duration; // For WebDriverWait timeout
+import java.util.List;
 
 import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
 import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingOverlayElement;
 
 
 @Service
-public class AT0024Service {
+public class AT0024Service extends AbstractTestSuite {
 
     @ExecutionStep(value = "createSingleDayRequestOnAT0024B")
     public static void createSingleDayRequestOnAT0024B(TeireiSetting setting) {
@@ -241,5 +242,10 @@ public class AT0024Service {
                 // This doesn't stop the test, matching Katalon's empty catch block behavior
             }
         });
+    }
+
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("createSingleDayRequestOnAT0024B", "createPeriodRequestOnAT0024B");
     }
 }

@@ -14,10 +14,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0050Service {
+public class AT0050Service extends AbstractTestSuite {
 
     // Kịch bản 1: Cấp 2 ngày nghỉ cho user
     @ExecutionStep(value = "grantLeaveType1")
@@ -99,4 +100,8 @@ public class AT0050Service {
         confirmBtn.click();
     }
 
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("grantLeaveType1", "grantLeaveType2");
+    }
 }

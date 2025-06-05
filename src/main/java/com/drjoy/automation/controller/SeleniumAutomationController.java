@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.InvocationTargetException;
+
 @RestController
 @RequestMapping("/api")
 public class SeleniumAutomationController {
@@ -31,7 +33,7 @@ public class SeleniumAutomationController {
     }
 
     @PostMapping(value = "/selenium/teirei-screens")
-    public ResponseEntity<ATTaskResponse> processAttendanceSteps1(@RequestBody ATTeireiRequest request) throws ClassNotFoundException {
+    public ResponseEntity<ATTaskResponse> processAttendanceSteps1(@RequestBody ATTeireiRequest request) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         String taskId = TaskLoggerManager.generateTaskId("attendance");
 
         seleniumAutomationService.processTeireiScreen(request, taskId);

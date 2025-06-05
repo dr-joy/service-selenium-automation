@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -57,7 +57,7 @@ public class SeleniumAutomationService {
     }
 
     @Async
-    public void processTeireiScreen(ATTeireiRequest request, String taskId) throws ClassNotFoundException {
+    public void processTeireiScreen(ATTeireiRequest request, String taskId) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         TaskLoggerManager.init(taskId);
         int phaseStart = request.getPhaseStart();
         int phaseEnd = request.getPhaseEnd();
@@ -72,32 +72,20 @@ public class SeleniumAutomationService {
                 .collect(Collectors.toList());
 
         var className = "com.drjoy.automation.service.".concat(request.getScreen()).concat("Service");
-        handle(Class.forName(className), selectedSettings);
+        Class<?> clazz = Class.forName(className);
+
+        if (!AbstractTestSuite.class.isAssignableFrom(clazz)) {
+            throw new IllegalArgumentException("Invalid service class: " + className);
+        }
+
+        AbstractTestSuite service = (AbstractTestSuite) clazz.getDeclaredConstructor().newInstance();
+        handle(service, selectedSettings);
     }
 
-    private static <T> void handle(Class<T> clazz, List<TeireiSetting> selectedSettings) {
-        var orderedSteps = switch (clazz.getSimpleName()) {
-            // DOING
-            case "AT0021Service" -> getAt0021Methods();
-            case "AT0024Service" -> getAt0024Methods();
-            case "AT0026Service" -> getAt0026Methods();
-            case "AT0029Service" -> getAt0029Methods();
-            // DONE
-            case "AT0037Service" -> getAt0037Methods();
-            case "AT0038Service" -> getAt0038Methods();
-            case "AT0047Service" -> getAt0047Methods();
-            case "AT0048Service" -> getAt0048Methods();
-            case "AT0049Service" -> getAt0049Methods();
-            case "AT0050Service" -> getAt0050Methods();
-            case "AT0051Service" -> getAt0051Methods();
-            case "AT0052Service" -> getAt0052Methods();
-            case "AT0053Service" -> getAt0053Methods();
-            case "AT0064Service" -> getAt0064Methods();
-            case "AT0065Service" -> getAt0065Methods();
-            default -> new ArrayList<String>();
-        };
+    private static void handle(AbstractTestSuite service, List<TeireiSetting> selectedSettings) {
+        List<String> orderedSteps = service.getAllTestCase();
         PhaseProcessor.process(selectedSettings, setting ->
-                StaticExecutionRunner.runSteps(clazz, setting, orderedSteps)
+                StaticExecutionRunner.runSteps(service.getClass(), setting, orderedSteps)
         );
     }
 
