@@ -1257,7 +1257,7 @@ public class AttendanceService {
                         );
                         stBreakTimeOption.click();
 
-                        WebElement endBreakInput = WebUI.findWebElementIfVisible(By.xpath(format(baseFormat, baseXpath, dateIndex, i+1, "//input[1]")));
+                        WebElement endBreakInput = WebUI.findWebElementIfVisible(By.xpath(format(baseFormat, baseXpath, dateIndex, i+1, "//input[2]")));
                         endBreakInput.click();
                         String formattedEBTime = et.substring(0, 2) + ":" + et.substring(2);
                         WebElement etBreakTimeOption = WebUI.findWebElementIfVisible(
