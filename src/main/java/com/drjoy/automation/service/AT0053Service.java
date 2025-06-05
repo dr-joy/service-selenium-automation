@@ -4,6 +4,7 @@ import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionStep;
 import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
+import com.drjoy.automation.model.setting.TeireiSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -20,7 +21,7 @@ import java.util.List;
 public class AT0053Service extends AbstractTestSuite {
 
     @ExecutionStep(value = "checkForgetRequestOptions")
-    public static void checkForgetRequestOptions(ExportTemplateFilterSetting setting) {
+    public static void checkForgetRequestOptions(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0053");
@@ -31,6 +32,7 @@ public class AT0053Service extends AbstractTestSuite {
                 ExpectedConditions.elementToBeClickable(forgetRequestListLocator)
         );
         forgetRequestListElement.click();
+        Thread.sleep(3000);
 
         // Kiểm tra đã tick "FORGET_REQUEST_LIST"
         try {
@@ -72,7 +74,7 @@ public class AT0053Service extends AbstractTestSuite {
     }
 
     @ExecutionStep(value = "checkLack5DayOffOptions")
-    public static void checkLack5DayOffOptions(ExportTemplateFilterSetting setting) {
+    public static void checkLack5DayOffOptions(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0053");
@@ -83,6 +85,7 @@ public class AT0053Service extends AbstractTestSuite {
                 ExpectedConditions.elementToBeClickable(lack5DayoffLocator)
         );
         lack5DayoffElement.click();
+        Thread.sleep(3000);
 
         // Kiểm tra đã tick "showAlertMsg"
         try {
