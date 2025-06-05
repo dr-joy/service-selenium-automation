@@ -90,6 +90,7 @@ public class AT0052Service extends AbstractTestSuite {
                 WebElement confirmBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
                         By.xpath("//*[@id = 'positiveButton']")));
                 confirmBtn.click();
+                Thread.sleep(5000);
             } catch (Exception ignore) {
                 // Nếu không có popup hoặc nút csv, bỏ qua
             }
@@ -165,6 +166,7 @@ public class AT0052Service extends AbstractTestSuite {
                 WebElement confirmBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
                         By.xpath("//*[@id = 'positiveButton']")));
                 confirmBtn.click();
+                Thread.sleep(5000);
             } catch (Exception ignore) {
                 // Có thể popup không xuất hiện, bỏ qua
             }
