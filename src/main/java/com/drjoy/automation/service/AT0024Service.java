@@ -22,8 +22,8 @@ import org.springframework.stereotype.Service;
 import java.time.Duration; // For WebDriverWait timeout
 import java.util.List;
 
-import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
-import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingOverlayElement;
+import static com.drjoy.automation.utils.WebUI.waitForLoadingElement;
+import static com.drjoy.automation.utils.WebUI.waitForLoadingOverlayElement;
 
 
 @Service

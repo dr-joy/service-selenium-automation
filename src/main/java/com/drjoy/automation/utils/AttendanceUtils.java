@@ -24,6 +24,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.drjoy.automation.utils.WebUI.waitForConditionSucceed;
+import static com.drjoy.automation.utils.WebUI.waitForLoadingElement;
+import static com.drjoy.automation.utils.WebUI.waitForLoadingOverlayElement;
 import static java.lang.String.format;
 
 public class AttendanceUtils {
@@ -31,7 +34,7 @@ public class AttendanceUtils {
     private AttendanceUtils() {}
 
     public static void navigateToATPage(String pageName) {
-        AttendanceUtils.waitForLoadingElement();
+        waitForLoadingElement();
         logger.info("Start navigate to page {}", pageName);
 
         WebUI.sleep(2000);
@@ -73,6 +76,7 @@ public class AttendanceUtils {
 
                     if (!pageName.equals("at0001")) {
                         WebUI.sleep(1000);
+                        waitForLoadingElement();
                         String accessBtnXpath = format(
                             "//app-at0001//ul[@role='tablist']/li[%d]", Screen.valueOf(pageName.toUpperCase()).indexInNavBar
                         );
@@ -213,25 +217,6 @@ public class AttendanceUtils {
             return year + month;
         }
         return "";
-    }
-
-    public static void waitForLoadingOverlayElement() {
-        By loadingCircle = By.cssSelector(".loader-overlay");
-        WebUI.waitForElementNotPresent(loadingCircle, WebUI.LARGE_TIMEOUT);
-    }
-
-    public static void waitForLoadingElement() {
-        By loadingCircle = By.xpath(XpathCommon.APP_LOAD_CIRCLE.value);
-        WebUI.waitForElementNotPresent(loadingCircle, WebUI.LARGE_TIMEOUT);
-    }
-
-    public static void waitForConditionSucceed(boolean condition) {
-        int waitCounter = 0;
-        while (!condition && ++waitCounter <= WebUI.SMALL_TIMEOUT) {
-            WebUI.sleep(1000);
-
-            TaskLoggerManager.info("=>> Waiting for {} sec", waitCounter);
-        }
     }
 
     public static void clickAndConfirm(By targetButton, int timeoutSeconds) {

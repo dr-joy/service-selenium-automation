@@ -2,7 +2,9 @@ package com.drjoy.automation.config;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.Getter;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -68,6 +70,14 @@ public class DriverFactory {
             return ((RemoteWebDriver) driver).getSessionId() == null;
         } catch (Exception e) {
             return true;
+        }
+    }
+
+    public static boolean isBrowserOpen() {
+        try {
+            return driver != null && driver.getCurrentUrl() != null;
+        } catch (WebDriverException e) {
+            return false;
         }
     }
 }

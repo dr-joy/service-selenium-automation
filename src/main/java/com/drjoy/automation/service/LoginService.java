@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
+import static com.drjoy.automation.utils.WebUI.waitForLoadingElement;
 
 public class LoginService {
     private static final Logger logger = LogManager.getLogger(LoginService.class);
@@ -33,11 +33,13 @@ public class LoginService {
         driver.get(Configuration.getBaseUrl());
         driver.manage().window().maximize();
 
-        if (username != null && password != null) {
+        By loginIdBy = By.xpath("//input[@name='login-id']");
+
+        if (username != null && password != null && WebUI.findWebElementIfVisible(loginIdBy) != null) {
             WebUI.findWebElementIfVisible(By.xpath("//input[@name='login-id']")).sendKeys(username);
             WebUI.findWebElementIfPresent(By.xpath("//input[@name='password']")).sendKeys(password);
 
-            WebUI.findWebElementIfPresent(By.xpath("//button[@type='submit']")).click(); // Thay bằng ID thực tế nếu khác
+            WebUI.findWebElementIfPresent(By.xpath("//button[@type='submit']")).click();
 
             try {
                 WebUI.sleep(1000);
@@ -60,10 +62,12 @@ public class LoginService {
     }
 
     public static void logout() {
-        WebUI.findWebElementIfVisible(By.xpath("//a[@id='header-btn-settings-panel' and @title='設定']")).click();
+        if (DriverFactory.isBrowserOpen()) {
+            WebUI.findWebElementIfVisible(By.xpath("//a[@id='header-btn-settings-panel' and @title='設定']")).click();
 
-        WebUI.findWebElementIfVisible(By.xpath("//a[@class='nav-link fs13 cursor-pointer' and text()='ログアウト']")).click();
+            WebUI.findWebElementIfVisible(By.xpath("//a[@class='nav-link fs13 cursor-pointer' and text()='ログアウト']")).click();
 
-        DriverFactory.stopDriver();
+            DriverFactory.stopDriver();
+        }
     }
 }

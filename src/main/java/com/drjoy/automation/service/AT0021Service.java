@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
+import static com.drjoy.automation.utils.WebUI.waitForLoadingElement;
 
 @Service
 public class AT0021Service extends AbstractTestSuite {

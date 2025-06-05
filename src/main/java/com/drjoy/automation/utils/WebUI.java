@@ -1,6 +1,8 @@
 package com.drjoy.automation.utils;
 
 import com.drjoy.automation.config.DriverFactory;
+import com.drjoy.automation.logging.TaskLoggerManager;
+import com.drjoy.automation.utils.xpath.common.XpathCommon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -174,6 +176,25 @@ public class WebUI {
         } catch (Exception e) {
             logger.error("Element {} not present within {}s: {}", by, timeoutSeconds, e);
             return false;
+        }
+    }
+
+    public static void waitForLoadingOverlayElement() {
+        By loadingCircle = By.cssSelector(".loader-overlay");
+        WebUI.waitForElementNotPresent(loadingCircle, WebUI.LARGE_TIMEOUT);
+    }
+
+    public static void waitForLoadingElement() {
+        By loadingCircle = By.xpath(XpathCommon.APP_LOAD_CIRCLE.value);
+        WebUI.waitForElementNotPresent(loadingCircle, WebUI.LARGE_TIMEOUT);
+    }
+
+    public static void waitForConditionSucceed(boolean condition) {
+        int waitCounter = 0;
+        while (!condition && ++waitCounter <= WebUI.SMALL_TIMEOUT) {
+            WebUI.sleep(1000);
+
+            TaskLoggerManager.info("=>> Waiting for {} sec", waitCounter);
         }
     }
 

@@ -25,7 +25,7 @@ public class TaskIdRoutingAppender extends AppenderBase<ILoggingEvent> {
 
             PatternLayoutEncoder encoder = new PatternLayoutEncoder();
             encoder.setContext(getContext());
-            encoder.setPattern("%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n");
+            encoder.setPattern("%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - %msg%n");
             encoder.start();
 
             fa.setEncoder(encoder);

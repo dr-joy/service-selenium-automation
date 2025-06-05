@@ -37,8 +37,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingElement;
-import static com.drjoy.automation.utils.AttendanceUtils.waitForLoadingOverlayElement;
+import static com.drjoy.automation.utils.WebUI.waitForLoadingElement;
+import static com.drjoy.automation.utils.WebUI.waitForLoadingOverlayElement;
 import static java.lang.String.format;
 
 @Service

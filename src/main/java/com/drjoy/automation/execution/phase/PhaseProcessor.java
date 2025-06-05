@@ -34,6 +34,7 @@ public class PhaseProcessor {
     private static boolean loginIfNeeded(String username, String password, String previousUsername) {
         if (!username.equals(previousUsername)) {
             try {
+                LoginService.logout();
                 LoginService.login(username, password);
                 TaskLoggerManager.info("Logged in as {}", username);
                 return true; // Login successful
