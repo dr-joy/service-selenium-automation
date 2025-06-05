@@ -86,10 +86,10 @@ public class ExcelReaderRepository {
         return result;
     }
 
-    public static List<CheckingLog> findAllCheckingLog() {
+    public static List<CheckingLog> findAllCheckingLog(String sheet) {
         List<CheckingLog> result = Lists.newArrayList();
 
-        List<String[]> data = ExcelUtils.readDataFromFilePath(getAbsolutePath("CheckingLog.xlsx"));
+        List<String[]> data = ExcelUtils.readDataFromFilePath(getAbsolutePath("CheckingLog.xlsx"), sheet);
 
         for (String[] row : data) {
             CheckingLog setting = new CheckingLog();

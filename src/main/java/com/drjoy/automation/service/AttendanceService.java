@@ -142,7 +142,7 @@ public class AttendanceService {
         WebUI.sleep(500);
         AttendanceUtils.selectUserAndMonthOnTimesheetPage(setting);
 
-        List<CheckingLog> allLogs = ExcelReaderRepository.findAllCheckingLog();
+        List<CheckingLog> allLogs = ExcelReaderRepository.findAllCheckingLog(setting.getSheetName());
         // Lọc theo phase
         Map<String, List<CheckingLog>> logsGroupedByDay = allLogs.stream()
             .filter(log -> setting.getPhase().equals(log.getPhase()))
