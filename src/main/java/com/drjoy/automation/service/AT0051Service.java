@@ -3,7 +3,6 @@ package com.drjoy.automation.service;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.setting.TeireiSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
@@ -14,10 +13,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0051Service {
+public class AT0051Service extends AbstractTestSuite {
 
     /**
      * Thực hiện tìm kiếm user, click "休暇履歴" và lọc dữ liệu với filterName.
@@ -141,4 +141,8 @@ public class AT0051Service {
         confirmBtn.click();
     }
 
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("viewLeaveHistory", "editDayOffAllocation", "confirmFirstLeaveHistoryRow");
+    }
 }

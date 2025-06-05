@@ -15,10 +15,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0064Service {
+public class AT0064Service extends AbstractTestSuite {
 
     /**
      * Test case: AT0064_SearchAndClickUserDetail
@@ -52,4 +53,8 @@ public class AT0064Service {
         detailBtn.click();
     }
 
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("searchAndClickUserDetail");
+    }
 }

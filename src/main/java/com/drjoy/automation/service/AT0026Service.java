@@ -16,10 +16,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0026Service {
+public class AT0026Service extends AbstractTestSuite {
 
     // ================== 1.2 ==================
     @ExecutionStep(value = "editDayOffRequestReason")
@@ -285,4 +286,8 @@ public class AT0026Service {
         }
     }
 
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("editDayOffRequestReason", "addDayOffReason", "editOvertimeReason", "editResearchReason", "editWatchReason");
+    }
 }

@@ -16,10 +16,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0065Service {
+public class AT0065Service extends AbstractTestSuite {
 
     /**
      * Test case: AT0065_EditUserDetailCol1AndSave
@@ -147,4 +148,8 @@ public class AT0065Service {
         positiveBtn.click();
     }
 
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("editUserDetailCol1AndSave1", "editUserDetailCol1AndSave2");
+    }
 }

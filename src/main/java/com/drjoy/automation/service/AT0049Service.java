@@ -16,10 +16,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Log4j2
-public class AT0049Service {
+public class AT0049Service extends AbstractTestSuite {
 
     /**
      * Thực hiện tìm kiếm theo username hiện tại (lấy trên header) tại màn hình AT0049.
@@ -96,4 +97,8 @@ public class AT0049Service {
         return tmpFile.getAbsolutePath();
     }
 
+    @Override
+    public List<String> getAllTestCase() {
+        return List.of("searchByCurrentUsername", "clickVacationHistoryButton", "importFile");
+    }
 }
