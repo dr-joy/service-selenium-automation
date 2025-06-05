@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
@@ -86,24 +87,24 @@ public class AT0051Service extends AbstractTestSuite {
         Thread.sleep(5000);
 
         // 5. Click icon chỉnh sửa phân bổ nghỉ phép ở dòng rowIndex
-        WebElement editBtn = driver.findElement(By.xpath(
-                String.format("//*[@id='table-content']//tr[%s]//i[contains(@class,'btn-edit-day-off-allocation')]", setting.getAt0051OrderUser())
+        List<WebElement> listElements = driver.findElements(By.xpath(
+                "//*[@id='table-content']//tr[td[contains(text(),'')]]//i[contains(@class,'btn-edit-day-off-allocation')]"
         ));
-        editBtn.click();
+        listElements.get(0).click();
 
         // 6. Click vào dropdown "増減"
         WebElement dropdown = driver.findElement(By.xpath("//div[@class='modal-day-off-body-label' and normalize-space()='増減']/following-sibling::div"));
         dropdown.click();
 
-        // 7. Chọn giá trị tăng/giảm, ví dụ "+4.00"
-        WebElement valueOption = driver.findElement(By.xpath(
-                String.format("//div[@class='dd-custom-container']//span[normalize-space()='%s']/..", setting.getAt0051Number())
-        ));
-        valueOption.click();
+        By inputSearchLocator = By.xpath("//*[@id=\"theModal\"]/div/div/div[2]/app-modal-day-off-allocate/div/div[3]/div[2]/div/input");
+        WebElement inputSearch = wait.until(ExpectedConditions.visibilityOfElementLocated(inputSearchLocator));
+        inputSearch.clear();
+        inputSearch.sendKeys("+4.00");
 
         // 8. Click nút lưu (submit)
         WebElement submitBtn = driver.findElement(By.xpath("//button[contains(@class,'modal-day-off-btn-submit')]"));
         submitBtn.click();
+        Thread.sleep(5000);
     }
 
     @ExecutionStep(value = "confirmFirstLeaveHistoryRow")
@@ -112,8 +113,8 @@ public class AT0051Service extends AbstractTestSuite {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.get(Configuration.getBaseUrl() + "at/at0049");
 
-        // 2. Đợi dữ liệu load (10s)
-        Thread.sleep(10000);
+        // 2. Đợi dữ liệu load (5s)
+        Thread.sleep(5000);
 
         // 1. Nhập username vào ô search
         WebElement searchInput = driver.findElement(By.xpath("//app-at0049//input[contains(@class, 'search-input')]"));
@@ -129,16 +130,19 @@ public class AT0051Service extends AbstractTestSuite {
                 String.format("//*[@id='tbl-sheet']//td[1]//span[normalize-space()='%s']/../../../../td[last()]//button[normalize-space()='休暇履歴']", setting.getSearchText1())
         ));
         leaveHistoryBtn.click();
+        Thread.sleep(3000);
 
         // 4. Click nút thao tác ở dòng đầu tiên của table content
-        WebElement actionBtn = driver.findElement(By.xpath(
-                "//div[@id='table-content']//tr[1]//td[last()]//button"
+        List<WebElement> actionBtn = driver.findElements(By.xpath(
+                "//div[@id='table-content']//tr[td[contains(text(),'')]]//button"
         ));
-        actionBtn.click();
+        actionBtn.get(0).click();
+        Thread.sleep(3000);
 
         // 5. Click nút xác nhận (confirm)
         WebElement confirmBtn = driver.findElement(By.xpath("//*[@id = 'positiveButton']"));
         confirmBtn.click();
+        Thread.sleep(5000);
     }
 
     @Override
