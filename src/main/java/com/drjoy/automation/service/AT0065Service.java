@@ -69,6 +69,7 @@ public class AT0065Service extends AbstractTestSuite {
                 setting.getSearchText2()));
         WebElement userSelect = wait.until(ExpectedConditions.elementToBeClickable(userSelectLocator));
         userSelect.click();
+        Thread.sleep(1000);
 
         // 8. Cuộn xuống vị trí (0, 100)
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -78,11 +79,13 @@ public class AT0065Service extends AbstractTestSuite {
         By saveBtnLocator = By.xpath("//div[contains(@class, 'select-content')]/following-sibling::div/button[normalize-space(text())='保存']");
         WebElement saveBtn = wait.until(ExpectedConditions.elementToBeClickable(saveBtnLocator));
         saveBtn.click();
+        Thread.sleep(1000);
 
         // 10. Click xác nhận
         By positiveBtnLocator = By.xpath("//*[@id = 'positiveButton']");
         WebElement positiveBtn = wait.until(ExpectedConditions.elementToBeClickable(positiveBtnLocator));
         positiveBtn.click();
+        Thread.sleep(5000);
     }
 
     /**
@@ -113,9 +116,10 @@ public class AT0065Service extends AbstractTestSuite {
                 setting.getSearchText1()));
         WebElement detailBtn = wait.until(ExpectedConditions.elementToBeClickable(detailBtnLocator));
         detailBtn.click();
+        Thread.sleep(1000);
 
         // 4. Tìm ô search user mới ở select-col1 để chọn user chuyển sang
-        By innerSearchInputLocator = By.xpath("//div[@class='select-col1']//div[@class='search']/input[@type='text' and contains(@class, 'search-input')]");
+        By innerSearchInputLocator = By.xpath("//div[@class='select-col3']//div[@class='search']/input[@type='text' and contains(@class, 'search-input')]");
         WebElement innerSearchInput = wait.until(ExpectedConditions.elementToBeClickable(innerSearchInputLocator));
         innerSearchInput.clear();
         innerSearchInput.sendKeys(setting.getSearchText2());
@@ -132,6 +136,7 @@ public class AT0065Service extends AbstractTestSuite {
                 setting.getSearchText2()));
         WebElement userSelect = wait.until(ExpectedConditions.elementToBeClickable(userSelectLocator));
         userSelect.click();
+        Thread.sleep(1000);
 
         // 8. Cuộn xuống vị trí (0, 100)
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -146,6 +151,7 @@ public class AT0065Service extends AbstractTestSuite {
         By positiveBtnLocator = By.xpath("//*[@id = 'positiveButton']");
         WebElement positiveBtn = wait.until(ExpectedConditions.elementToBeClickable(positiveBtnLocator));
         positiveBtn.click();
+        Thread.sleep(5000);
     }
 
     @Override
