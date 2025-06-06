@@ -185,8 +185,13 @@ public class WebUI {
     }
 
     public static void waitForLoadingElement() {
-        By loadingCircle = By.xpath(XpathCommon.APP_LOAD_CIRCLE.value);
-        WebUI.waitForElementNotPresent(loadingCircle, WebUI.LARGE_TIMEOUT);
+        WebUI.waitForElementNotPresent(By.xpath(XpathCommon.APP_ROUTER_OUTLET_LOADER_SHOW_CIRCLE.value), WebUI.LARGE_TIMEOUT);
+
+        WebUI.waitForElementNotPresent(By.xpath(XpathCommon.APP_ROOT_LOADER_CIRCLE.value), WebUI.LARGE_TIMEOUT);
+
+        WebUI.waitForElementNotPresent(By.xpath(XpathCommon.APP_ROUTER_OUTLET_LOADER_CIRCLE.value), WebUI.LARGE_TIMEOUT);
+
+        WebUI.waitForElementNotPresent(By.cssSelector(".loader-overlay"), WebUI.LARGE_TIMEOUT);
     }
 
     public static void waitForConditionSucceed(boolean condition) {
