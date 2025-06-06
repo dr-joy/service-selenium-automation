@@ -74,11 +74,13 @@ public class AttendanceService {
                 AttendanceService::removeAllCheckingLogInPage
             );
 
-            waitForLoadingOverlayElement();
+            waitForLoadingElement();
 
             // Quay lại AT0001
             WebElement backButton = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.PAGE_BACK_BTN.value));
-            backButton.click();
+            if (backButton != null) WebUI.clickByJS(backButton);
+
+            waitForLoadingElement();
         }
     }
 
@@ -111,6 +113,7 @@ public class AttendanceService {
 
             WebElement confirmButton = WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_WITH_JP_TEXT_BTN.value));
             confirmButton.click();
+            waitForLoadingElement();
         }
 
         try {
@@ -121,6 +124,7 @@ public class AttendanceService {
                 "//app-at0023//button[contains(@class, 'btn-edit-del') and normalize-space(text())='編集']"
             ));
             reEditButton.click();
+            waitForLoadingElement();
 
         } catch (Exception ex) {
             WebElement altSubmitButton = WebUI.findWebElementIfVisible(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button"));
@@ -188,6 +192,7 @@ public class AttendanceService {
 
                 // Submit checking log
                 WebUI.findWebElementIfPresent(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button")).click();
+                waitForLoadingElement();
             });
 
             // Xử lý OT request
@@ -227,6 +232,7 @@ public class AttendanceService {
         List<Request> otRequestInTargetDate = mapGroupingByDay.get(dateIndex);
         if (otRequestInTargetDate == null) return;
 
+        waitForLoadingElement();
         // Lọc các request loại "ot" hoặc "research"
         otRequestInTargetDate = otRequestInTargetDate.stream()
             .filter(it -> it.getReasonCategory().equalsIgnoreCase("ot") || it.getReasonCategory().equalsIgnoreCase("research"))
@@ -856,7 +862,8 @@ public class AttendanceService {
         dropdownSearchStatusButton.selectByValue("RS_ACCEPTED");
         WebUI.sleep(500);
 
-        if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
+        waitForLoadingElement();
+        if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 2) != null) {
             ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Reject Day off Request -> Click & Confirm ", () ->{
                 List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
                 for (int i = 0; i < requestRowElements.size(); i++) {
