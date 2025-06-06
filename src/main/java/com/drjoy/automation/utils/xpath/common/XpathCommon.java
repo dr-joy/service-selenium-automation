@@ -8,7 +8,10 @@ public enum XpathCommon {
     MODAL_CONFIRM_BTN("//app-modal//button[@id='positiveButton']"),
     MODAL_CONFIRM_WITH_JP_TEXT_BTN("//button[@id='positiveButton' and normalize-space(text())='はい']"),
 
-    PAGE_BACK_BTN("//a[@class='page-head-backlink']");
+    PAGE_BACK_BTN("//a[@class='page-head-backlink']"),
+
+    ERROR_PAGE("//img[@src='/assets/img/error.png']"),
+    NOT_FOUND_PAGE("//img[@src='/assets/img/not-found.png']");
 
     public final String value;
     XpathCommon(String s) {

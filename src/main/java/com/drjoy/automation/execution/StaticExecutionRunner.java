@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import com.drjoy.automation.utils.WebUI;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,12 +32,16 @@ public class StaticExecutionRunner {
                 TaskLoggerManager.error("Detail: {}", e.getCause().getMessage());
                 TaskLoggerManager.error("Error in step: {}", stepName);
                 TaskLoggerManager.error("=> Stack logic: " + String.join(" > ", ExecutionContext.getStepTrace()));
+
+                detectUnexpectedError();
                 ExecutionContext.clear();
                 break;
             } catch (Exception e) {
                 TaskLoggerManager.error("Error in step: {}", stepName);
                 TaskLoggerManager.error("=> Stack logic: " + String.join(" > ", ExecutionContext.getStepTrace()));
                 TaskLoggerManager.error("Detail: {}", e.getCause().getMessage());
+
+                detectUnexpectedError();
                 ExecutionContext.clear();
                 break;
             }
@@ -45,12 +50,12 @@ public class StaticExecutionRunner {
         ExecutionContext.clear(); // sau cùng, dọn dẹp stack
     }
 
-    public static void runStepWithLogging(String stepName, Runnable stepLogic) {
-        ExecutionContext.pushStep(stepName);
-        TaskLoggerManager.info("▶ Running step: " + stepName);
-
-        stepLogic.run();
-        ExecutionContext.popStep();
+    public static void detectUnexpectedError() {
+        if (WebUI.isMeetNotFoundPage()) {
+            TaskLoggerManager.error("Detected NOT FOUND page!");
+        } else if (WebUI.isMeetErrorPage()) {
+            TaskLoggerManager.error("Page is ERROR, maybe upstream or other reason. Please try again later!");
+        }
     }
 
     private static Map<String, Method> getCachedStepMethods(Class<?> serviceClass, Object setting) {

@@ -226,4 +226,12 @@ public class WebUI {
     public static boolean isElementNotPresent(By by, long millis) {
         return !isElementPresent(by, millis);
     }
+
+    public static boolean isMeetNotFoundPage() {
+        return isElementPresent(By.xpath(XpathCommon.NOT_FOUND_PAGE.value), 500L);
+    }
+
+    public static boolean isMeetErrorPage() {
+        return isElementPresent(By.xpath(XpathCommon.ERROR_PAGE.value), 500L);
+    }
 }

@@ -796,6 +796,7 @@ public class AttendanceService {
         dropdownSearchStatusButton.selectByValue("RS_ACCEPTED");
         WebUI.sleep(500);
 
+        waitForLoadingElement();
         String xpathAllRecords = "//app-at0022//div[@id='table-content']/table/tbody/tr";
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
             ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Reject OT Request -> Click & Confirm ", () ->{
@@ -807,6 +808,7 @@ public class AttendanceService {
 
                     WebUI.waitForElementClickable(rejectButton, 10);
                     WebUI.click(rejectButton);
+                    waitForLoadingElement();
 
                     WebUI.findWebElementIfVisible(By.xpath(XpathCommon.MODAL_CONFIRM_BTN.value)).click();
 
