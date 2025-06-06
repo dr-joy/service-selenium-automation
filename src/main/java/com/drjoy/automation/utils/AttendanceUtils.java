@@ -99,6 +99,8 @@ public class AttendanceUtils {
 
         TaskLoggerManager.info("Loading page ....");
         waitForConditionSucceed(driver.getCurrentUrl().equals(targetURL));
+
+        waitForLoadingElement();
         WebUI.click(By.xpath("//app-at0001"));
     }
 
@@ -220,7 +222,7 @@ public class AttendanceUtils {
     public static void clickAndConfirm(By targetButton, int timeoutSeconds) {
         WebDriverWait wait = new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(timeoutSeconds));
 
-        WebUI.sleep(500);
+        if (WebUI.isElementNotPresent(targetButton, 500L)) return;
         // Wait và click target button
         wait.until(ExpectedConditions.elementToBeClickable(targetButton));
         DriverFactory.getDriver().findElement(targetButton).click();

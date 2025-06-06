@@ -87,7 +87,7 @@ public class AttendanceService {
 
         waitForLoadingElement();
         WebUI.sleep(200);
-        if (WebUI.waitForElementPresent(By.xpath(acceptCheckingLogButtonXpath), WebUI.SMALL_TIMEOUT) == null) {
+        if (WebUI.isElementNotPresent(By.xpath(acceptCheckingLogButtonXpath), 500)) {
             WebUI.sleep(200);
             WebElement requestButton = WebUI.findWebElementIfVisible(By.xpath("//*[@id='checking-log']/div/table/tbody/tr[1]/td[6]/div/button"));
             WebUI.clickByJS(requestButton);
@@ -654,7 +654,7 @@ public class AttendanceService {
                 WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
                 WebUI.sleep(400);
 
-                String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
+                String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認' and not(@disabled)]";
                 ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Check OT request -> Click & Confirm ", () ->
                     AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
                 );
@@ -673,10 +673,26 @@ public class AttendanceService {
         // Check DayOff Request
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='各種申請一覧']")).click();
 
-         filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
-        if (filterUserNameText.contains(setting.getTargetUser())) {
-            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
+        WebUI.click(By.xpath(btnMemberFilterXpath));
+        By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全選択']");
+        clickCounter = 0;
+        while (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
+            if (clickCounter >= 5) break;
+            WebUI.sleep(200);
+            // Click first time - choose all
+            WebUI.clickByJS(WebUI.findWebElementIfVisible(btnChooseAllItem));
+            // Delay in 1 sec
+            WebUI.sleep(200);
 
+            clickCounter++;
+        }
+
+        // Click seconds time - reset all
+        WebUI.click(btnResetAllItem);
+        WebUI.sleep(500);
+
+         filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
+        if (!filterUserNameText.contains(setting.getTargetUser())) {
             inputElementMemberFilter = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
             inputElementMemberFilter.clear();
             inputElementMemberFilter.sendKeys(setting.getTargetUser());
@@ -701,7 +717,7 @@ public class AttendanceService {
                 WebUI.findWebElementIfVisible(By.xpath(checkboxChooseAllRecordXpath)).click();
                 WebUI.sleep(400);
 
-                String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認']";
+                String buttonApproveAllRequestXpath = "//app-at0022//button[normalize-space(text())='一括承認' and not(@disabled)]";
                 ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Check DayOff request -> Click & Confirm ", () ->
                     AttendanceUtils.clickAndConfirm(By.xpath(buttonApproveAllRequestXpath), 0)
                 );
@@ -803,6 +819,34 @@ public class AttendanceService {
         // Handle DayOff request
         WebUI.findWebElementIfVisible(By.xpath("//*[@id='tab-content4']//app-at0022//button[normalize-space(text())='各種申請一覧']")).click();
 
+        WebUI.click(By.xpath(btnMemberFilterXpath));
+        By.xpath(btnMemberFilterXpath + "//ngb-popover-window//button[text()='全選択']");
+        clickCounter = 0;
+        while (WebUI.waitForElementPresent(btnChooseAllItem, 1) != null) {
+            if (clickCounter >= 5) break;
+            WebUI.sleep(200);
+            // Click first time - choose all
+            WebUI.clickByJS(WebUI.findWebElementIfVisible(btnChooseAllItem));
+            // Delay in 1 sec
+            WebUI.sleep(200);
+
+            clickCounter++;
+        }
+
+        // Click seconds time - reset all
+        WebUI.click(btnResetAllItem);
+        WebUI.sleep(500);
+
+        filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
+        if (!filterUserNameText.contains(setting.getTargetUser())) {
+            inputElementMemberFilter = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
+            inputElementMemberFilter.clear();
+            inputElementMemberFilter.sendKeys(setting.getTargetUser());
+
+            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
+            WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
+        }
+
         dropdownElementSearchApplicationType = DriverFactory.getDriver().findElement(By.xpath(xpathSearchApplicationType));
         dropdownSearchApplicationType = new Select(dropdownElementSearchApplicationType);
         dropdownSearchApplicationType.selectByVisibleText("すべて");
@@ -812,25 +856,13 @@ public class AttendanceService {
         dropdownSearchStatusButton.selectByValue("RS_ACCEPTED");
         WebUI.sleep(500);
 
-        filterUserNameText = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//span[@class='tooltip-users']")).getText();
-        if (filterUserNameText.contains(setting.getTargetUser())) {
-            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath)).click();
-
-            inputElementMemberFilter = WebUI.findWebElementIfPresent(By.xpath(btnMemberFilterXpath + "//ngb-popover-window//input[@placeholder='メンバーを検索']"));
-            inputElementMemberFilter.clear();
-            inputElementMemberFilter.sendKeys(setting.getTargetUser());
-
-            WebUI.findWebElementIfVisible(By.xpath(btnMemberFilterXpath + "//virtual-scroll//span[text()='" + setting.getTargetUser() + "']//ancestor::div[contains(@class, 'destination-popover-profile-wrap')]")).click();
-            WebUI.findWebElementIfVisible(By.xpath("//app-at0022-filter//div[contains(@class, 'search popup-member-filter')]//button[@type='submit']")).click();
-        }
-
         if (WebUI.waitForElementPresent(By.xpath(xpathAllRecords), 5) != null) {
             ExecutionHelper.runStepWithLoggingByPhase(setting, "AT0022 - Reject Day off Request -> Click & Confirm ", () ->{
                 List<WebElement> requestRowElements = WebUI.findWebElementsIfVisible(By.xpath(xpathAllRecords));
                 for (int i = 0; i < requestRowElements.size(); i++) {
-                    By rejectButton = By.xpath(xpathAllRecords + "[1]//span[normalize-space(text())='非承認']/ancestor::button");
+                    By rejectButton = By.xpath(xpathAllRecords + "[1]//button[normalize-space(text())='非承認']");
 
-                    WebElement rejectElm = WebUI.waitForElementPresent(rejectButton, 3);
+                    WebElement rejectElm = WebUI.waitForElementPresent(rejectButton, 1);
                     if (rejectElm == null) continue;
                     WebUI.clickWithScrollTo(rejectElm);
 

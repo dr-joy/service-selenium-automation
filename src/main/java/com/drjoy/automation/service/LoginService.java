@@ -51,7 +51,7 @@ public class LoginService {
                 WebUI.sleep(1000);
                 waitForLoadingElement();
                 By btnApprove = By.xpath("//button[@class='btn btn-success' and @type='submit' and text()='同意する']");
-                if (WebUI.waitForElementClickable(btnApprove, 3) != null) {
+                if (WebUI.waitForElementClickable(btnApprove, 2) != null) {
                     driver.findElement(By.xpath("//label[@class='custom-control custom-checkbox m-0']")).click();
                     driver.findElement(btnApprove).click();
                 }
