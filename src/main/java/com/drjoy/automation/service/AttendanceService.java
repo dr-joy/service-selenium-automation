@@ -871,6 +871,7 @@ public class AttendanceService {
                 for (int i = 0; i < requestRowElements.size(); i++) {
                     By rejectButton = By.xpath(xpathAllRecords + "[1]//button[normalize-space(text())='非承認']");
 
+                    waitForLoadingElement();
                     WebElement rejectElm = WebUI.waitForElementPresent(rejectButton, 1);
                     if (rejectElm == null) continue;
                     WebUI.clickWithScrollTo(rejectElm);
