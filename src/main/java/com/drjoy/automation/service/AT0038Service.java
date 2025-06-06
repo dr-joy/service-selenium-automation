@@ -3,7 +3,6 @@ package com.drjoy.automation.service;
 import com.drjoy.automation.config.Configuration;
 import com.drjoy.automation.config.DriverFactory;
 import com.drjoy.automation.execution.ExecutionStep;
-import com.drjoy.automation.model.setting.ExportTemplateFilterSetting;
 import com.drjoy.automation.model.setting.TeireiSetting;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
@@ -27,11 +26,11 @@ public class AT0038Service extends AbstractTestSuite {
      * Tìm kiếm user, vào chi tiết, đổi user và lưu lại.
      */
     @ExecutionStep(value = "editUserDetailAndSave")
-    public static void editUserDetailAndSave(TeireiSetting setting) {
+    public static void editUserDetailAndSave(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        driver.get(Configuration.getBaseUrl() + "/at/at0037");
+        driver.get(Configuration.getBaseUrl() + "at/at0037");
 
         // Nhập tên user cần tìm kiếm vào ô search
         By searchInputLocator = By.xpath("//*[@id='tab-content27']//input[contains(@class, 'search-input') and @placeholder='ユーザー名を検索']");
@@ -42,7 +41,7 @@ public class AT0038Service extends AbstractTestSuite {
         // Gửi phím ENTER
         searchInput.sendKeys(Keys.ENTER);
 
-        // Delay 10s cho load kết quả
+        // Delay 3s cho load kết quả
         try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
 
         // Click vào nút chi tiết của user
@@ -58,7 +57,7 @@ public class AT0038Service extends AbstractTestSuite {
         innerSearchInput.clear();
         innerSearchInput.sendKeys(setting.getSearchText2());
 
-        // Delay 10s cho list user xuất hiện
+        // Delay 3s cho list user xuất hiện
         try { Thread.sleep(3000); } catch (InterruptedException ignored) {}
 
         // Gửi phím ENTER
@@ -96,7 +95,7 @@ public class AT0038Service extends AbstractTestSuite {
     public static void editUserDetailCol3AndSave(TeireiSetting setting) throws InterruptedException {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.get(Configuration.getBaseUrl() + "/at/at0037");
+        driver.get(Configuration.getBaseUrl() + "at/at0037");
 
         Thread.sleep(5000);
 
@@ -109,7 +108,7 @@ public class AT0038Service extends AbstractTestSuite {
         // Gửi phím ENTER
         searchInput.sendKeys(Keys.ENTER);
 
-        // Delay 3s cho load kết quả
+        // Delay 2s cho load kết quả
         Thread.sleep(2000);
 
         // Click vào nút chi tiết của user
@@ -125,7 +124,7 @@ public class AT0038Service extends AbstractTestSuite {
         innerSearchInput.clear();
         innerSearchInput.sendKeys(setting.getSearchText2());
 
-        // Delay 3s cho list user xuất hiện
+        // Delay 2s cho list user xuất hiện
         Thread.sleep(2000);
 
         // Gửi phím ENTER
@@ -152,7 +151,9 @@ public class AT0038Service extends AbstractTestSuite {
         for (int i = 0; i < 2; i++) {
             WebElement positiveBtn = wait.until(ExpectedConditions.elementToBeClickable(positiveBtnLocator));
             positiveBtn.click();
+            Thread.sleep(1000);
         }
+        Thread.sleep(5000);
     }
 
     @Override
